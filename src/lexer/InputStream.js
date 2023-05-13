@@ -68,4 +68,23 @@ export class InputStream {
   peek() {
     return this.input[this.pos];
   }
+
+  /**
+   * @callback Predicate
+   * @param {string} ch
+   * @returns {boolean}
+   */
+  /**
+   * Reads from the input while pred is true
+   * @param {Predicate} pred
+   * @returns {string}
+   */
+  readWhile(pred) {
+    let str = "";
+    while (pred(this.peek())) {
+      str += this.next();
+    }
+
+    return str;
+  }
 }

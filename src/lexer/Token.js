@@ -16,12 +16,23 @@ export class Token {
    * @param {string} value
    * @param {SrcLoc} srcloc
    * @param {string} trivia
-   * @returns {Token}
    */
   constructor(type, value, srcloc, trivia) {
     this.type = type;
     this.value = value;
     this.srcloc = srcloc;
     this.trivia = trivia;
+  }
+
+  /**
+   * Static constructor
+   * @param {TokenTypes} type
+   * @param {string} value
+   * @param {SrcLoc} srcloc
+   * @param {string} trivia
+   * @returns {Token}
+   */
+  static new(type, value, srcloc, trivia) {
+    return new Token(type, value, srcloc, trivia);
   }
 }
