@@ -27,6 +27,7 @@ export class SrcLoc {
      * @param {number} line
      * @param {number} col
      * @param {string} file
+     * @returns {SrcLoc}
      */
     static new(pos, line, col, file) {
         return new SrcLoc(pos, line, col, file);

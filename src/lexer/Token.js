@@ -16,6 +16,7 @@ export class Token {
      * @param {string} value
      * @param {SrcLoc} srcloc
      * @param {string} trivia
+     * @returns {Token}
      */
     constructor(type, value, srcloc, trivia) {
         this.type = type;

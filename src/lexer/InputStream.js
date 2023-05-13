@@ -5,6 +5,7 @@
  * @property {number} pos
  * @property {number} line
  * @property {number} col
+ * @property {number} length
  */
 export class InputStream {
     /**
@@ -21,6 +22,7 @@ export class InputStream {
     /**
      * Static constructor
      * @param {string} input
+     * @returns {InputStream}
      */
     static new(input) {
         return new InputStream(input);
@@ -28,6 +30,14 @@ export class InputStream {
 
     get length() {
         return this.input.length;
+    }
+
+    /**
+     * Checks to see if we're at the end of the input
+     * @returns {boolean}
+     */
+    eof() {
+        return this.pos >= this.length;
     }
 
     /**
