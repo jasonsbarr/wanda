@@ -7,7 +7,6 @@ import { SrcLoc } from "./SrcLoc.js";
  * @property {TokenTypes} type
  * @property {string} value
  * @property {SrcLoc} srcloc
- * @property {string} trivia
  */
 export class Token {
   /**
@@ -15,13 +14,11 @@ export class Token {
    * @param {TokenTypes} type
    * @param {string} value
    * @param {SrcLoc} srcloc
-   * @param {string} trivia
    */
-  constructor(type, value, srcloc, trivia) {
+  constructor(type, value, srcloc) {
     this.type = type;
     this.value = value;
     this.srcloc = srcloc;
-    this.trivia = trivia;
   }
 
   /**
@@ -29,10 +26,9 @@ export class Token {
    * @param {TokenTypes} type
    * @param {string} value
    * @param {SrcLoc} srcloc
-   * @param {string} trivia
    * @returns {Token}
    */
-  static new(type, value, srcloc, trivia) {
-    return new Token(type, value, srcloc, trivia);
+  static new(type, value, srcloc) {
+    return new Token(type, value, srcloc);
   }
 }

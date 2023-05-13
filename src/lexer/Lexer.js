@@ -36,10 +36,9 @@ export class Lexer {
 
   /**
    * Reads a number token from the input stream
-   * @param {string} trivia
    * @returns {Token}
    */
-  readNumber(trivia) {
+  readNumber() {
     let { pos, line, col, file } = this.input;
     const srcloc = SrcLoc.new(pos, line, col, file);
     let num = this.input.readWhile((ch) => isDigit(ch) || isDot(ch));
@@ -49,7 +48,7 @@ export class Lexer {
       throw new SyntaxException(num, srcloc);
     }
 
-    return Token.new(TokenTypes.Number, num, srcloc, trivia);
+    return Token.new(TokenTypes.Number, num, srcloc);
   }
 
   /**
@@ -62,12 +61,11 @@ export class Lexer {
 
     while (!this.input.eof()) {
       let ch = this.input.peek();
-      let trivia = "";
       if (isWhitespace(ch)) {
-        trivia += this.input.readWhile(isWhitespace);
+        this.input.readWhile(isWhitespace);
         ch = this.input.peek();
       } else if (isSemicolon(ch)) {
-        trivia = this.input.readWhile((ch) => !isNewline(ch));
+        this.input.readWhile((ch) => !isNewline(ch));
         ch = this.input.peek();
       }
 
