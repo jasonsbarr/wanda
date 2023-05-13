@@ -1,3 +1,5 @@
+import { isNewline } from "./utils.js";
+
 /**
  * @class
  * @desc Object to manage the state of the input to the program
@@ -49,7 +51,16 @@ export class InputStream {
    * @returns {string}
    */
   next() {
-    return this.input[this.pos++];
+    const ch = this.input[this.pos++];
+
+    if (isNewline(ch)) {
+      this.line++;
+      this.col = 1;
+    } else {
+      this.col++;
+    }
+
+    return ch;
   }
 
   /**
