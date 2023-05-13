@@ -1,4 +1,5 @@
-import { InputStream } from "./InputStream";
+import { InputStream } from "./InputStream.js";
+import { Token } from "./Token.js";
 
 /**
  * @class
@@ -22,7 +23,14 @@ export class Lexer {
     return new Lexer(input);
   }
 
-  get length() {
-    return this.input.length;
+  /**
+   * Tokenizes the input stream
+   * @returns {Token[]}
+   */
+  tokenize() {
+    /** @type {Token} */
+    let tokens = [];
+
+    return tokens;
   }
 }
