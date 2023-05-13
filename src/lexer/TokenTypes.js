@@ -3,4 +3,5 @@
  */
 export const TokenTypes = {
   Number: "Number",
+  EOF: "EOF",
 };

@@ -59,22 +59,34 @@ export class Lexer {
   tokenize() {
     /** @type {Token[]} */
     let tokens = [];
-    let ch = this.input.peek();
-    let trivia = "";
 
-    if (isWhitespace(ch)) {
-      trivia += this.input.readWhile(isWhitespace);
-      ch = this.input.peek();
-    } else if (isSemicolon(ch)) {
-      trivia = this.input.readWhile((ch) => !isNewline(ch));
-      ch = this.input.peek();
-    }
+    while (!this.input.eof()) {
+      let ch = this.input.peek();
+      let trivia = "";
+      if (isWhitespace(ch)) {
+        trivia += this.input.readWhile(isWhitespace);
+        ch = this.input.peek();
+      } else if (isSemicolon(ch)) {
+        trivia = this.input.readWhile((ch) => !isNewline(ch));
+        ch = this.input.peek();
+      }
 
-    if (isDigit(ch)) {
-      tokens.push(this.readNumber(trivia));
-    } else {
-      const { pos, line, col, file } = this.input;
-      throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
+      if (isDigit(ch)) {
+        tokens.push(this.readNumber(trivia));
+      } else if (this.input.eof()) {
+        const { pos, line, col, file } = this.input;
+        tokens.push(
+          Token.new(
+            TokenTypes.EOF,
+            "EOF",
+            SrcLoc.new(pos, line, col, file),
+            trivia
+          )
+        );
+      } else {
+        const { pos, line, col, file } = this.input;
+        throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
+      }
     }
 
     return tokens;
