@@ -8,4 +8,5 @@ import { Token } from "./Token.js";
  * @param {string} file
  * @returns {Token[]}
  */
-export const tokenize = (input, file = "<stdin>") => Lexer.new(InputStream.new(input, file)).tokenize();
+export const tokenize = (input, file = "<stdin>") =>
+  Lexer.new(InputStream.new(input, file)).tokenize();

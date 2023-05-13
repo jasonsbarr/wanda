@@ -33,10 +33,15 @@ export class Lexer {
    * @returns {Token}
    */
   readNumber(trivia) {
-    let {pos, line, col, file} = this.input;
+    let { pos, line, col, file } = this.input;
     let num = this.input.readWhile(isDigit);
 
-    return Token.new(TokenTypes.Number, num, SrcLoc.new(pos, line, col, file), trivia);
+    return Token.new(
+      TokenTypes.Number,
+      num,
+      SrcLoc.new(pos, line, col, file),
+      trivia
+    );
   }
 
   /**
@@ -53,14 +58,14 @@ export class Lexer {
       trivia += this.input.readWhile(isWhitespace);
       ch = this.input.peek();
     } else if (isSemicolon(ch)) {
-      trivia = this.input.readWhile(ch => !isNewline(ch));
+      trivia = this.input.readWhile((ch) => !isNewline(ch));
       ch = this.input.peek();
     }
 
     if (isDigit(ch)) {
       tokens.push(this.readNumber(trivia));
     } else {
-      const {pos, line, col, file} = this.input;
+      const { pos, line, col, file } = this.input;
       throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
     }
 
