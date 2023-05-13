@@ -71,16 +71,6 @@ export class Lexer {
 
       if (isDigit(ch)) {
         tokens.push(this.readNumber(trivia));
-      } else if (this.input.eof()) {
-        const { pos, line, col, file } = this.input;
-        tokens.push(
-          Token.new(
-            TokenTypes.EOF,
-            "EOF",
-            SrcLoc.new(pos, line, col, file),
-            trivia
-          )
-        );
       } else {
         const { pos, line, col, file } = this.input;
         throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
