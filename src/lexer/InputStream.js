@@ -45,15 +45,6 @@ export class InputStream {
   }
 
   /**
-   * See what the character is n steps in front of the current position
-   * @param {number} n
-   * @returns {string}
-   */
-  lookahead(n = 1) {
-    return this.input[this.pos + n];
-  }
-
-  /**
    * Get the character at the current position and advance the stream
    * @returns {string}
    */
