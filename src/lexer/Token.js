@@ -10,18 +10,18 @@ import { SrcLoc } from "./SrcLoc.js";
  * @property {string} trivia
  */
 export class Token {
-    /**
-     * Constructor for Token class
-     * @param {TokenTypes} type
-     * @param {string} value
-     * @param {SrcLoc} srcloc
-     * @param {string} trivia
-     * @returns {Token}
-     */
-    constructor(type, value, srcloc, trivia) {
-        this.type = type;
-        this.value = value;
-        this.srcloc = srcloc;
-        this.trivia = trivia;
-    }
+  /**
+   * Constructor for Token class
+   * @param {TokenTypes} type
+   * @param {string} value
+   * @param {SrcLoc} srcloc
+   * @param {string} trivia
+   * @returns {Token}
+   */
+  constructor(type, value, srcloc, trivia) {
+    this.type = type;
+    this.value = value;
+    this.srcloc = srcloc;
+    this.trivia = trivia;
+  }
 }
