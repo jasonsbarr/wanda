@@ -1,5 +1,29 @@
 {
+  "type": "module",
   "devDependencies": {
     "prettier": "^2.8.8"
-  }
+  },
+  "name": "@jasonsbarr/wanda",
+  "description": "Programming language for a tutorial series on building a compiler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jasonsbarr/wanda.git"
+  },
+  "keywords": [
+    "lisp",
+    "\"programming",
+    "language\"",
+    "tutorial"
+  ],
+  "author": "Jason Barr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasonsbarr/wanda/issues"
+  },
+  "homepage": "https://github.com/jasonsbarr/wanda#readme"
 }
