@@ -52,4 +52,11 @@ export class Reader {
   pop() {
     return this.tokens[this.pos++];
   }
+
+  /**
+   * Skip over the current token
+   */
+  skip() {
+    this.pos++;
+  }
 }
