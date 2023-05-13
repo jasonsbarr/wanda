@@ -5,15 +5,18 @@
  * @property {number} pos
  * @property {number} line
  * @property {number} col
+ * @property {string} file
  * @property {number} length
  */
 export class InputStream {
   /**
    * Constructs the InputStream object
    * @param {string} input
+   * @param {string} file
    */
-  constructor(input) {
+  constructor(input, file) {
     this.input = input;
+    this.file = file;
     this.pos = 0;
     this.line = 1;
     this.col = 1;
@@ -22,10 +25,11 @@ export class InputStream {
   /**
    * Static constructor
    * @param {string} input
+   * @param {string} file
    * @returns {InputStream}
    */
-  static new(input) {
-    return new InputStream(input);
+  static new(input, file) {
+    return new InputStream(input, file);
   }
 
   get length() {
