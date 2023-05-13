@@ -3,7 +3,7 @@ import { InputStream } from "./InputStream.js";
 import { SrcLoc } from "./SrcLoc.js";
 import { Token } from "./Token.js";
 import { TokenTypes } from "./TokenTypes.js";
-import { isDigit, isNewline, isSemicolon, isWhitespace } from "./utils.js";
+import { isDigit, isDot, isNewline, isNumber, isSemicolon, isWhitespace } from "./utils.js";
 
 /**
  * @class
@@ -34,12 +34,18 @@ export class Lexer {
    */
   readNumber(trivia) {
     let { pos, line, col, file } = this.input;
-    let num = this.input.readWhile(isDigit);
+    const srcloc = SrcLoc.new(pos, line, col, file)
+    let num = this.input.readWhile(ch => isDigit(ch) || isDot(ch));
+
+    if (!isNumber(num)) {
+      console.log("boom")
+      throw new SyntaxException(num, srcloc)
+    }
 
     return Token.new(
       TokenTypes.Number,
       num,
-      SrcLoc.new(pos, line, col, file),
+      srcloc,
       trivia
     );
   }

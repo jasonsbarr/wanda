@@ -1,4 +1,4 @@
-import { SrcLoc } from "../lexer/SrcLoc";
+import { SrcLoc } from "../lexer/SrcLoc.js";
 
 /**
  * @class
