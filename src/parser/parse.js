@@ -2,39 +2,36 @@ import { Token } from "../lexer/Token.js";
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { AST } from "./ast.js";
-
-let pos = 0;
-const eof = (readTree) => pos >= readTree.length;
-const next = (readTree) => readTree[pos++];
-const peek = (readTree) => readTree[pos];
-const skip = () => pos++;
+import { Reader } from "../reader/Reader.js";
 
 /**
  * Parses a primitive value from the readTree
- * @param {Token} token
+ * @param {Reader} reader
  * @returns {AST}
  */
-const parsePrimitive = (token) => {
+const parsePrimitive = (reader) => {
+  const token = reader.peek();
+
   switch (token.type) {
     case TokenTypes.Number:
-      skip();
+      reader.skip();
       return AST.NumberLiteral(token);
     default:
       throw new SyntaxException(token.value, token.srcloc);
   }
 };
 
-const parseExpr = (form) => {
-  return parsePrimitive(form);
+const parseExpr = (reader) => {
+  return parsePrimitive(reader);
 };
 
 /**
  * Parses an expression from the readTree
- * @param {import("../reader/read.js").Form} form
+ * @param {Reader} form
  * @returns {AST}
  */
-const parseExpression = (form) => {
-  return parseExpr(form);
+const parseExpression = (reader) => {
+  return parseExpr(reader);
 };
 
 /**
@@ -45,10 +42,10 @@ const parseExpression = (form) => {
 export const parse = (readTree) => {
   /** @type {AST[]} */
   let body = [];
+  const reader = Reader.new(readTree);
 
-  while (!eof()) {
-    let currentForm = peek(readTree);
-    body.push(parseExpression(currentForm));
+  while (!reader.eof()) {
+    body.push(parseExpression(reader));
   }
 
   return AST.Program(body);
