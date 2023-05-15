@@ -4,10 +4,10 @@ import { SyntaxException } from "../shared/exceptions.js";
 import { Reader } from "./Reader.js";
 
 /**
- * @typedef {Token} Form
+ * @typedef {Token | Token[]} Form
  */
 /**
- * @typedef {Form | Form[]} ParseTree
+ * @typedef {Form[]} ReadTree
  */
 
 /**
@@ -31,33 +31,24 @@ const readAtom = (reader) => {
 /**
  * Reads a form from the token stream
  * @param {Reader} reader
- * @returns {ParseTree}
+ * @returns {Form}
  */
 const readForm = (reader) => {
   return readAtom(reader);
 };
 
 /**
- * Reads an expression, which can be made up of multiple forms
- * @param {Reader} reader
- * @returns {ParseTree}
- */
-const readExpression = (reader) => {
-  return readForm(reader);
-};
-
-/**
  * Reads the token stream into a parse tree (s-expression)
  * @param {Token[]} tokens
- * @returns {ParseTree}
+ * @returns {ReadTree}
  */
 export const read = (tokens) => {
   const reader = Reader.new(tokens);
-  /** @type {ParseTree} */
+  /** @type {ReadTree} */
   let parseTree = [];
 
   while (!reader.eof()) {
-    parseTree.push(readExpression(reader));
+    parseTree.push(readForm(reader));
   }
 
   return parseTree;

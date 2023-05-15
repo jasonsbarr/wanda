@@ -2,7 +2,7 @@ import { Token } from "../../src/lexer/Token.js";
 import { tokenize } from "../../src/lexer/tokenize.js";
 import { read } from "../../src/reader/read.js";
 
-test("should read input as a parseTree list (array)", () => {
+test("should read input as a ReadTree list (array)", () => {
   const input = "100";
   const readResult = read(tokenize(input));
 

@@ -13,7 +13,7 @@ export const ASTTypes = {
  * @typedef AST
  * @property {ASTTypes} type
  */
-export const ast = {
+export const AST = {
   /**
    * @typedef {AST & {body: AST[], srcloc: SrcLoc}} Program
    * @property {AST[]} body
