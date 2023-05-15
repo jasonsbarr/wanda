@@ -1,1 +1,1 @@
-export const expander = (parseTree) => parseTree;
+export const expand = (parseTree) => parseTree;

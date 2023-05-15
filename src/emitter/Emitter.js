@@ -24,7 +24,7 @@ export class Emitter {
    * @param {AST} node
    * @returns {string}
    */
-  emit(node) {
+  emit(node = this.program) {
     switch (node.type) {
       case ASTTypes.Program:
         return this.emitProgram(node);
