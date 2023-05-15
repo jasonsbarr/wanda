@@ -44,7 +44,6 @@ export class Lexer {
     let num = this.input.readWhile((ch) => isDigit(ch) || isDot(ch));
 
     if (!isNumber(num)) {
-      console.log("boom");
       throw new SyntaxException(num, srcloc);
     }
 
@@ -71,7 +70,7 @@ export class Lexer {
       }
 
       if (isDigit(ch)) {
-        tokens.push(this.readNumber(trivia));
+        tokens.push(this.readNumber());
       } else {
         const { pos, line, col, file } = this.input;
         throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
