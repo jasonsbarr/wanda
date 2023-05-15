@@ -12,12 +12,12 @@ export const ASTTypes = {
 /**
  * @typedef AST
  * @property {ASTTypes} type
+ * @property {SrcLoc} srcloc
  */
 export const AST = {
   /**
-   * @typedef {AST & {body: AST[], srcloc: SrcLoc}} Program
+   * @typedef {AST & {body: AST[]}} Program
    * @property {AST[]} body
-   * @property {SrcLoc} srcloc
    */
   /**
    * Constructs a Program AST node
@@ -33,7 +33,7 @@ export const AST = {
   },
 
   /**
-   * @typedef {AST & {value: string, srcloc: SrcLoc}} NumberLiteral
+   * @typedef {AST & {value: string}} NumberLiteral
    */
   /**
    * Constructs a NumberLiteral AST node
