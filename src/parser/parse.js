@@ -27,7 +27,7 @@ const parseExpr = (reader) => {
 
 /**
  * Parses an expression from the readTree
- * @param {Reader} form
+ * @param {Reader} reader
  * @returns {AST}
  */
 const parseExpression = (reader) => {
