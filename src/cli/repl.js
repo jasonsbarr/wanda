@@ -12,7 +12,7 @@ export const repl = () => {
       let result = EVAL(getInput(prompt));
 
       if (result === undefined) {
-        process.exit();
+        process.exit(0);
       }
 
       console.log(print(result));
