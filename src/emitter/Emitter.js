@@ -1,5 +1,5 @@
 import { AST, ASTTypes } from "../parser/ast.js";
-import { SyntaxException } from "../shared/exceptions";
+import { SyntaxException } from "../shared/exceptions.js";
 
 export class Emitter {
   /**
