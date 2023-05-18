@@ -11,8 +11,8 @@ export const repl = () => {
     try {
       let result = EVAL(getInput(prompt));
 
-      if (result === "") {
-        break;
+      if (result === undefined) {
+        process.exit();
       }
 
       console.log(print(result));
