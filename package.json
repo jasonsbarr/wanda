@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/jasonsbarr/wanda/issues"
   },
-  "homepage": "https://github.com/jasonsbarr/wanda#readme"
+  "homepage": "https://github.com/jasonsbarr/wanda#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
 }
