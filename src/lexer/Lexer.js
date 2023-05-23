@@ -67,9 +67,7 @@ export class Lexer {
       } else if (isSemicolon(ch)) {
         this.input.readWhile((ch) => !isNewline(ch));
         ch = this.input.peek();
-      }
-
-      if (isDigit(ch)) {
+      } else if (isDigit(ch)) {
         tokens.push(this.readNumber());
       } else {
         const { pos, line, col, file } = this.input;
