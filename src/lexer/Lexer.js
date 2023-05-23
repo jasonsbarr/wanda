@@ -58,7 +58,7 @@ export class Lexer {
     /** @type {Token[]} */
     let tokens = [];
 
-    while (!this.input.eof() && ch !== undefined) {
+    while (!this.input.eof()) {
       let ch = this.input.peek();
       if (isWhitespace(ch)) {
         this.input.readWhile(isWhitespace);
