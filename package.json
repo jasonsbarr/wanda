@@ -19,9 +19,10 @@
   },
   "keywords": [
     "lisp",
-    "\"programming",
-    "language\"",
-    "tutorial"
+    "programming language",
+    "tutorial",
+    "compiler",
+    "interpreter"
   ],
   "author": "Jason Barr",
   "license": "MIT",
