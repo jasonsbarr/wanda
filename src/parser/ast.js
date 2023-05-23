@@ -14,11 +14,14 @@ export const ASTTypes = {
  * @property {ASTTypes} type
  * @property {SrcLoc} srcloc
  */
+/**
+ * @typedef {AST & {body: AST[]}} Program
+ * @property {AST[]} body
+ */
+/**
+ * @typedef {AST & {value: string}} NumberLiteral
+ */
 export const AST = {
-  /**
-   * @typedef {AST & {body: AST[]}} Program
-   * @property {AST[]} body
-   */
   /**
    * Constructs a Program AST node
    * @param {AST[]} exprs
@@ -32,9 +35,6 @@ export const AST = {
     };
   },
 
-  /**
-   * @typedef {AST & {value: string}} NumberLiteral
-   */
   /**
    * Constructs a NumberLiteral AST node
    * @param {Token} token

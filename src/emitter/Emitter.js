@@ -37,7 +37,7 @@ export class Emitter {
 
   /**
    * Generates code from a Number AST node
-   * @param {AST & {value: string}}
+   * @param {import("../parser/ast.js").NumberLiteral} node
    * @returns {string}
    */
   emitNumber(node) {
@@ -46,7 +46,7 @@ export class Emitter {
 
   /**
    * Generates code from a Program AST node
-   * @param {AST & {body: AST[]}} node
+   * @param {import("../parser/ast.js").Program} node
    * @returns {string}
    */
   emitProgram(node) {
