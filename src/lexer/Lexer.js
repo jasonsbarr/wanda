@@ -4,6 +4,7 @@ import { SrcLoc } from "./SrcLoc.js";
 import { Token } from "./Token.js";
 import { TokenTypes } from "./TokenTypes.js";
 import {
+  isDash,
   isDigit,
   isDot,
   isNewline,
@@ -41,7 +42,13 @@ export class Lexer {
   readNumber() {
     let { pos, line, col, file } = this.input;
     const srcloc = SrcLoc.new(pos, line, col, file);
-    let num = this.input.readWhile((ch) => isDigit(ch) || isDot(ch));
+    let num = "";
+
+    if (isDash(this.input.peek())) {
+      num += this.input.next();
+    }
+
+    num += this.input.readWhile((ch) => isDigit(ch) || isDot(ch));
 
     if (!isNumber(num)) {
       throw new SyntaxException(num, srcloc);
@@ -64,6 +71,8 @@ export class Lexer {
         this.input.readWhile(isWhitespace);
       } else if (isSemicolon(ch)) {
         this.input.readWhile((ch) => !isNewline(ch) && !this.input.eof());
+      } else if (isDash(ch) && isDigit(this.input.lookahead(1))) {
+        tokens.push(this.readNumber());
       } else if (isDigit(ch)) {
         tokens.push(this.readNumber());
       } else {
