@@ -15,7 +15,7 @@ export const repl = () => {
         process.exit(0);
       }
 
-      console.log(print(result));
+      print(result);
     } catch (e) {
       console.error(e.message);
     }
