@@ -1,10 +1,3 @@
-import { Exception } from "../shared/exceptions.js";
+import { printString } from "./printString.js";
 
-export const print = (value) => {
-  switch (typeof value) {
-    case "number":
-      return String(value);
-    default:
-      throw new Exception(`Invalid value ${value}`);
-  }
-};
+export const print = (input) => console.log(printString(input));
