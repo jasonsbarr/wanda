@@ -1,4 +1,3 @@
-import { Token } from "../lexer/Token.js";
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { AST } from "./ast.js";
