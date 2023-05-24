@@ -5,7 +5,8 @@ import { parse } from "../../src/parser/parse.js";
 import { desugar } from "../../src/desugarer/desugar.js";
 import { emit } from "../../src/emitter/emit.js";
 
-const compile = (input) => emit(desugar(parse(expand(read(tokenize(input))))));
+const compile = (input) =>
+  emit(desugar(parse(expand(read(tokenize(input, "test-input"))))));
 
 test("should emit an integer for an integer input", () => {
   const input = "42";
