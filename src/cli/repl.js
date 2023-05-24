@@ -9,9 +9,9 @@ export const repl = () => {
 
   while (true) {
     try {
-      let result = EVAL(read(prompt)) ?? "";
+      let result = EVAL(read(prompt));
 
-      if (result === "") {
+      if (result === undefined) {
         process.exit(0);
       }
 

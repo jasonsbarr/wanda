@@ -27,3 +27,47 @@ test("should read a float from the token stream as a number token", () => {
   expect(readResult.type).toBe("Number");
   expect(readResult.value).toBe("6.28");
 });
+
+test("should read a string from the token stream as a string token", () => {
+  const input = `"hello"`;
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult.type).toBe("String");
+  expect(readResult.value).toBe(`"hello"`);
+});
+
+test("should read a boolean from the token stream as a boolean token", () => {
+  const input1 = "true";
+  const input2 = "false";
+  const readResult1 = read(tokenize(input1))[0];
+  const readResult2 = read(tokenize(input2))[0];
+
+  expect(readResult1.type).toBe("Boolean");
+  expect(readResult2.type).toBe("Boolean");
+  expect(readResult1.value).toBe("true");
+  expect(readResult2.value).toBe("false");
+});
+
+test("should read a keyword from the token stream as a keyword token", () => {
+  const input = ":hello";
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult.type).toBe("Keyword");
+  expect(readResult.value).toBe(":hello");
+});
+
+test("should read a nil literal from the token stream as a nil token", () => {
+  const input = "nil";
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult.type).toBe("Nil");
+  expect(readResult.value).toBe("nil");
+});
+
+test("should read an empty string", () => {
+  const input = `""`;
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult.type).toBe("String");
+  expect(readResult.value).toBe(`""`);
+});

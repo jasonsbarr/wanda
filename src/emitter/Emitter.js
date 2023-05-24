@@ -30,9 +30,44 @@ export class Emitter {
         return this.emitProgram(node);
       case ASTTypes.NumberLiteral:
         return this.emitNumber(node);
+      case ASTTypes.StringLiteral:
+        return this.emitString(node);
+      case ASTTypes.BooleanLiteral:
+        return this.emitBoolean(node);
+      case ASTTypes.KeywordLiteral:
+        return this.emitKeyword(node);
+      case ASTTypes.NilLiteral:
+        return this.emitNil(node);
       default:
         throw new SyntaxException(node.type, node.srcloc);
     }
+  }
+
+  /**
+   * Generates code from a Boolean AST node
+   * @param {import("../parser/ast.js").BooleanLiteral} node
+   * @returns {string}
+   */
+  emitBoolean(node) {
+    return node.value;
+  }
+
+  /**
+   * Generates code from a Keyword AST node
+   * @param {import("../parser/ast.js").KeywordLiteral} node
+   * @returns {string}
+   */
+  emitKeyword(node) {
+    return `Symbol.for("${node.value}")`;
+  }
+
+  /**
+   * Generates code from a Nil AST node
+   * @param {import("../parser/ast.js").NilLiteral} node
+   * @returns {string}
+   */
+  emitNil(node) {
+    return "null";
   }
 
   /**
@@ -57,5 +92,14 @@ export class Emitter {
     }
 
     return code;
+  }
+
+  /**
+   * Generates code from a String AST node
+   * @param {import("../parser/ast.js").StringLiteral} node
+   * @returns {string}
+   */
+  emitString(node) {
+    return "`" + node.value.slice(1, -1) + "`";
   }
 }

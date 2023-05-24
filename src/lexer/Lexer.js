@@ -1,15 +1,22 @@
-import { SyntaxException } from "../shared/exceptions.js";
+import { Exception, SyntaxException } from "../shared/exceptions.js";
 import { InputStream } from "./InputStream.js";
 import { SrcLoc } from "./SrcLoc.js";
 import { Token } from "./Token.js";
 import { TokenTypes } from "./TokenTypes.js";
 import {
+  isBoolean,
+  isColon,
   isDash,
   isDigit,
   isDot,
+  isDoubleQuote,
   isNewline,
+  isNil,
   isNumber,
+  isPlus,
   isSemicolon,
+  isSymbolChar,
+  isSymbolStart,
   isWhitespace,
 } from "./utils.js";
 
@@ -36,6 +43,95 @@ export class Lexer {
   }
 
   /**
+   * Reads the contents of a double-quoted string
+   * @returns {string}
+   */
+  readEscaped() {
+    let str = "";
+    let escaped = false;
+    let ended = false;
+
+    while (!this.input.eof()) {
+      let ch = this.input.next();
+
+      if (escaped) {
+        str += this.readEscapeSequence(ch);
+        escaped = false;
+      } else if (ch === "\\") {
+        escaped = true;
+      } else if (isDoubleQuote(ch)) {
+        ended = true;
+        str += ch;
+        break;
+      } else if (ch === "\n") {
+        throw new Exception(
+          "Unexpected newline in nonterminated single-line string literal"
+        );
+      } else {
+        str += ch;
+      }
+    }
+
+    if (!ended && this.input.eof()) {
+      throw new Exception(
+        "Expected double quote to close string literal; got EOF"
+      );
+    }
+
+    return str;
+  }
+
+  /**
+   * Converts an escape sequence into a literal character
+   * @param {string} c
+   * @returns {string}
+   */
+  readEscapeSequence(c) {
+    let str = "";
+    let seq = "";
+
+    if (c === "n") {
+      str += "\n";
+    } else if (c === "b") {
+      str += "\b";
+    } else if (c === "f") {
+      str += "\f";
+    } else if (c === "r") {
+      str += "\r";
+    } else if (c === "t") {
+      str += "\t";
+    } else if (c === "v") {
+      str += "\v";
+    } else if (c === "0") {
+      str += "\0";
+    } else if (c === "'") {
+      str += "'";
+    } else if (c === '"') {
+      str += '"';
+    } else if (c === "\\") {
+      str += "\\";
+    } else if (c === "u" || c === "U") {
+      // is Unicode escape sequence
+      seq += this.input.readWhile(isHexDigit);
+      str += String.fromCodePoint(parseInt(seq, 16));
+    }
+
+    return str;
+  }
+
+  /**
+   * REads a keyword from the input stream
+   * @returns {Token}
+   */
+  readKeyword() {
+    let { pos, line, col, file } = this.input;
+    const srcloc = SrcLoc.new(pos, line, col, file);
+    const kw = this.input.next() + this.input.readWhile(isSymbolChar);
+
+    return Token.new(TokenTypes.Keyword, kw, srcloc);
+  }
+
+  /**
    * Reads a number token from the input stream
    * @returns {Token}
    */
@@ -44,7 +140,7 @@ export class Lexer {
     const srcloc = SrcLoc.new(pos, line, col, file);
     let num = "";
 
-    if (isDash(this.input.peek())) {
+    if (isDash(this.input.peek()) || isPlus(this.input.peek())) {
       num += this.input.next();
     }
 
@@ -55,6 +151,38 @@ export class Lexer {
     }
 
     return Token.new(TokenTypes.Number, num, srcloc);
+  }
+
+  /**
+   * Reads a string literal from the input stream
+   * @returns {Token}
+   */
+  readString() {
+    let { pos, line, col, file } = this.input;
+    const srcloc = SrcLoc.new(pos, line, col, file);
+    let str = this.input.next(); // collect opening double-quote
+
+    str += this.readEscaped();
+    return Token.new(TokenTypes.String, str, srcloc);
+  }
+
+  /**
+   * Reads a symbol or primitive literal from the input stream
+   * @returns {Token}
+   */
+  readSymbol() {
+    let { pos, line, col, file } = this.input;
+    const srcloc = SrcLoc.new(pos, line, col, file);
+    const sym = this.input.readWhile(isSymbolChar);
+
+    if (isBoolean(sym)) {
+      return Token.new(TokenTypes.Boolean, sym, srcloc);
+    } else if (isNil(sym)) {
+      return Token.new(TokenTypes.Nil, sym, srcloc);
+    }
+
+    // Throw for now, since we haven't implemented symbols yet
+    throw new SyntaxException(sym, srcloc);
   }
 
   /**
@@ -73,8 +201,16 @@ export class Lexer {
         this.input.readWhile((ch) => !isNewline(ch) && !this.input.eof());
       } else if (isDash(ch) && isDigit(this.input.lookahead(1))) {
         tokens.push(this.readNumber());
+      } else if (isPlus(ch) && isDigit(this.input.lookahead(1))) {
+        tokens.push(this.readNumber());
       } else if (isDigit(ch)) {
         tokens.push(this.readNumber());
+      } else if (isDoubleQuote(ch)) {
+        tokens.push(this.readString());
+      } else if (isColon(ch)) {
+        tokens.push(this.readKeyword());
+      } else if (isSymbolStart(ch)) {
+        tokens.push(this.readSymbol());
       } else {
         const { pos, line, col, file } = this.input;
         throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));

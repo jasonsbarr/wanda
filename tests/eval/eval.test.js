@@ -11,3 +11,33 @@ test("should evaluate a floating point number properly", () => {
 
   expect(EVAL(input)).toEqual(3.1415);
 });
+
+test("should evaluate a string properly", () => {
+  const input = `"hello"`;
+
+  expect(EVAL(input)).toEqual("hello");
+});
+
+test("should evaluate a boolean properly", () => {
+  const input = "true";
+
+  expect(EVAL(input)).toEqual(true);
+});
+
+test("should evaluate a keyword properly", () => {
+  const input = ":hello";
+
+  expect(EVAL(input)).toEqual(Symbol.for(":hello"));
+});
+
+test("should evaluate nil properly", () => {
+  const input = "nil";
+
+  expect(EVAL(input)).toEqual(null);
+});
+
+test("should evaluate an empty string properly", () => {
+  const input = `""`;
+
+  expect(EVAL(input)).toEqual("");
+});

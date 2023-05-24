@@ -15,6 +15,18 @@ const parsePrimitive = (reader) => {
     case TokenTypes.Number:
       reader.skip();
       return AST.NumberLiteral(token);
+    case TokenTypes.String:
+      reader.skip();
+      return AST.StringLiteral(token);
+    case TokenTypes.Boolean:
+      reader.skip();
+      return AST.BooleanLiteral(token);
+    case TokenTypes.Keyword:
+      reader.skip();
+      return AST.KeywordLiteral(token);
+    case TokenTypes.Nil:
+      reader.skip();
+      return AST.NilLiteral(token);
     default:
       throw new SyntaxException(token.value, token.srcloc);
   }
