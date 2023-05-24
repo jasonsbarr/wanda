@@ -46,7 +46,17 @@ export class Lexer {
 
   readEscapeSequence() {}
 
-  readKeyword() {}
+  /**
+   * REads a keyword from the input stream
+   * @returns {Token}
+   */
+  readKeyword() {
+    let { pos, line, col, file } = this.input;
+    const srcloc = SrcLoc.new(pos, line, col, file);
+    const kw = this.input.next() + this.input.readWhile(isSymbolChar);
+
+    return Token.new(TokenTypes.Keyword, kw, srcloc);
+  }
 
   /**
    * Reads a number token from the input stream
