@@ -35,3 +35,31 @@ test("should correctly tokenize boolean literals", () => {
   expect(tokens1.reduce((_, tok) => tok.value, "")).toEqual("true");
   expect(tokens2.reduce((_, tok) => tok.value, "")).toEqual("false");
 });
+
+test("should correctly tokenize nil literals", () => {
+  const input = "nil";
+  const tokens = tokenize(input);
+
+  expect(tokens.reduce((_, tok) => tok.type, "")).toEqual("Nil");
+  expect(tokens.reduce((_, tok) => tok.value, "")).toEqual("nil");
+});
+
+test("should correctly tokenize keyword literals", () => {
+  const input = ":hello";
+  const tokens = tokenize(input);
+
+  expect(tokens.reduce((_, tok) => tok.type, "")).toEqual("Keyword");
+  expect(tokens.reduce((_, tok) => tok.value, "")).toEqual(":hello");
+});
+
+test("should correctly tokenize string literals", () => {
+  const input1 = `"hello there"`;
+  const input2 = `"😀😀😀"`;
+  const tokens1 = tokenize(input1);
+  const tokens2 = tokenize(input2);
+
+  expect(tokens1.reduce((_, tok) => tok.type, "")).toEqual("String");
+  expect(tokens2.reduce((_, tok) => tok.type, "")).toEqual("String");
+  expect(tokens1.reduce((_, tok) => tok.value, "")).toEqual(`"hello there"`);
+  expect(tokens2.reduce((_, tok) => tok.value, "")).toEqual(`"😀😀😀"`);
+});
