@@ -92,7 +92,7 @@ export class InputStream {
    */
   readWhile(pred) {
     let str = "";
-    while (pred(this.peek())) {
+    while (pred(this.peek()) && !this.eof()) {
       str += this.next();
     }
 
