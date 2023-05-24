@@ -161,7 +161,9 @@ export class Lexer {
     let { pos, line, col, file } = this.input;
     const srcloc = SrcLoc.new(pos, line, col, file);
     let str = this.input.next(); // collect opening double-quote
+
     str += this.readEscaped();
+    return Token.new(TokenTypes.String, str, srcloc);
   }
 
   /**
