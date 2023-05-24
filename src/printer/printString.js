@@ -17,6 +17,6 @@ export const printString = (value) => {
         return "nil";
       }
     default:
-      throw new Exception(`Invalid value ${value}`);
+      throw new Exception(`Invalid print value ${value}`);
   }
 };
