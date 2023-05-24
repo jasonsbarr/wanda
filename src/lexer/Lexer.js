@@ -4,13 +4,16 @@ import { SrcLoc } from "./SrcLoc.js";
 import { Token } from "./Token.js";
 import { TokenTypes } from "./TokenTypes.js";
 import {
+  isColon,
   isDash,
   isDigit,
   isDot,
+  isDoubleQuote,
   isNewline,
   isNumber,
   isPlus,
   isSemicolon,
+  isSymbolStart,
   isWhitespace,
 } from "./utils.js";
 
@@ -88,6 +91,12 @@ export class Lexer {
         tokens.push(this.readNumber());
       } else if (isDigit(ch)) {
         tokens.push(this.readNumber());
+      } else if (isDoubleQuote(ch)) {
+        tokens.push(this.readString());
+      } else if (isColon(ch)) {
+        tokens.push(this.readKeyword());
+      } else if (isSymbolStart(ch)) {
+        tokens.push(this.readSymbol());
       } else {
         const { pos, line, col, file } = this.input;
         throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
