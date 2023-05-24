@@ -13,3 +13,5 @@ export const isSymbolChar = (ch) =>
 
 // String matchers
 export const isNumber = (str) => /^[+-]?\d+(\.\d+)?$/.test(str);
+export const isBoolean = (str) => /true|false/.test(str);
+export const isNil = (str) => /nil/.test(str);
