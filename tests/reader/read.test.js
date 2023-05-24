@@ -28,6 +28,14 @@ test("should read a float from the token stream as a number token", () => {
   expect(readResult.value).toBe("6.28");
 });
 
+test("should read a string from the token stream as a string token", () => {
+  const input = "hello";
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult.type).toBe("String");
+  expect(readResult.value).toBe("hello");
+});
+
 test("should read a boolean from the token stream as a boolean token", () => {
   const input1 = "true";
   const input2 = "false";
