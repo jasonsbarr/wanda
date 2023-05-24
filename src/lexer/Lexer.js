@@ -67,6 +67,8 @@ export class Lexer {
         throw new Exception(
           "Unexpected newline in nonterminated single-line string literal"
         );
+      } else if (ch === "`") {
+        str += "\\`";
       } else {
         str += ch;
       }
