@@ -1,6 +1,8 @@
 import { Token } from "../../src/lexer/Token.js";
-import { tokenize } from "../../src/lexer/tokenize.js";
+import { tokenize as t } from "../../src/lexer/tokenize.js";
 import { read } from "../../src/reader/read.js";
+
+const tokenize = (input) => t(input, "test-input");
 
 test("should read input as a ReadTree list (array)", () => {
   const input = "100";

@@ -1,4 +1,6 @@
-import { tokenize } from "../../src/lexer/tokenize.js";
+import { tokenize as t } from "../../src/lexer/tokenize.js";
+
+const tokenize = (input) => t(input, "test-input");
 
 test("should correctly tokenize an integer", () => {
   const input = "15";

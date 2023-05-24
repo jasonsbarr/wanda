@@ -4,7 +4,7 @@ import { expand } from "../../src/expander/expand.js";
 import { parse as p } from "../../src/parser/parse.js";
 import { ASTTypes } from "../../src/parser/ast.js";
 
-const parse = (input) => p(expand(read(tokenize(input))));
+const parse = (input) => p(expand(read(tokenize(input, "test-input"))));
 
 test("should parse a Program node from the readTree", () => {
   const input = "16";
