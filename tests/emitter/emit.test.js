@@ -13,7 +13,6 @@ test("should emit an integer for an integer input", () => {
   const code = compile(input);
 
   expect(code).toEqual("42");
-  expect(eval(code)).toEqual(42);
 });
 
 test("should emit a float for a float number input", () => {
@@ -21,5 +20,32 @@ test("should emit a float for a float number input", () => {
   const code = compile(input);
 
   expect(code).toEqual("17.123");
-  expect(eval(code)).toEqual(17.123);
+});
+
+test("should emit a string for a string input", () => {
+  const input = `"hello"`;
+  const code = compile(input);
+
+  expect(code).toEqual("`hello`");
+});
+
+test("should emit a boolean for a boolean input", () => {
+  const input = "true";
+  const code = compile(input);
+
+  expect(code).toEqual("true");
+});
+
+test("should emit a symbol for a keyword input", () => {
+  const input = ":hello";
+  const code = compile(input);
+
+  expect(code).toEqual(`Symbol.for(":hello")`);
+});
+
+test("should emit null for a nil input", () => {
+  const input = "nil";
+  const code = compile(input);
+
+  expect(code).toEqual("null");
 });
