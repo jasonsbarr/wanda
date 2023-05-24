@@ -2,14 +2,14 @@ import readlineSync from "readline-sync";
 import { EVAL } from "./eval.js";
 import { print } from "../printer/print.js";
 
-const getInput = (prompt) => readlineSync.question(prompt);
+const read = (prompt) => readlineSync.question(prompt);
 
 export const repl = () => {
   let prompt = "wanda> ";
 
   while (true) {
     try {
-      let result = EVAL(getInput(prompt)) ?? "";
+      let result = EVAL(read(prompt)) ?? "";
 
       if (result === "") {
         process.exit(0);
