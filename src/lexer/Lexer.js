@@ -9,6 +9,7 @@ import {
   isDot,
   isNewline,
   isNumber,
+  isPlus,
   isSemicolon,
   isWhitespace,
 } from "./utils.js";
@@ -50,7 +51,7 @@ export class Lexer {
     const srcloc = SrcLoc.new(pos, line, col, file);
     let num = "";
 
-    if (isDash(this.input.peek())) {
+    if (isDash(this.input.peek()) || isPlus(this.input.peek())) {
       num += this.input.next();
     }
 
@@ -82,6 +83,8 @@ export class Lexer {
       } else if (isSemicolon(ch)) {
         this.input.readWhile((ch) => !isNewline(ch) && !this.input.eof());
       } else if (isDash(ch) && isDigit(this.input.lookahead(1))) {
+        tokens.push(this.readNumber());
+      } else if (isPlus(ch) && isDigit(this.input.lookahead(1))) {
         tokens.push(this.readNumber());
       } else if (isDigit(ch)) {
         tokens.push(this.readNumber());
