@@ -35,6 +35,12 @@ export class Lexer {
     return new Lexer(input);
   }
 
+  readEscaped() {}
+
+  readEscapeSequence() {}
+
+  readKeyword() {}
+
   /**
    * Reads a number token from the input stream
    * @returns {Token}
@@ -56,6 +62,10 @@ export class Lexer {
 
     return Token.new(TokenTypes.Number, num, srcloc);
   }
+
+  readString() {}
+
+  readSymbol() {}
 
   /**
    * Tokenizes the input stream
