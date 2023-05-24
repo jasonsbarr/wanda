@@ -4,15 +4,18 @@ import { SrcLoc } from "./SrcLoc.js";
 import { Token } from "./Token.js";
 import { TokenTypes } from "./TokenTypes.js";
 import {
+  isBoolean,
   isColon,
   isDash,
   isDigit,
   isDot,
   isDoubleQuote,
   isNewline,
+  isNil,
   isNumber,
   isPlus,
   isSemicolon,
+  isSymbolChar,
   isSymbolStart,
   isWhitespace,
 } from "./utils.js";
@@ -69,7 +72,24 @@ export class Lexer {
 
   readString() {}
 
-  readSymbol() {}
+  /**
+   * Reads a symbol or primitive literal from the input stream
+   * @returns {Token}
+   */
+  readSymbol() {
+    let { pos, line, col, file } = this.input;
+    const srcloc = SrcLoc.new(pos, line, col, file);
+    const sym = this.input.readWhile(isSymbolChar);
+
+    if (isBoolean(sym)) {
+      return Token.new(TokenTypes.Boolean, sym, srcloc);
+    } else if (isNil(sym)) {
+      return Token.new(TokenTypes.Nil, sym, srcloc);
+    }
+
+    // Throw for now, since we haven't implemented symbols yet
+    throw new SyntaxException(sym, srcloc);
+  }
 
   /**
    * Tokenizes the input stream
