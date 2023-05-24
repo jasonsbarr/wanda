@@ -63,3 +63,11 @@ test("should correctly tokenize string literals", () => {
   expect(tokens1.reduce((_, tok) => tok.value, "")).toEqual(`"hello there"`);
   expect(tokens2.reduce((_, tok) => tok.value, "")).toEqual(`"😀😀😀"`);
 });
+
+test("should tokenize an empty string", () => {
+  const input = `""`;
+  const tokens = tokenize(input);
+
+  expect(tokens.reduce((_, tok) => tok.type, "")).toEqual("String");
+  expect(tokens.reduce((_, tok) => tok.value, "")).toEqual(`""`);
+});

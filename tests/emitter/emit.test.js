@@ -49,3 +49,10 @@ test("should emit null for a nil input", () => {
 
   expect(code).toEqual("null");
 });
+
+test("should emit an empty string", () => {
+  const input = `""`;
+  const code = compile(input);
+
+  expect(code).toEqual("``");
+});

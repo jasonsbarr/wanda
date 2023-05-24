@@ -35,3 +35,9 @@ test("should evaluate nil properly", () => {
 
   expect(EVAL(input)).toEqual(null);
 });
+
+test("should evaluate an empty string properly", () => {
+  const input = `""`;
+
+  expect(EVAL(input)).toEqual("");
+});

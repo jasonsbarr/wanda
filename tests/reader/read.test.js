@@ -63,3 +63,11 @@ test("should read a nil literal from the token stream as a nil token", () => {
   expect(readResult.type).toBe("Nil");
   expect(readResult.value).toBe("nil");
 });
+
+test("should read an empty string", () => {
+  const input = `""`;
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult.type).toBe("String");
+  expect(readResult.value).toBe(`""`);
+});

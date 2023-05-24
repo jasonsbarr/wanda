@@ -56,3 +56,12 @@ test("should parse a NilLiteral node from a nil token", () => {
 
   expect(node.type).toEqual(ASTTypes.NilLiteral);
 });
+
+test("should parse an empty string", () => {
+  const input = `""`;
+  const ast = parse(input);
+  const node = ast.body[0];
+
+  expect(node.type).toEqual(ASTTypes.StringLiteral);
+  expect(node.value).toEqual(`""`);
+});
