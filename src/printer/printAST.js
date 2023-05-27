@@ -59,7 +59,7 @@ class ASTPrinter {
     let pStr = "";
 
     for (let n of node.body) {
-      pStr += this.print(n, indent);
+      pStr += this.print(n, indent); + "\n";
     }
 
     return pStr;
