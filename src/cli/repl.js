@@ -19,7 +19,8 @@ export const repl = (mode) => {
 
   while (true) {
     try {
-      let result = proc(read(prompt));
+      const input = read(prompt);
+      let result = proc(input);
 
       if (result === undefined) {
         process.exit(0);
