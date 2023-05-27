@@ -47,7 +47,9 @@ class ASTPrinter {
    * @returns {string}
    */
   printPrimitive(node, indent) {
-    return `${" ".repeat(indent)}${node.type}: ${node.type === "NilLiteral" ? "nil" : node.value}`
+    return `${" ".repeat(indent)}${node.type}: ${
+      node.type === "NilLiteral" ? "nil" : node.value
+    }`;
   }
 
   /**
@@ -59,7 +61,8 @@ class ASTPrinter {
     let pStr = "";
 
     for (let n of node.body) {
-      pStr += this.print(n, indent); + "\n";
+      pStr += this.print(n, indent);
+      +"\n";
     }
 
     return pStr;
