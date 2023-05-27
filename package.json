@@ -5,6 +5,7 @@
     "prettier": "^2.8.8"
   },
   "name": "@jasonsbarr/wanda",
+  "bin": "bin/wanda.js",
   "description": "Programming language for a tutorial series on building a compiler",
   "version": "1.0.0",
   "main": "index.js",
