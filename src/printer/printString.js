@@ -1,11 +1,17 @@
 import { Exception } from "../shared/exceptions.js";
 
-export const printString = (value) => {
+/**
+ * Pretty prints a JavaScript value from evaluated Wanda code
+ * @param {Any} value
+ * @param {Boolean} withQuotes
+ * @returns {string}
+ */
+export const printString = (value, withQuotes) => {
   switch (typeof value) {
     case "number":
       return String(value);
     case "string":
-      return `"` + value + `"`;
+      return withQuotes ? `"` + value + `"` : value;
     case "symbol":
       return value.description;
     case "boolean":

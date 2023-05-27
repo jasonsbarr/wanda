@@ -1,21 +1,31 @@
 import readlineSync from "readline-sync";
 import { EVAL } from "./eval.js";
+import { pprintAST, pprintDesugaredAST } from "./pprint.js";
 import { print } from "../printer/print.js";
+import { fail } from "../shared/fail.js";
 
 const read = (prompt) => readlineSync.question(prompt);
 
-export const repl = () => {
+export const repl = (mode) => {
+  const proc =
+    mode === "repl"
+      ? EVAL
+      : mode === "printDesugared"
+      ? pprintDesugaredAST
+      : mode === "printAST"
+      ? pprintAST
+      : fail("Invalid REPL mode specified");
   let prompt = "wanda> ";
 
   while (true) {
     try {
-      let result = EVAL(read(prompt));
+      let result = proc(read(prompt));
 
       if (result === undefined) {
         process.exit(0);
       }
 
-      print(result);
+      print(result, mode === "repl");
     } catch (e) {
       console.error(e.message);
     }
