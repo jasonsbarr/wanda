@@ -1,3 +1,4 @@
+import { Exception } from "../shared/exceptions.js";
 import { repl } from "./repl.js";
 
 export const run = () => {
@@ -11,8 +12,13 @@ export const run = () => {
         mode = "printAST"
         break;
       }
+    case undefined:
+    case "-i":
+    case "repl":
+      mode = "repl";
+      break;
     default:
-      mode = "repl"
+      throw new Exception("Invalid command specified");
   }
   repl(mode);
 }
