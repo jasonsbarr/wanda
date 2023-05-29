@@ -2,14 +2,14 @@ import { Exception } from "../shared/exceptions.js";
 import { repl } from "./repl.js";
 
 export const run = () => {
-  let mode = ""
+  let mode = "";
   switch (process.argv[2]) {
     case "print":
       if (process.argv[3] === "-d") {
-        mode = "printDesugared"
+        mode = "printDesugared";
         break;
       } else if (process.argv[3] === "-a") {
-        mode = "printAST"
+        mode = "printAST";
         break;
       }
     case undefined:
@@ -21,4 +21,4 @@ export const run = () => {
       throw new Exception("Invalid command specified");
   }
   repl(mode);
-}
+};
