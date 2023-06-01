@@ -1,5 +1,9 @@
-import { AST, ASTTypes } from "../parser/ast.js";
+import { ASTTypes } from "../parser/ast.js";
 import { SyntaxException } from "../shared/exceptions.js";
+
+/**
+ * @typedef {import("../parser/ast.js").AST} AST
+ */
 
 export class Emitter {
   /**

@@ -1,8 +1,10 @@
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
-import { AST } from "./ast.js";
 import { Reader } from "../reader/Reader.js";
 
+/**
+ * @typedef {import("./ast.js").AST} AST
+ */
 /**
  * Parses a primitive value from the readTree
  * @param {Reader} reader

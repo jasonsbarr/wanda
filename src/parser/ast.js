@@ -14,28 +14,31 @@ export const ASTTypes = {
 };
 
 /**
- * @typedef AST
+ * @typedef ASTNode
  * @property {ASTTypes} type
  * @property {SrcLoc} srcloc
  */
 /**
- * @typedef {AST & {body: AST[]}} Program
+ * @typedef {ASTNode & {body: AST[]}} Program
  * @property {AST[]} body
  */
 /**
- * @typedef {AST & {value: string}} NumberLiteral
+ * @typedef {ASTNode & {value: string}} NumberLiteral
  */
 /**
- * @typedef {AST & {value: string}} StringLiteral
+ * @typedef {ASTNode & {value: string}} StringLiteral
  */
 /**
- * @typedef {AST & {value: string}} BooleanLiteral
+ * @typedef {ASTNode & {value: string}} BooleanLiteral
  */
 /**
- * @typedef {AST & {value: string}} KeywordLiteral
+ * @typedef {ASTNode & {value: string}} KeywordLiteral
  */
 /**
- * @typedef {AST & {value: string}} NilLiteral
+ * @typedef {ASTNode & {value: string}} NilLiteral
+ */
+/**
+ * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} AST
  */
 export const AST = {
   /**

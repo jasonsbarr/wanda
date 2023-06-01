@@ -1,4 +1,8 @@
-import { AST, ASTTypes } from "../parser/ast.js";
+import { ASTTypes } from "../parser/ast.js";
+
+/**
+ * @typedef {import("./ast.js").AST} AST
+ */
 
 /**
  * @class ASTPrinter
