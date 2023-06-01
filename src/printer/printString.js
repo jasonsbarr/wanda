@@ -11,7 +11,7 @@ export const printString = (value, withQuotes) => {
     case "number":
       return String(value);
     case "string":
-      return withQuotes ? `"` + value + `"` : value;
+      return withQuotes ? `"${value}"` : value;
     case "symbol":
       return value.description;
     case "boolean":
