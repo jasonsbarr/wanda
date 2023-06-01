@@ -19,23 +19,23 @@ export const ASTTypes = {
  * @property {SrcLoc} srcloc
  */
 /**
- * @typedef {ASTNode & {body: AST[]}} Program
+ * @typedef {ASTNode & {type: ASTTypes.Program; body: AST[]}} Program
  * @property {AST[]} body
  */
 /**
- * @typedef {ASTNode & {value: string}} NumberLiteral
+ * @typedef {ASTNode & {type: ASTTypes.NumberLiteral; value: string}} NumberLiteral
  */
 /**
- * @typedef {ASTNode & {value: string}} StringLiteral
+ * @typedef {ASTNode & {type: ASTTypes.StringLiteral; value: string}} StringLiteral
  */
 /**
- * @typedef {ASTNode & {value: string}} BooleanLiteral
+ * @typedef {ASTNode & {type: ASTTypes.BooleanLiteral; value: string}} BooleanLiteral
  */
 /**
- * @typedef {ASTNode & {value: string}} KeywordLiteral
+ * @typedef {ASTNode & {type: ASTTypes.KeywordLiteral; value: string}} KeywordLiteral
  */
 /**
- * @typedef {ASTNode & {value: string}} NilLiteral
+ * @typedef {ASTNode & {type: ASTTypes.NilLiteral; value: string}} NilLiteral
  */
 /**
  * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} AST
