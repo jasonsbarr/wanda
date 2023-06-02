@@ -5,8 +5,8 @@ import { parse } from "../parser/parse.js";
 import { desugar } from "../desugarer/desugar.js";
 import { printAST } from "../printer/printAST.js";
 
-export const pprintDesugaredAST = (input, file = "stdlib") =>
+export const pprintDesugaredAST = (input, file = "stdin") =>
   printAST(desugar(parse(expand(read(tokenize(input, file))))));
 
-export const pprintAST = (input, file = "stdlib") =>
+export const pprintAST = (input, file = "stdin") =>
   printAST(parse(expand(read(tokenize(input, file)))));
