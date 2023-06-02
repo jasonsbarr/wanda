@@ -1,9 +1,5 @@
 {
   "type": "module",
-  "devDependencies": {
-    "jest": "^29.5.0",
-    "prettier": "^2.8.8"
-  },
   "name": "@jasonsbarr/wanda",
   "bin": "bin/wanda.js",
   "description": "Programming language for a tutorial series on building a compiler",
@@ -33,5 +29,9 @@
   "homepage": "https://github.com/jasonsbarr/wanda#readme",
   "dependencies": {
     "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "prettier": "^2.8.8"
   }
 }
