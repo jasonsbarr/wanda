@@ -66,6 +66,11 @@ export const AST = {
       srcloc: token.srcloc,
     };
   },
+  /**
+   * Constructs a StringLiteral AST node
+   * @param {Token} token
+   * @returns {StringLiteral}
+   */
   StringLiteral(token) {
     return {
       type: ASTTypes.StringLiteral,
@@ -73,6 +78,11 @@ export const AST = {
       srcloc: token.srcloc,
     };
   },
+  /**
+   * Constructs a BooleanLiteral AST node`
+   * @param {Token} token
+   * @returns {BooleanLiteral}
+   */
   BooleanLiteral(token) {
     return {
       type: ASTTypes.BooleanLiteral,
@@ -80,6 +90,11 @@ export const AST = {
       srcloc: token.srcloc,
     };
   },
+  /**
+   * Constructs a KeywordLiteral AST node
+   * @param {Token} token
+   * @returns {KeywordLiteral}
+   */
   KeywordLiteral(token) {
     return {
       type: ASTTypes.KeywordLiteral,
@@ -87,6 +102,11 @@ export const AST = {
       srcloc: token.srcloc,
     };
   },
+  /**
+   * Constructs a NilLiteral AST node
+   * @param {Token} token
+   * @returns {NilLiteral}
+   */
   NilLiteral(token) {
     return {
       type: ASTTypes.NilLiteral,
