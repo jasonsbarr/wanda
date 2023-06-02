@@ -38,6 +38,9 @@ export const ASTTypes = {
  * @typedef {ASTNode & {type: ASTTypes.NilLiteral; value: string}} NilLiteral
  */
 /**
+ * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
+ */
+/**
  * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} AST
  */
 export const AST = {

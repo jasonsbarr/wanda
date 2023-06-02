@@ -46,8 +46,8 @@ class ASTPrinter {
   }
 
   /**
-   * Prints a NumberLiteral node
-   * @param {import("../parser/ast.js").NumberLiteral} node
+   * Prints a primitive node
+   * @param {import("../parser/ast.js").Primitive} node
    * @returns {string}
    */
   printPrimitive(node, indent) {
