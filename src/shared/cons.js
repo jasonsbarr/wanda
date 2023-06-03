@@ -46,6 +46,13 @@ export class Cons extends Array {
   }
 
   /**
+   * Get the length of the current list
+   */
+  get length() {
+    return [...this].length;
+  }
+
+  /**
    * Set the tail of the cons cell
    */
   set cdr(value) {
@@ -84,6 +91,24 @@ export class Cons extends Array {
         typeof value === "object" ? JSON.stringify(value, null, 2) : value
       } to list`
     );
+  }
+
+  /**
+   * Fetch the value at index n of the current list
+   * @param {number} i
+   * @returns {any}
+   */
+  get(n) {
+    let i = 0;
+
+    for (let value of this) {
+      if (i === n) {
+        return value;
+      }
+      i++;
+    }
+
+    return undefined;
   }
 
   *[Symbol.iterator]() {

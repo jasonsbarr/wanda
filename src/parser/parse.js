@@ -1,13 +1,14 @@
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
-import { Reader } from "../reader/Reader.js";
+import { ConsReader } from "./ConsReader.js";
+import { Cons } from "../shared/cons.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST
  */
 /**
  * Parses a primitive value from the readTree
- * @param {Reader} reader
+ * @param {ConsReader} reader
  * @returns {AST}
  */
 const parsePrimitive = (reader) => {
@@ -34,19 +35,24 @@ const parsePrimitive = (reader) => {
   }
 };
 
+/**
+ * Parses an expression from the readTree
+ * @param {ConsReader} reader
+ * @returns {AST}
+ */
 const parseExpr = (reader) => {
   return parsePrimitive(reader);
 };
 
 /**
  * Parses the reader-returned tree into a full AST
- * @param {import("../reader/read.js").ReadTree} readTree
- * @returns {AST}
+ * @param {Cons} readTree
+ * @returns {import("./ast.js").Program}
  */
 export const parse = (readTree) => {
   /** @type {AST[]} */
   let body = [];
-  const reader = Reader.new(readTree);
+  const reader = ConsReader.new(readTree);
 
   while (!reader.eof()) {
     body.push(parseExpr(reader));
