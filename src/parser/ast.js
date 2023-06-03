@@ -11,6 +11,7 @@ export const ASTTypes = {
   BooleanLiteral: "BooleanLiteral",
   KeywordLiteral: "KeywordLiteral",
   NilLiteral: "NilLiteral",
+  Symbol: "Symbol",
 };
 
 /**
@@ -36,6 +37,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {type: ASTTypes.NilLiteral; value: string}} NilLiteral
+ */
+/**
+ * @typedef {ASTNode & {type: ASTTypes.Symbol; name: string}} Symbol
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
@@ -114,6 +118,18 @@ export const AST = {
     return {
       type: ASTTypes.NilLiteral,
       value: token.value,
+      srcloc: token.srcloc,
+    };
+  },
+  /**
+   * Constructs a Symbol AST node
+   * @param {Token} token
+   * @returns {Symbol}
+   */
+  Symbol(token) {
+    return {
+      type: ASTTypes.Symbol,
+      name: token.value,
       srcloc: token.srcloc,
     };
   },

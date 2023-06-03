@@ -31,6 +31,9 @@ const parsePrimitive = (reader) => {
     case TokenTypes.Nil:
       reader.skip();
       return AST.NilLiteral(token);
+    case TokenTypes.Symbol:
+      reader.skip();
+      return AST.Symbol(token);
     default:
       throw new SyntaxException(token.value, token.srcloc);
   }

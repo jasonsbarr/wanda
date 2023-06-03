@@ -31,6 +31,9 @@ const readAtom = (reader) => {
     case TokenTypes.Nil:
       reader.skip();
       return tok;
+    case TokenTypes.Symbol:
+      reader.skip();
+      return tok;
     default:
       throw new SyntaxException(tok.value, tok.srcloc);
   }
