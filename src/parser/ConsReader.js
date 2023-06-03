@@ -1,4 +1,4 @@
-import { Cons, cons } from "../shared/cons.js";
+import { Cons } from "../shared/cons.js";
 
 /**
  * @typedef {import("../reader/read.js").Form} Form
@@ -7,6 +7,8 @@ import { Cons, cons } from "../shared/cons.js";
 /**
  * @class ConsReader
  * @desc Manages state for parse tree returned by reader
+ * @property {Cons} forms
+ * @property {number} pos
  */
 export class ConsReader {
   /**
