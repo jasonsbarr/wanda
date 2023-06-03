@@ -20,11 +20,12 @@ export const repl = (mode) => {
   while (true) {
     try {
       const input = read(prompt);
-      let result = proc(input);
 
-      if (result === undefined) {
+      if (input === ":quit") {
         process.exit(0);
       }
+
+      let result = proc(input);
 
       print(result, mode === "repl");
     } catch (e) {

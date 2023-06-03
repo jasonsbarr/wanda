@@ -46,13 +46,6 @@ export class Cons extends Array {
   }
 
   /**
-   * Get the length of the current list
-   */
-  get length() {
-    return [...this].length;
-  }
-
-  /**
    * Set the tail of the cons cell
    */
   set cdr(value) {

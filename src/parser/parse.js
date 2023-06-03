@@ -2,6 +2,7 @@ import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
 import { Cons } from "../shared/cons.js";
+import { AST } from "./ast.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST

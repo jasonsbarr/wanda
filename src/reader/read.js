@@ -52,14 +52,7 @@ const readForm = (reader) => {
  */
 export const read = (tokens) => {
   const reader = Reader.new(tokens);
-  /** @type {Cons} */
-  let parseTree;
-
-  if (reader.length === 0) {
-    parseTree = cons(null, null);
-  } else {
-    parseTree = cons(readForm(reader), null);
-  }
+  let parseTree = cons(readForm(reader), null);
 
   while (!reader.eof()) {
     parseTree.append(readForm(reader));

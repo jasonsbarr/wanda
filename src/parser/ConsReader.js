@@ -1,4 +1,4 @@
-import { Cons } from "../shared/cons.js";
+import { Cons, cons } from "../shared/cons.js";
 
 /**
  * @typedef {import("../reader/read.js").Form} Form
@@ -31,7 +31,7 @@ export class ConsReader {
    * Gets the length of the current reader
    */
   get length() {
-    return this.forms.length;
+    return [...this.forms].length;
   }
 
   /**
