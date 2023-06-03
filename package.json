@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/jasonsbarr/wanda#readme",
   "dependencies": {
+    "object-hash": "^3.0.0",
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {
