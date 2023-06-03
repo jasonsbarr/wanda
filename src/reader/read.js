@@ -2,12 +2,10 @@ import { Token } from "../lexer/Token.js";
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { Reader } from "./Reader.js";
+import { Cons, cons } from "../shared/cons.js";
 
 /**
- * @typedef {Token | Token[]} Form
- */
-/**
- * @typedef {Form[]} ReadTree
+ * @typedef {Token | Cons} Form
  */
 
 /**
@@ -50,15 +48,21 @@ const readForm = (reader) => {
 /**
  * Reads the token stream into a parse tree (s-expression)
  * @param {Token[]} tokens
- * @returns {ReadTree}
+ * @returns {Cons}
  */
 export const read = (tokens) => {
   const reader = Reader.new(tokens);
-  /** @type {ReadTree} */
-  let parseTree = [];
+  /** @type {Cons} */
+  let parseTree;
+
+  if (reader.length === 0) {
+    parseTree = cons(null, null);
+  } else {
+    parseTree = cons(readForm(reader), null);
+  }
 
   while (!reader.eof()) {
-    parseTree.push(readForm(reader));
+    parseTree.append(readForm(reader));
   }
 
   return parseTree;
