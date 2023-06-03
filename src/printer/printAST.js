@@ -1,4 +1,5 @@
 import { ASTTypes } from "../parser/ast.js";
+import { Exception } from "../shared/exceptions.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST
@@ -30,6 +31,7 @@ class ASTPrinter {
   /**
    * Dispatcher for printer visitor
    * @param {AST} node
+   * @param {number} [indent=0]
    * @returns {string}
    */
   print(node = this.program, indent = 0) {
@@ -42,12 +44,17 @@ class ASTPrinter {
       case ASTTypes.KeywordLiteral:
       case ASTTypes.NilLiteral:
         return this.printPrimitive(node, indent);
+      case ASTTypes.Symbol:
+        return this.printSymbol(node, indent);
+      default:
+        throw new Exception(`Unknown AST type ${node.type} to print`);
     }
   }
 
   /**
    * Prints a primitive node
    * @param {import("../parser/ast.js").Primitive} node
+   * @param {number} indent
    * @returns {string}
    */
   printPrimitive(node, indent) {
@@ -59,6 +66,7 @@ class ASTPrinter {
   /**
    * Prints Program node
    * @param {import("../parser/ast").Program} node
+   * @param {number} indent
    * @returns {string}
    */
   printProgram(node, indent) {
@@ -70,6 +78,15 @@ class ASTPrinter {
     }
 
     return pStr;
+  }
+
+  /**
+   *
+   * @param {import("../parser/ast").Symbol} node
+   * @param {number} indent
+   */
+  printSymbol(node, indent) {
+    return `${" ".repeat(indent)}Symbol: ${node.name}`;
   }
 }
 

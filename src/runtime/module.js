@@ -1,10 +1,10 @@
 /**
  * @class Module
  * @desc In-language module
- * @property {string} name
- * @property {Function} module the module constructor
- * @property {string[]} requires in-lang required modules
- * @property {string[]} nativeRequires native JS required modules
+ * @prop {string} name
+ * @prop {Function} module the module constructor
+ * @prop {string[]} requires in-lang required modules
+ * @prop {string[]} nativeRequires native JS required modules
  */
 class Module {
   /**

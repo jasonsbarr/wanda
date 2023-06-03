@@ -1,8 +1,8 @@
 /**
  * @class Namespace
  * @desc Maps names to in-language objects
- * @property {Map<string, any>} vars
- * @property {Namespace | null} parent
+ * @prop {Map<string, any>} vars
+ * @prop {Namespace | null} parent
  */
 export class Namespace {
   /**
