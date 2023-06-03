@@ -183,8 +183,7 @@ export class Lexer {
       return Token.new(TokenTypes.Nil, sym, srcloc);
     }
 
-    // Throw for now, since we haven't implemented symbols yet
-    throw new SyntaxException(sym, srcloc);
+    return Token.new(TokenTypes.Symbol, sym, srcloc);
   }
 
   /**

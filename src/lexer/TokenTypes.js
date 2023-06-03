@@ -7,4 +7,5 @@ export const TokenTypes = {
   Boolean: "Boolean",
   Keyword: "Keyword",
   Nil: "Nil",
+  Symbol: "Symbol",
 };
