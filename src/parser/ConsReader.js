@@ -45,19 +45,19 @@ export class ConsReader {
   }
 
   /**
+   * Gets the form at the current index and advances the parse stream
+   * @returns {Form}
+   */
+  next() {
+    return this.forms.get(this.pos++);
+  }
+
+  /**
    * Gets the form at the current index
    * @returns {Form}
    */
   peek() {
     return this.forms.get(this.pos);
-  }
-
-  /**
-   * Gets the form at the current index and advances the parse stream
-   * @returns {Form}
-   */
-  pop() {
-    return this.forms.get(this.pos++);
   }
 
   /**
