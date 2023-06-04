@@ -8,4 +8,6 @@ export const TokenTypes = {
   Keyword: "Keyword",
   Nil: "Nil",
   Symbol: "Symbol",
+  LParen: "LParen",
+  RParen: "RParen",
 };

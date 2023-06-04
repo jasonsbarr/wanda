@@ -10,10 +10,12 @@ import {
   isDigit,
   isDot,
   isDoubleQuote,
+  isLParen,
   isNewline,
   isNil,
   isNumber,
   isPlus,
+  isRParen,
   isSemicolon,
   isSymbolChar,
   isSymbolStart,
@@ -212,6 +214,18 @@ export class Lexer {
         tokens.push(this.readKeyword());
       } else if (isSymbolStart(ch)) {
         tokens.push(this.readSymbol());
+      } else if (isLParen(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.LParen, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isRParen(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.RParen, ch, SrcLoc.new(pos, line, col, file))
+        );
       } else {
         const { pos, line, col, file } = this.input;
         throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
