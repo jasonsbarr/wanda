@@ -1,6 +1,7 @@
 import { Token } from "../../src/lexer/Token.js";
 import { tokenize as t } from "../../src/lexer/tokenize.js";
 import { read } from "../../src/reader/read.js";
+import { Cons } from "../../src/shared/cons.js";
 
 const tokenize = (input) => t(input, "test-input");
 
@@ -70,4 +71,26 @@ test("should read an empty string", () => {
 
   expect(readResult.type).toBe("String");
   expect(readResult.value).toBe(`""`);
+});
+
+test("should read an empty list as Nil", () => {
+  const input = "()";
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult instanceof Token).toBe(true);
+  expect(readResult.type).toBe("Nil");
+});
+
+test("should read a list as a Cons", () => {
+  const input = "(+ 1 2)";
+  const readResult = read(tokenize(input))[0];
+
+  expect(readResult instanceof Cons).toBe(true);
+  expect(
+    [...readResult].map((t) => ({ type: t.type, value: t.value }))
+  ).toEqual([
+    { type: "Symbol", value: "+" },
+    { type: "Number", value: "1" },
+    { type: "Number", value: "2" },
+  ]);
 });
