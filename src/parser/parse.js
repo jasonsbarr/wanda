@@ -3,9 +3,13 @@ import { SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
 import { Cons } from "../shared/cons.js";
 import { AST } from "./ast.js";
+import { SrcLoc } from "../lexer/SrcLoc.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST
+ */
+/**
+ * @typedef {Cons & {srcloc: SrcLoc}} List
  */
 /**
  * Parses a primitive value from the readTree
@@ -40,11 +44,46 @@ const parsePrimitive = (reader) => {
 };
 
 /**
+ * Parses a call expression
+ * @param {List} callExpression
+ * @returns {import("./ast.js").CallExpression}
+ */
+const parseCall = (callExpression) => {
+  const [func, ...args] = callExpression;
+  const srcloc = callExpression.srcloc;
+  const parsedFunc = parseExpr(func);
+  const parsedArgs = args.map(parseExpr);
+
+  return AST.CallExpression(parsedFunc, parsedArgs, srcloc);
+};
+
+/**
+ * Parses a list form into AST
+ * @param {ConsReader} reader
+ * @returns {AST}
+ */
+const parseList = (reader) => {
+  const form = reader.next();
+  const [first] = form;
+
+  switch (first.value) {
+    default:
+      return parseCall(form);
+  }
+};
+
+/**
  * Parses an expression from the readTree
  * @param {ConsReader} reader
  * @returns {AST}
  */
 const parseExpr = (reader) => {
+  const form = reader.peek();
+
+  if (form instanceof Cons) {
+    return parseList(reader);
+  }
+
   return parsePrimitive(reader);
 };
 
