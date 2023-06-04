@@ -62,6 +62,7 @@ const readList = (reader) => {
   }
 
   let list = cons(readExpr(reader), null);
+  list.srcloc = tok.srcloc;
 
   let lastTok = tok;
   tok = reader.peek();

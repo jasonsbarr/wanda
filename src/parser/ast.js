@@ -12,6 +12,7 @@ export const ASTTypes = {
   KeywordLiteral: "KeywordLiteral",
   NilLiteral: "NilLiteral",
   Symbol: "Symbol",
+  CallExpression: "CallExpression",
 };
 
 /**
@@ -42,10 +43,13 @@ export const ASTTypes = {
  * @typedef {ASTNode & {type: ASTTypes.Symbol; name: string}} Symbol
  */
 /**
+ * @typedef {ASTNode & {func: AST, args: AST[]}} CallExpression
+ */
+/**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} AST
+ * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral|CallExpression} AST
  */
 export const AST = {
   /**
@@ -131,6 +135,21 @@ export const AST = {
       type: ASTTypes.Symbol,
       name: token.value,
       srcloc: token.srcloc,
+    };
+  },
+  /**
+   * Constructs a CallExpression AST node
+   * @param {AST} func
+   * @param {AST[]} args
+   * @param {SrcLoc} srcloc
+   * @returns {CallExpression}
+   */
+  CallExpression(func, args, srcloc) {
+    return {
+      type: ASTTypes.CallExpression,
+      func,
+      args,
+      srcloc,
     };
   },
 };
