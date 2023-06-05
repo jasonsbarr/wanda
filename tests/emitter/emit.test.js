@@ -1,4 +1,3 @@
-import objectHash from "object-hash";
 import { tokenize } from "../../src/lexer/tokenize.js";
 import { read } from "../../src/reader/read.js";
 import { expand } from "../../src/expander/expand.js";
@@ -6,7 +5,7 @@ import { parse } from "../../src/parser/parse.js";
 import { desugar } from "../../src/desugarer/desugar.js";
 import { emit } from "../../src/emitter/emit.js";
 import { Namespace } from "../../src/runtime/Namespace.js";
-import { PREFIX } from "../../src/emitter/Emitter.js";
+import { makeSymbol } from "../../src/runtime/makeSymbol.js";
 
 const compile = (input) =>
   emit(desugar(parse(expand(read(tokenize(input, "test-input"))))));
@@ -66,10 +65,21 @@ test("should emit an empty string", () => {
 test("should emit a symbol", () => {
   const ns = Namespace.new(null, { name: "test" });
   const input = "+";
-  const hashedSym = PREFIX + objectHash(input);
+  const hashedSym = makeSymbol(input);
 
   ns.set(input, hashedSym);
   const code = compileWithNS(input, ns);
 
   expect(code).toEqual(hashedSym);
+});
+
+test("should emit a call expression", () => {
+  const ns = Namespace.new(null, { name: "test" });
+  const input = "(+ 1 2)";
+  const hashedSym = makeSymbol("+");
+
+  ns.set("+", hashedSym);
+  const code = compileWithNS(input, ns);
+
+  expect(code).toEqual(`(${hashedSym})(1, 2)`);
 });
