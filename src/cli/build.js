@@ -3,6 +3,12 @@ import { join } from "path";
 import * as esbuild from "esbuild";
 import { ROOT_PATH } from "../../root.js";
 
+/**
+ * Builds and bundles a compiled code module with any imports
+ * @param {string} code
+ * @param {string} outName
+ * @returns {string}
+ */
 export const build = (code, outName) => {
   const tmpPath = join(ROOT_PATH, "./tmp");
   const outPath = join(tmpPath, "./out");
