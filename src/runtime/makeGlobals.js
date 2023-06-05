@@ -4,7 +4,12 @@ import { makeSymbol } from "./makeSymbol.js";
 
 export const makeGlobal = () => {
   const globalNS = Namespace.new();
-  globalNS.addMany(theModule.module());
+  const mod = theModule.module();
+
+  for (let [k, v] of Object.entries(mod)) {
+    globalNS.set(makeSymbol(k), v);
+  }
+
   return globalNS;
 };
 
@@ -18,5 +23,3 @@ export const makeGlobalNameMap = () => {
 
   return globalNS;
 };
-
-console.log(makeGlobalNameMap());
