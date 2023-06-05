@@ -16,7 +16,5 @@ const globalEnv = makeGlobal();
     code += `const ${k} = globalEnv.get(${k});\n`;
   }
 
-  code += "\n";
-
   return code;
 };
