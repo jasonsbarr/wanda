@@ -95,4 +95,10 @@ export class Namespace {
   set(key, value) {
     this.vars.set(key, value);
   }
+
+  *[Symbol.iterator]() {
+    for (let [k, v] of this.vars) {
+      yield [k, v];
+    }
+  }
 }
