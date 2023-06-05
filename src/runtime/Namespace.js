@@ -15,6 +15,10 @@ export class Namespace {
     this.name = name;
   }
 
+  static new(parent = null, { name = "global" } = {}) {
+    return new Namespace(parent, { name });
+  }
+
   /**
    * Adds many names to the current namespace
    * @param {Map | Object} vars
