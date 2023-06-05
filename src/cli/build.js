@@ -3,7 +3,7 @@ import { join } from "path";
 import * as esbuild from "esbuild";
 import { ROOT_PATH } from "../../root.js";
 
-export const build = (code, outname) => {
+export const build = (code, outName) => {
   const tmpPath = join(ROOT_PATH, "./tmp");
   const outPath = join(tmpPath, "./out");
 
@@ -16,7 +16,7 @@ export const build = (code, outname) => {
   }
 
   const transformed = esbuild.transformSync(code);
-  const outFile = join(tmpPath, outname);
+  const outFile = join(tmpPath, outName);
 
   fs.writeFileSync(outFile, transformed.code);
 
@@ -26,12 +26,12 @@ export const build = (code, outname) => {
     bundle: true,
   });
 
-  const builtCode = fs.readFileSync(join(outPath, outname), {
+  const builtCode = fs.readFileSync(join(outPath, outName), {
     encoding: "utf-8",
   });
 
-  fs.rmSync(join(outPath, outname));
-  fs.rmSync(join(tmpPath, outname));
+  fs.rmSync(join(outPath, outName));
+  fs.rmSync(join(tmpPath, outName));
   fs.rmdirSync(outPath);
   fs.rmdirSync(tmpPath);
 
