@@ -20,5 +20,3 @@ const globalEnv = makeGlobal();
 
   return code;
 };
-
-console.log(emitGlobalEnv());
