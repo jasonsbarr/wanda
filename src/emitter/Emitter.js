@@ -1,17 +1,21 @@
 import { ASTTypes } from "../parser/ast.js";
 import { SyntaxException } from "../shared/exceptions.js";
+import { Namespace } from "../runtime/Namespace.js";
 
 /**
  * @typedef {import("../parser/ast.js").AST} AST
  */
+
+const PREFIX = "$W_";
 
 export class Emitter {
   /**
    * Constructs the emitter object
    * @param {AST} program
    */
-  constructor(program) {
+  constructor(program, ns) {
     this.program = program;
+    this.ns = ns;
   }
 
   /**
@@ -19,8 +23,8 @@ export class Emitter {
    * @param {AST} program
    * @returns {Emitter}
    */
-  static new(program) {
-    return new Emitter(program);
+  static new(program, ns = new Namespace()) {
+    return new Emitter(program, ns);
   }
 
   /**
@@ -28,20 +32,20 @@ export class Emitter {
    * @param {AST} node
    * @returns {string}
    */
-  emit(node = this.program) {
+  emit(node = this.program, ns = this.ns) {
     switch (node.type) {
       case ASTTypes.Program:
-        return this.emitProgram(node);
+        return this.emitProgram(node, ns);
       case ASTTypes.NumberLiteral:
-        return this.emitNumber(node);
+        return this.emitNumber(node, ns);
       case ASTTypes.StringLiteral:
-        return this.emitString(node);
+        return this.emitString(node, ns);
       case ASTTypes.BooleanLiteral:
-        return this.emitBoolean(node);
+        return this.emitBoolean(node, ns);
       case ASTTypes.KeywordLiteral:
-        return this.emitKeyword(node);
+        return this.emitKeyword(node, ns);
       case ASTTypes.NilLiteral:
-        return this.emitNil(node);
+        return this.emitNil(node, ns);
       default:
         throw new SyntaxException(node.type, node.srcloc);
     }
@@ -52,7 +56,7 @@ export class Emitter {
    * @param {import("../parser/ast.js").BooleanLiteral} node
    * @returns {string}
    */
-  emitBoolean(node) {
+  emitBoolean(node, ns) {
     return node.value;
   }
 
@@ -61,7 +65,7 @@ export class Emitter {
    * @param {import("../parser/ast.js").KeywordLiteral} node
    * @returns {string}
    */
-  emitKeyword(node) {
+  emitKeyword(node, ns) {
     return `Symbol.for("${node.value}")`;
   }
 
@@ -70,7 +74,7 @@ export class Emitter {
    * @param {import("../parser/ast.js").NilLiteral} node
    * @returns {string}
    */
-  emitNil(node) {
+  emitNil(node, ns) {
     return "null";
   }
 
@@ -79,7 +83,7 @@ export class Emitter {
    * @param {import("../parser/ast.js").NumberLiteral} node
    * @returns {string}
    */
-  emitNumber(node) {
+  emitNumber(node, ns) {
     return node.value;
   }
 
@@ -88,7 +92,7 @@ export class Emitter {
    * @param {import("../parser/ast.js").Program} node
    * @returns {string}
    */
-  emitProgram(node) {
+  emitProgram(node, ns) {
     let code = "";
 
     for (let n of node.body) {
@@ -101,9 +105,10 @@ export class Emitter {
   /**
    * Generates code from a String AST node
    * @param {import("../parser/ast.js").StringLiteral} node
-   * @returns {string}
+   * @returnsimport { Namespace } from '../runtime/Namespace';
+ {string}
    */
-  emitString(node) {
+  emitString(node, ns) {
     return "`" + node.value.slice(1, -1) + "`";
   }
 }

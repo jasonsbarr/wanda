@@ -12,6 +12,7 @@ export class Namespace {
   constructor(parent = null, { name = "global" } = {}) {
     this.parent = parent;
     this.vars = new Map();
+    this.name = name;
   }
 
   /**
