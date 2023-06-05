@@ -13,30 +13,22 @@ import { SrcLoc } from "../lexer/SrcLoc.js";
  */
 /**
  * Parses a primitive value from the readTree
- * @param {ConsReader} reader
+ * @param {Token} token
  * @returns {AST}
  */
-const parsePrimitive = (reader) => {
-  const token = reader.peek();
-
+const parsePrimitive = (token) => {
   switch (token.type) {
     case TokenTypes.Number:
-      reader.skip();
       return AST.NumberLiteral(token);
     case TokenTypes.String:
-      reader.skip();
       return AST.StringLiteral(token);
     case TokenTypes.Boolean:
-      reader.skip();
       return AST.BooleanLiteral(token);
     case TokenTypes.Keyword:
-      reader.skip();
       return AST.KeywordLiteral(token);
     case TokenTypes.Nil:
-      reader.skip();
       return AST.NilLiteral(token);
     case TokenTypes.Symbol:
-      reader.skip();
       return AST.Symbol(token);
     default:
       throw new SyntaxException(token.value, token.srcloc);
@@ -59,11 +51,10 @@ const parseCall = (callExpression) => {
 
 /**
  * Parses a list form into AST
- * @param {ConsReader} reader
+ * @param {List} form
  * @returns {AST}
  */
-const parseList = (reader) => {
-  const form = reader.next();
+const parseList = (form) => {
   const [first] = form;
 
   switch (first.value) {
@@ -74,17 +65,15 @@ const parseList = (reader) => {
 
 /**
  * Parses an expression from the readTree
- * @param {ConsReader} reader
+ * @param {import("./ConsReader.js").Form|List} form
  * @returns {AST}
  */
-const parseExpr = (reader) => {
-  const form = reader.peek();
-
+const parseExpr = (form) => {
   if (form instanceof Cons) {
-    return parseList(reader);
+    return parseList(form);
   }
 
-  return parsePrimitive(reader);
+  return parsePrimitive(form);
 };
 
 /**
@@ -98,7 +87,7 @@ export const parse = (readTree) => {
   const reader = ConsReader.new(readTree);
 
   while (!reader.eof()) {
-    body.push(parseExpr(reader));
+    body.push(parseExpr(reader.next()));
   }
 
   return AST.Program(body);
