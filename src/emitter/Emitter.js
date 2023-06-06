@@ -130,7 +130,7 @@ export class Emitter {
       if (i === node.body.length - 1) {
         code += `  return ${this.emit(n, ns)}`;
       } else {
-        code += `  ${this.emit(n, ns)}`;
+        code += `  ${this.emit(n, ns)};`;
       }
 
       i++;
