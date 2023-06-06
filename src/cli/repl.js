@@ -32,7 +32,7 @@ export const repl = (mode = "repl") => {
         case ":print-ast":
           mode = "printAST";
           break;
-        case ":print-d":
+        case ":print-desugared":
           mode = "printDesugared";
           break;
         // If it's code, compile and run it
@@ -41,9 +41,9 @@ export const repl = (mode = "repl") => {
           let result = vm.runInThisContext(compiled);
 
           if (mode === "printAST") {
-            pprintAST(input);
+            console.log(pprintAST(input));
           } else if (mode === "printDesugared") {
-            pprintDesugaredAST(input);
+            console.log(pprintDesugaredAST(input));
           }
 
           print(result);
