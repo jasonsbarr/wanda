@@ -50,9 +50,9 @@ test("should evaluate an empty string properly", () => {
 test("should evaluate a call expression properly", () => {
   const input = "(+ 1 2)";
   const code = `${emitGlobalEnv()}
-  ${compile(input, "test-input", makeGlobalNameMap())}
+  main.result = ${compile(input, "test-input", makeGlobalNameMap())}
   `;
   const built = build(code, "global.js");
 
-  expect(vm.runInThisContext(built)).toEqual(undefined);
+  expect(vm.runInThisContext(built)).toEqual(3);
 });
