@@ -3,7 +3,7 @@ import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
 import { build } from "./build.js";
 import { compile } from "./compile.js";
 
-export const buildAndCompile = (
+export const compileAndBuild = (
   wandaCode,
   {
     fileName = "stdin",

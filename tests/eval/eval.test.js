@@ -1,6 +1,6 @@
 import vm from "vm";
 import { EVAL } from "../../src/cli/eval.js";
-import { buildAndCompile } from "../../src/cli/buildAndCompile.js";
+import { compileAndBuild } from "../../src/cli/compileAndBuild.js";
 
 test("should evaluate an integer properly", () => {
   const input = "15";
@@ -46,14 +46,14 @@ test("should evaluate an empty string properly", () => {
 
 test("should evaluate a call expression properly", () => {
   const input = "(+ 1 2)";
-  const built = buildAndCompile(input, { fileName: "test-input" });
+  const built = compileAndBuild(input, { fileName: "test-input" });
 
   expect(vm.runInThisContext(built)).toEqual(3);
 });
 
 test("should evaluate nested call expressions properly", () => {
   const input = "(* 2 (+ 1 3))";
-  const built = buildAndCompile(input, { fileName: "test-input" });
+  const built = compileAndBuild(input, { fileName: "test-input" });
 
   expect(vm.runInThisContext(built)).toEqual(8);
 });
