@@ -9,7 +9,7 @@ import { ROOT_PATH } from "../../root.js";
  * @param {string} outName
  * @returns {string}
  */
-export const build = (code, outName) => {
+export const build = (code, outName, moduleName = "main") => {
   const tmpPath = join(ROOT_PATH, "./tmp");
   const outPath = join(tmpPath, "./out");
 
@@ -30,6 +30,10 @@ export const build = (code, outName) => {
     entryPoints: [outFile],
     outdir: outPath,
     bundle: true,
+    // globalName: moduleName,
+    footer: { js: `${moduleName}.result` },
+    format: "iife",
+    banner: { js: `const ${moduleName} = {};\n` },
   });
 
   const builtCode = fs.readFileSync(join(outPath, outName), {
