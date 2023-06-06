@@ -46,6 +46,8 @@ class ASTPrinter {
         return this.printPrimitive(node, indent);
       case ASTTypes.Symbol:
         return this.printSymbol(node, indent);
+      case ASTTypes.CallExpression:
+        return this.printCallExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.type} to print`);
     }
