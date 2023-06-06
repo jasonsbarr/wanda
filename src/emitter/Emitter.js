@@ -5,9 +5,6 @@ import { Namespace } from "../runtime/Namespace.js";
 /**
  * @typedef {import("../parser/ast.js").AST} AST
  */
-
-export const PREFIX = "$W_";
-
 /**
  * @class Emitter
  * @desc Visitor code emitter for Wanda AST
