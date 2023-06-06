@@ -3,6 +3,7 @@ import { TokenTypes } from "../lexer/TokenTypes.js";
 import { Exception, SyntaxException } from "../shared/exceptions.js";
 import { Reader } from "./Reader.js";
 import { Cons, cons } from "../shared/cons.js";
+import { SrcLoc } from "../lexer/SrcLoc.js";
 
 /**
  * @typedef {Token | Cons} Form
@@ -121,7 +122,12 @@ const readExpr = (reader) => {
  */
 export const read = (tokens) => {
   const reader = Reader.new(tokens);
-  let parseTree = cons(readForm(reader), null);
+
+  const form =
+    reader.length === 0
+      ? Token.new(TokenTypes.Nil, "nil", SrcLoc.new(0, 1, 1, "reader"))
+      : readForm(reader);
+  let parseTree = cons(form, null);
 
   while (!reader.eof()) {
     parseTree.append(readExpr(reader));
