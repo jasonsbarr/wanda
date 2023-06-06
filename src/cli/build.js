@@ -9,7 +9,7 @@ import { ROOT_PATH } from "../../root.js";
  * @param {string} outName
  * @returns {string}
  */
-export const build = (code, outName, moduleName = "main") => {
+export const build = (code, outName = "global.js", moduleName = "main") => {
   const tmpPath = join(ROOT_PATH, "./tmp");
   const outPath = join(tmpPath, "./out");
 
