@@ -1,10 +1,9 @@
 import vm from "vm";
 import readlineSync from "readline-sync";
 import { pprintAST, pprintDesugaredAST } from "./pprint.js";
-import { print } from "../printer/print.js";
+import { println } from "../printer/println.js";
 import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
 import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
-import { fail } from "../shared/fail.js";
 import { build } from "./build.js";
 import { compile } from "./compile.js";
 
@@ -46,7 +45,7 @@ export const repl = (mode = "repl") => {
             console.log(pprintDesugaredAST(input));
           }
 
-          print(result);
+          println(result);
       }
     } catch (e) {
       console.error(e.message);
