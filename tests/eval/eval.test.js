@@ -1,9 +1,5 @@
 import vm from "vm";
 import { EVAL } from "../../src/cli/eval.js";
-import { build } from "../../src/cli/build.js";
-import { makeGlobalNameMap } from "../../src/runtime/makeGlobals.js";
-import { emitGlobalEnv } from "../../src/emitter/emitGlobalEnv.js";
-import { compile } from "../../src/cli/compile.js";
 import { buildAndCompile } from "../../src/cli/buildAndCompile.js";
 
 test("should evaluate an integer properly", () => {
