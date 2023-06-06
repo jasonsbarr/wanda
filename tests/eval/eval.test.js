@@ -4,6 +4,7 @@ import { build } from "../../src/cli/build.js";
 import { makeGlobalNameMap } from "../../src/runtime/makeGlobals.js";
 import { emitGlobalEnv } from "../../src/emitter/emitGlobalEnv.js";
 import { compile } from "../../src/cli/compile.js";
+import { buildAndCompile } from "../../src/cli/buildAndCompile.js";
 
 test("should evaluate an integer properly", () => {
   const input = "15";
@@ -49,10 +50,7 @@ test("should evaluate an empty string properly", () => {
 
 test("should evaluate a call expression properly", () => {
   const input = "(+ 1 2)";
-  const code = `${emitGlobalEnv()}
-  main.result = ${compile(input, "test-input", makeGlobalNameMap())}
-  `;
-  const built = build(code, "global.js");
+  const built = buildAndCompile(input, { fileName: "test-input" });
 
   expect(vm.runInThisContext(built)).toEqual(3);
 });
