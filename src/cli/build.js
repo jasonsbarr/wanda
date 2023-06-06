@@ -33,7 +33,7 @@ export const build = (code, outName = "global.js", moduleName = "main") => {
     // globalName: moduleName,
     footer: { js: `${moduleName}.result` },
     format: "iife",
-    banner: { js: `const ${moduleName} = {};\n` },
+    banner: { js: `var ${moduleName} = {};\n` },
   });
 
   const builtCode = fs.readFileSync(join(outPath, outName), {

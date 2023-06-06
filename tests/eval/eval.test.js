@@ -50,3 +50,10 @@ test("should evaluate a call expression properly", () => {
 
   expect(vm.runInThisContext(built)).toEqual(3);
 });
+
+test("should evaluate nested call expressions properly", () => {
+  const input = "(* 2 (+ 1 3))";
+  const built = buildAndCompile(input, { fileName: "test-input" });
+
+  expect(vm.runInThisContext(built)).toEqual(8);
+});
