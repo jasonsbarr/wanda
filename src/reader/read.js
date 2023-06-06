@@ -48,6 +48,7 @@ const readAtom = (reader) => {
 const readList = (reader) => {
   // just selects the LParen and advances the token stream
   let tok = reader.next();
+  let srcloc = tok.srcloc;
 
   // this should never happen
   if (tok.type !== TokenTypes.LParen) {
@@ -63,7 +64,7 @@ const readList = (reader) => {
   }
 
   let list = cons(readExpr(reader), null);
-  list.srcloc = tok.srcloc;
+  list.srcloc = srcloc;
 
   let lastTok = tok;
   tok = reader.peek();
