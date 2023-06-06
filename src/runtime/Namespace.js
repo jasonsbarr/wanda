@@ -92,6 +92,11 @@ export class Namespace {
     return null;
   }
 
+  /**
+   * Sets the value for a name in the current namespace
+   * @param {string} key
+   * @param {any} value
+   */
   set(key, value) {
     this.vars.set(key, value);
   }
