@@ -1,5 +1,9 @@
+import vm from "vm";
 import { EVAL } from "../../src/cli/eval.js";
+import { build } from "../../src/cli/build.js";
 import { makeGlobalNameMap } from "../../src/runtime/makeGlobals.js";
+import { emitGlobalEnv } from "../../src/emitter/emitGlobalEnv.js";
+import { compile } from "../../src/cli/compile.js";
 
 test("should evaluate an integer properly", () => {
   const input = "15";
@@ -43,10 +47,12 @@ test("should evaluate an empty string properly", () => {
   expect(EVAL(input, "test-input")).toEqual("");
 });
 
-// test("should evaluate a call expression properly", () => {
-//   const input = "(+ 1 2)";
-// const $W_100e6e91bc40ad71ef784d4e36404638c196ce8e = (a, b, ...nums) =>
-//   nums.reduce((sum, n) => sum + n, a + b);
+test("should evaluate a call expression properly", () => {
+  const input = "(+ 1 2)";
+  const code = `${emitGlobalEnv()}
+  ${compile(input, "test-input", makeGlobalNameMap())}
+  `;
+  const built = build(code, "global.js");
 
-//   expect(EVAL(input, "test-input", makeGlobalNameMap())).toEqual(3);
-// });
+  expect(vm.runInThisContext(built)).toEqual(undefined);
+});
