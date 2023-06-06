@@ -60,7 +60,7 @@ test("should evaluate nested call expressions properly", () => {
 
 test("should return the value of the last expression in a program", () => {
   const input = `(+ 1 2)
-(str-append "Hello, " "world")`;
+(append "Hello, " "world")`;
   const built = compileAndBuild(input, { fileName: "test-input" });
 
   expect(vm.runInThisContext(built)).toEqual("Hello, world");
