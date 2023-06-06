@@ -30,6 +30,11 @@ export const printString = (value, withQuotes) => {
   }
 };
 
+/**
+ * Pretty prints a list
+ * @param {Cons} list
+ * @returns {string}
+ */
 const printList = (list) => {
   const prStr = "(";
 
