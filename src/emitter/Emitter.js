@@ -123,20 +123,20 @@ export class Emitter {
    * @returns {string}
    */
   emitProgram(node, ns) {
-    let code = "(() => {";
+    let code = "(() => {\n";
 
     let i = 0;
     for (let n of node.body) {
       if (i === node.body.length - 1) {
-        code += `return ${this.emit(n, ns)}`;
+        code += `  return ${this.emit(n, ns)}`;
       } else {
-        code += this.emit(n, ns);
+        code += `  ${this.emit(n, ns)}`;
       }
 
       i++;
     }
 
-    code += "})();";
+    code += "\n})();";
 
     return code;
   }
