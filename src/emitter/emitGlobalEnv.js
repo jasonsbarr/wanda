@@ -13,7 +13,7 @@ const globalEnv = makeGlobal();
 `;
 
   for (let [k] of globalEnv) {
-    code += `const ${k} = globalEnv.get("${k}");\n`;
+    code += `${k} = globalEnv.get("${k}");\n`;
   }
 
   return code;
