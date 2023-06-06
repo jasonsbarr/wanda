@@ -126,7 +126,7 @@ export class Emitter {
     let code = "";
 
     for (let n of node.body) {
-      code += this.emit(n);
+      code += this.emit(n, ns);
     }
 
     return code;
