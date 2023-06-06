@@ -17,10 +17,18 @@ export class Exception extends Error {
     this.stack = stack;
   }
 
+  /**
+   * Adds call frame info to stack trace
+   * @param {string} frame
+   */
   appendStack(frame) {
     this.stack.push(frame);
   }
 
+  /**
+   * Dumps the call stack as a string
+   * @returns {string}
+   */
   dumpStack() {
     let stack = [...this.stack].reverse();
 
