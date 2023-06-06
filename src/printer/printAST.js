@@ -6,6 +6,13 @@ import { Exception } from "../shared/exceptions.js";
  */
 
 /**
+ * Print the indent spaces
+ * @param {number} indent
+ * @returns {string}
+ */
+const prIndent = (indent) => " ".repeat(indent);
+
+/**
  * @class ASTPrinter
  * @desc Pretty printer for AST
  * @prop {import("../parser/ast").Program} program
@@ -58,7 +65,20 @@ class ASTPrinter {
    * @param {import("../parser/ast.js").CallExpression} node
    * @param {number} indent
    */
-  printCallExpression(node, indent) {}
+  printCallExpression(node, indent) {
+    let prStr = `${prIndent(indent)}CallExpression\n`;
+    prStr += `${prIndent(indent + 2)}Func:\n${this.print(
+      node.func,
+      indent + 4
+    )}\n`;
+    prStr += `${prIndent(indent + 2)}Args:\n`;
+
+    for (let arg of node.args) {
+      prStr += this.print(arg, indent + 4) + "\n";
+    }
+
+    return prStr;
+  }
 
   /**
    * Prints a primitive node
@@ -67,7 +87,7 @@ class ASTPrinter {
    * @returns {string}
    */
   printPrimitive(node, indent) {
-    return `${" ".repeat(indent)}${node.type}: ${
+    return `${prIndent(indent)}${node.type}: ${
       node.type === "NilLiteral" ? "nil" : node.value
     }`;
   }
@@ -95,7 +115,7 @@ class ASTPrinter {
    * @param {number} indent
    */
   printSymbol(node, indent) {
-    return `${" ".repeat(indent)}Symbol: ${node.name}`;
+    return `${prIndent(indent)}Symbol: ${node.name}`;
   }
 }
 
