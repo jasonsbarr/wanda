@@ -52,6 +52,13 @@ class ASTPrinter {
   }
 
   /**
+   * Prints a CallExpression node
+   * @param {import("../parser/ast.js").CallExpression} node
+   * @param {number} indent
+   */
+  printCallExpression(node, indent) {}
+
+  /**
    * Prints a primitive node
    * @param {import("../parser/ast.js").Primitive} node
    * @param {number} indent
