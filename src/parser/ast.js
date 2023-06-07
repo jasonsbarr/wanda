@@ -46,10 +46,16 @@ export const ASTTypes = {
  * @typedef {ASTNode & {func: AST, args: AST[]}} CallExpression
  */
 /**
+ * @typedef {ASTNode & {lhv: AST, expression: AST}} VariableDeclaration
+ */
+/**
+ * @typedef {ASTNode & {lhv: AST, expression: AST}} SetExpression
+ */
+/**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral|CallExpression} AST
+ * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral|CallExpression|VariableDeclaration|SetExpression} AST
  */
 export const AST = {
   /**
