@@ -36,7 +36,7 @@ export const printString = (value, withQuotes) => {
  * @returns {string}
  */
 const printList = (list) => {
-  let prStr = "(";
+  let prStr = "'(";
 
   let i = 0;
   let length = [...list].length;
