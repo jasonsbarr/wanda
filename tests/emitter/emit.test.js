@@ -17,63 +17,49 @@ test("should emit an integer for an integer input", () => {
   const input = "42";
   const code = compile(input);
 
-  expect(code).toEqual(`(() => {
-  return 42
-})();`);
+  expect(code).toEqual("42\n");
 });
 
 test("should emit a float for a float number input", () => {
   const input = "17.123";
   const code = compile(input);
 
-  expect(code).toEqual(`(() => {
-  return 17.123
-})();`);
+  expect(code).toEqual("17.123\n");
 });
 
 test("should emit a string for a string input", () => {
   const input = `"hello"`;
   const code = compile(input);
 
-  expect(code).toEqual(`(() => {
-  return \`hello\`
-})();`);
+  expect(code).toEqual("`hello`\n");
 });
 
 test("should emit a boolean for a boolean input", () => {
   const input = "true";
   const code = compile(input);
 
-  expect(code).toEqual(`(() => {
-  return true
-})();`);
+  expect(code).toEqual("true\n");
 });
 
 test("should emit a symbol for a keyword input", () => {
   const input = ":hello";
   const code = compile(input);
 
-  expect(code).toEqual(`(() => {
-  return Symbol.for(":hello")
-})();`);
+  expect(code).toEqual(`Symbol.for(":hello")\n`);
 });
 
 test("should emit null for a nil input", () => {
   const input = "nil";
   const code = compile(input);
 
-  expect(code).toEqual(`(() => {
-  return null
-})();`);
+  expect(code).toEqual("null\n");
 });
 
 test("should emit an empty string", () => {
   const input = `""`;
   const code = compile(input);
 
-  expect(code).toEqual(`(() => {
-  return \`\`
-})();`);
+  expect(code).toEqual("``\n");
 });
 
 test("should emit a symbol", () => {
@@ -84,9 +70,7 @@ test("should emit a symbol", () => {
   ns.set(input, hashedSym);
   const code = compileWithNS(input, ns);
 
-  expect(code).toEqual(`(() => {
-  return ${hashedSym}
-})();`);
+  expect(code).toEqual(hashedSym + "\n");
 });
 
 test("should emit a call expression", () => {
@@ -97,7 +81,5 @@ test("should emit a call expression", () => {
   ns.set("+", hashedSym);
   const code = compileWithNS(input, ns);
 
-  expect(code).toEqual(`(() => {
-  return (${hashedSym})(1, 2)
-})();`);
+  expect(code).toEqual(`(${hashedSym})(1, 2)\n`);
 });
