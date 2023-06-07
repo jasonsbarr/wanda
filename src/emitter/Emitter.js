@@ -125,23 +125,12 @@ export class Emitter {
    * @returns {string}
    */
   emitProgram(node, ns) {
-    let code = "(() => {\n";
-
+    let code = "";
     let i = 0;
     for (let n of node.body) {
-      if (
-        i === node.body.length - 1 &&
-        n.type !== ASTTypes.VariableDeclaration
-      ) {
-        code += `  return ${this.emit(n, ns)}`;
-      } else {
-        code += `  ${this.emit(n, ns)};`;
-      }
-
+      code += `  ${this.emit(n, ns)};`;
       i++;
     }
-
-    code += "\n})();";
 
     return code;
   }
