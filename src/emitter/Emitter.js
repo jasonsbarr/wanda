@@ -57,6 +57,10 @@ export class Emitter {
         return this.emitSymbol(node, ns);
       case ASTTypes.CallExpression:
         return this.emitCallExpression(node, ns);
+      case ASTTypes.VariableDeclaration:
+        return this.emitVariableDeclaration(node, ns);
+      case ASTTypes.SetExpression:
+        return this.emitSetExpression(node, ns);
       default:
         throw new SyntaxException(node.type, node.srcloc);
     }
