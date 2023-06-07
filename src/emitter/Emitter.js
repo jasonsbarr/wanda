@@ -1,6 +1,7 @@
 import { ASTTypes } from "../parser/ast.js";
 import { Exception, SyntaxException } from "../shared/exceptions.js";
 import { Namespace } from "../runtime/Namespace.js";
+import { makeSymbol } from "../runtime/makeSymbol.js";
 
 /**
  * @typedef {import("../parser/ast.js").AST} AST
@@ -139,6 +140,16 @@ export class Emitter {
   }
 
   /**
+   * Generates code from a SetExpression AST node
+   * @param {import("../parser/ast.js").SetExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitSetExpression(node, ns) {
+    return `${this.emit(node.lhv, ns)} = ${this.emit(node.expression, ns)};`;
+  }
+
+  /**
    * Generates code from a String AST node
    * @param {import("../parser/ast.js").StringLiteral} node
    * @param {Namespace} ns
@@ -152,6 +163,7 @@ export class Emitter {
    * Generates code from a Symbol AST node
    * @param {import("../parser/ast.js").Symbol} node
    * @param {Namespace} ns
+   * @returns {string}
    */
   emitSymbol(node, ns) {
     const name = node.name;
@@ -164,5 +176,20 @@ export class Emitter {
     }
 
     return emittedName;
+  }
+
+  /**
+   * Generates code from a VariableDeclaration AST node
+   * @param {import("../parser/ast.js").VariableDeclaration} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitVariableDeclaration(node, ns) {
+    const name = node.lhv.name;
+    const translatedName = makeSymbol(name);
+
+    ns.set(name, translatedName);
+
+    return `var ${translatedName} = ${this.emit(node.expression, ns)};`;
   }
 }
