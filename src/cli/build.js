@@ -30,7 +30,6 @@ export const build = (code, outName = "main.js", moduleName = "main") => {
     entryPoints: [outFile],
     outdir: outPath,
     bundle: true,
-    // globalName: moduleName,
     footer: { js: `${moduleName}.result` },
     format: "iife",
     banner: { js: `var ${moduleName} = {};\n` },
