@@ -49,6 +49,11 @@ const parseCall = (callExpression) => {
   return AST.CallExpression(parsedFunc, parsedArgs, srcloc);
 };
 
+/**
+ * Parses a variable declaration
+ * @param {List} decl
+ * @returns {import("./ast.js").VariableDeclaration}
+ */
 const parseVariableDeclaration = (decl) => {
   const [tok, lhv, expression] = decl;
   const parsedLhv = parseExpr(lhv);
@@ -57,7 +62,18 @@ const parseVariableDeclaration = (decl) => {
   return AST.VariableDeclaration(parsedLhv, parsedExpression, tok.srcloc);
 };
 
-const parseSetExpression = (expr) => {};
+/**
+ * Parses a set expression
+ * @param {List} expr
+ * @returns {import("./ast.js").SetExpression}
+ */
+const parseSetExpression = (expr) => {
+  const [tok, lhv, expression] = expr;
+  const parsedLhv = parseExpr(lhv);
+  const parsedExpression = parseExpr(expression);
+
+  return AST.SetExpression(parsedLhv, parsedExpression, tok.srcloc);
+};
 
 /**
  * Parses a list form into AST
