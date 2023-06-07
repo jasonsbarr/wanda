@@ -129,7 +129,10 @@ export class Emitter {
 
     let i = 0;
     for (let n of node.body) {
-      if (i === node.body.length - 1) {
+      if (
+        i === node.body.length - 1 &&
+        n.type !== ASTTypes.VariableDeclaration
+      ) {
         code += `  return ${this.emit(n, ns)}`;
       } else {
         code += `  ${this.emit(n, ns)};`;
