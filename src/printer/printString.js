@@ -22,7 +22,7 @@ export const printString = (value, withQuotes) => {
     case "object":
       if (value === null) {
         return "nil";
-      } else if (value instanceof Cons) {
+      } else if (value.constructor?.name === "Cons") {
         return printList(value);
       }
     default:
