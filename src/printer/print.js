@@ -1,4 +1,9 @@
 import { printString } from "./printString.js";
 
-export const print = (input, withQuotes = true) =>
-  console.log(printString(input, withQuotes));
+/**
+ * Writes a string to stdout without trailing newline
+ * @param {string} str
+ */
+export const print = (str) => {
+  process.stdout.write(printString(str, true));
+};

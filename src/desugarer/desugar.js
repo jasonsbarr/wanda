@@ -1,8 +1,9 @@
-import { ASTNode } from "../parser/ast.js";
-
+/**
+ * @typedef {import("../parser/ast.js").AST} AST
+ */
 /**
  * Desugars the AST into an AST that contains only core forms
- * @param {ASTNode} ast
- * @returns {ASTNode}
+ * @param {AST} ast
+ * @returns {AST}
  */
 export const desugar = (ast) => ast;

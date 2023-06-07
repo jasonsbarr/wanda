@@ -38,19 +38,19 @@ export class Reader {
   }
 
   /**
+   * Get the current token and advance the stream
+   * @returns {Token}
+   */
+  next() {
+    return this.tokens[this.pos++];
+  }
+
+  /**
    * Get the current token
    * @returns {Token}
    */
   peek() {
     return this.tokens[this.pos];
-  }
-
-  /**
-   * Get the current token and advance the stream
-   * @returns {Token}
-   */
-  pop() {
-    return this.tokens[this.pos++];
   }
 
   /**

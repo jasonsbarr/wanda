@@ -1,6 +1,6 @@
 # Wanda Programming Language
 
-Programming language for a tutorial series on building a compiler.
+Programming language for [a tutorial series on building a compiler](https://dev.to/jasonsbarr/how-to-create-your-own-programming-language-2642).
 
 Yes, the language is named after Wanda Maximoff from Marvel comics and the MCU.
 

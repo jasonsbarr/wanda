@@ -65,3 +65,16 @@ test("should parse an empty string", () => {
   expect(node.type).toEqual(ASTTypes.StringLiteral);
   expect(node.value).toEqual(`""`);
 });
+
+test("should parse a call expression", () => {
+  const input = "(+ 1 2)";
+  const ast = parse(input);
+  const node = ast.body[0];
+
+  expect(node.type).toEqual(ASTTypes.CallExpression);
+  expect(node.func.type).toEqual(ASTTypes.Symbol);
+  expect(node.args.map((a) => ({ type: a.type }))).toEqual([
+    { type: ASTTypes.NumberLiteral },
+    { type: ASTTypes.NumberLiteral },
+  ]);
+});

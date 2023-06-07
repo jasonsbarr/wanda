@@ -71,3 +71,26 @@ test("should tokenize an empty string", () => {
   expect(tokens.reduce((_, tok) => tok.type, "")).toEqual("String");
   expect(tokens.reduce((_, tok) => tok.value, "")).toEqual(`""`);
 });
+
+test("should tokenize L and R parens", () => {
+  const input = "()";
+  const tokens = tokenize(input);
+
+  expect(tokens.map((t) => ({ type: t.type, value: t.value }))).toEqual([
+    { type: "LParen", value: "(" },
+    { type: "RParen", value: ")" },
+  ]);
+});
+
+test("should tokenize a list correctly", () => {
+  const input = "(+ 1 2)";
+  const tokens = tokenize(input);
+
+  expect(tokens.map((t) => ({ type: t.type, value: t.value }))).toEqual([
+    { type: "LParen", value: "(" },
+    { type: "Symbol", value: "+" },
+    { type: "Number", value: "1" },
+    { type: "Number", value: "2" },
+    { type: "RParen", value: ")" },
+  ]);
+});

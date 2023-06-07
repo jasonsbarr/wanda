@@ -8,4 +8,4 @@ import { Emitter } from "./Emitter.js";
  * @param {AST} ast
  * @returns {string}
  */
-export const emit = (ast) => Emitter.new(ast).emit();
+export const emit = (ast, ns = undefined) => Emitter.new(ast, ns).emit();
