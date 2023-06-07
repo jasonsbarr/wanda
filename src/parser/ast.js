@@ -13,6 +13,8 @@ export const ASTTypes = {
   NilLiteral: "NilLiteral",
   Symbol: "Symbol",
   CallExpression: "CallExpression",
+  VariableDeclaration: "VariableDeclaration",
+  SetExpression: "SetExpression",
 };
 
 /**
@@ -155,6 +157,36 @@ export const AST = {
       type: ASTTypes.CallExpression,
       func,
       args,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a VariableDeclaration AST node
+   * @param {AST} lhv
+   * @param {AST} expression
+   * @param {SrcLoc} srcloc
+   * @returns {VariableDeclaration}
+   */
+  VariableDeclaration(lhv, expression, srcloc) {
+    return {
+      type: ASTTypes.VariableDeclaration,
+      lhv,
+      expression,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a SetExpression AST node
+   * @param {AST} lhv
+   * @param {AST} expression
+   * @param {SrcLoc} srcloc
+   * @returns {SetExpression}
+   */
+  SetExpression(lhv, expression, srcloc) {
+    return {
+      type: ASTTypes.SetExpression,
+      lhv,
+      expression,
       srcloc,
     };
   },
