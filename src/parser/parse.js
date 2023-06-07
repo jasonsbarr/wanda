@@ -55,11 +55,11 @@ const parseCall = (callExpression) => {
  * @returns {import("./ast.js").VariableDeclaration}
  */
 const parseVariableDeclaration = (decl) => {
-  const [tok, lhv, expression] = decl;
+  const [_, lhv, expression] = decl;
   const parsedLhv = parseExpr(lhv);
   const parsedExpression = parseExpr(expression);
 
-  return AST.VariableDeclaration(parsedLhv, parsedExpression, tok.srcloc);
+  return AST.VariableDeclaration(parsedLhv, parsedExpression, decl.srcloc);
 };
 
 /**
@@ -68,11 +68,11 @@ const parseVariableDeclaration = (decl) => {
  * @returns {import("./ast.js").SetExpression}
  */
 const parseSetExpression = (expr) => {
-  const [tok, lhv, expression] = expr;
+  const [_, lhv, expression] = expr;
   const parsedLhv = parseExpr(lhv);
   const parsedExpression = parseExpr(expression);
 
-  return AST.SetExpression(parsedLhv, parsedExpression, tok.srcloc);
+  return AST.SetExpression(parsedLhv, parsedExpression, expr.srcloc);
 };
 
 /**
