@@ -55,6 +55,15 @@ export const isNil = (type) => {
 };
 
 /**
+ * Checks if current type is a function type
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isFunctionType = (type) => {
+  return type.kind === TypeTypes.FunctionType;
+};
+
+/**
  * Checks if current type is a type alias
  * @param {import("./types").Type} type
  * @returns {boolean}

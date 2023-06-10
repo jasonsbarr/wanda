@@ -8,6 +8,7 @@ export const TypeTypes = {
   Boolean: "Boolean",
   Keyword: "Keyword",
   Nil: "Nil",
+  FunctionType: "FunctionType",
   TypeAlias: "TypeAlias",
   List: "List",
 };
@@ -42,6 +43,12 @@ export const TypeTypes = {
  * @prop {Type} base
  */
 /**
+ * @typedef FunctionType
+ * @prop {TypeTypes.FunctionType} kind
+ * @prop {Type[]} params
+ * @prop {Type} ret
+ */
+/**
  * @typedef List
  * @prop {TypeTypes.List} kind
  * @prop {Type} listType
@@ -50,5 +57,5 @@ export const TypeTypes = {
  * @typedef {Number|String|Boolean|Keyword|Nil} PrimitiveTypes
  */
 /**
- * @typedef {Any|PrimitiveTypes|TypeAlias|List} Type
+ * @typedef {Any|PrimitiveTypes|FunctionType|TypeAlias|List} Type
  */

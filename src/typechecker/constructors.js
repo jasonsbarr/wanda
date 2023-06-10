@@ -31,6 +31,16 @@ export const keyword = { kind: TypeTypes.Keyword };
 export const nil = { kind: TypeTypes.Nil };
 
 /**
+ * Function type constructor
+ * @param {import("./types.js").Type[]} params
+ * @param {import("./types.js").Type} ret
+ * @returns {import("./types.js").FunctionType}
+ */
+export const functionType = (params, ret) => {
+  return { kind: TypeTypes.FunctionType, params, ret };
+};
+
+/**
  * Type Alias constructor
  * @param {string} name
  * @param {import("./types").Type} base
