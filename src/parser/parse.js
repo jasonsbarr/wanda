@@ -115,11 +115,11 @@ const parseDoExpression = (expr) => {
  * @returns {import("./parseTypeAnnotation.js").TypeAlias}
  */
 const parseTypeAlias = (form) => {
-  const [_, name, type] = form;
-  const parsedName = parseExpr(name);
+  let [_, name, type] = form;
+  name = name.name;
   const parsedType = parseTypeAnnotation(type);
 
-  return AST.TypeAlias(parsedName, parsedType, form.srcloc);
+  return AST.TypeAlias(name, parsedType, form.srcloc);
 };
 
 /**

@@ -215,7 +215,7 @@ export const AST = {
   },
   /**
    * Constructs a TypeAlias AST node
-   * @param {AST} name
+   * @param {string} name
    * @param {import("./parseTypeAnnotation.js").TypeAnnotation} type
    * @param {SrcLoc} srcloc
    * @returns {TypeAlias}

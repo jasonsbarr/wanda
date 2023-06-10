@@ -55,6 +55,10 @@ class ASTPrinter {
         return this.printSymbol(node, indent);
       case ASTTypes.CallExpression:
         return this.printCallExpression(node, indent);
+      case ASTTypes.DoExpression:
+        return this.printDoExpression(node, indent);
+      case ASTTypes.TypeAlias:
+        return this.printTypeAlias(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }

@@ -63,6 +63,8 @@ export class Emitter {
         return this.emitSetExpression(node, ns);
       case ASTTypes.DoExpression:
         return this.emitDoExpression(node, ns);
+      case ASTTypes.TypeAlias:
+        return this.emitTypeAlias(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
