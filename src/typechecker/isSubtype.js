@@ -7,6 +7,7 @@ import { Type } from "./Type.js";
  * @returns {boolean}
  */
 export const isSubtype = (type1, type2) => {
+  if (Type.isAny(type1) || Type.isAny(type2)) return true;
   if (Type.isNumber(type1) && Type.isNumber(type2)) return true;
   if (Type.isString(type1) && Type.isString(type2)) return true;
   if (Type.isBoolean(type1) && Type.isBoolean(type2)) return true;
