@@ -200,6 +200,16 @@ export class Emitter {
   }
 
   /**
+   * Emits an empty string because TypeAlias has no JavaScript equivalent
+   * @param {import("../parser/parseTypeAnnotation.js").TypeAlias} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitTypeAlias(node, ns) {
+    return "";
+  }
+
+  /**
    * Generates code from a VariableDeclaration AST node
    * @param {import("../parser/ast.js").VariableDeclaration} node
    * @param {Namespace} ns

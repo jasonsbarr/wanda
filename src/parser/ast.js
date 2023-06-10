@@ -16,6 +16,7 @@ export const ASTTypes = {
   VariableDeclaration: "VariableDeclaration",
   SetExpression: "SetExpression",
   DoExpression: "DoExpression",
+  TypeAlias: "TypeAlias",
 };
 
 /**
@@ -56,6 +57,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {body: AST[]}} DoExpression
+ */
+/**
+ * @typedef {ASTNode & {type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
@@ -206,6 +210,19 @@ export const AST = {
     return {
       kind: ASTTypes.DoExpression,
       body,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a TypeAlias AST node
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation} type
+   * @param {SrcLoc} srcloc
+   * @returns {TypeAlias}
+   */
+  TypeAlias(type, srcloc) {
+    return {
+      kind: ASTTypes.TypeAlias,
+      type,
       srcloc,
     };
   },

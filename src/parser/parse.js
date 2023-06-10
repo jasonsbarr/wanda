@@ -110,6 +110,19 @@ const parseDoExpression = (expr) => {
 };
 
 /**
+ * Parses a type alias
+ * @param {List} form
+ * @returns {import("./parseTypeAnnotation.js").TypeAlias}
+ */
+const parseTypeAlias = (form) => {
+  const [_, name, type] = form;
+  const parsedName = parseExpr(name);
+  const parsedType = parseTypeAlias(type);
+
+  return AST.TypeAlias(parsedType, form.srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -124,6 +137,8 @@ const parseList = (form) => {
       return parseSetExpression(form);
     case "do":
       return parseDoExpression(form);
+    case "type":
+      return parseTypeAlias(form);
     default:
       return parseCall(form);
   }
