@@ -19,30 +19,30 @@ export const ASTTypes = {
 
 /**
  * @typedef ASTNode
- * @property {ASTTypes} type
+ * @property {ASTTypes} kind
  * @property {SrcLoc} srcloc
  */
 /**
- * @typedef {ASTNode & {type: ASTTypes.Program; body: AST[]}} Program
+ * @typedef {ASTNode & {kind: ASTTypes.Program; body: AST[]}} Program
  * @property {AST[]} body
  */
 /**
- * @typedef {ASTNode & {type: ASTTypes.NumberLiteral; value: string}} NumberLiteral
+ * @typedef {ASTNode & {kind: ASTTypes.NumberLiteral; value: string}} NumberLiteral
  */
 /**
- * @typedef {ASTNode & {type: ASTTypes.StringLiteral; value: string}} StringLiteral
+ * @typedef {ASTNode & {kind: ASTTypes.StringLiteral; value: string}} StringLiteral
  */
 /**
- * @typedef {ASTNode & {type: ASTTypes.BooleanLiteral; value: string}} BooleanLiteral
+ * @typedef {ASTNode & {kind: ASTTypes.BooleanLiteral; value: string}} BooleanLiteral
  */
 /**
- * @typedef {ASTNode & {type: ASTTypes.KeywordLiteral; value: string}} KeywordLiteral
+ * @typedef {ASTNode & {kind: ASTTypes.KeywordLiteral; value: string}} KeywordLiteral
  */
 /**
- * @typedef {ASTNode & {type: ASTTypes.NilLiteral; value: string}} NilLiteral
+ * @typedef {ASTNode & {kind: ASTTypes.NilLiteral; value: string}} NilLiteral
  */
 /**
- * @typedef {ASTNode & {type: ASTTypes.Symbol; name: string}} Symbol
+ * @typedef {ASTNode & {kind: ASTTypes.Symbol; name: string}} Symbol
  */
 /**
  * @typedef {ASTNode & {func: AST, args: AST[]}} CallExpression
@@ -67,7 +67,7 @@ export const AST = {
    */
   Program(exprs) {
     return {
-      type: ASTTypes.Program,
+      kind: ASTTypes.Program,
       body: exprs,
       srcloc: exprs[0]?.srcloc ?? SrcLoc.new(0, 0, 0, "none"),
     };
@@ -80,7 +80,7 @@ export const AST = {
    */
   NumberLiteral(token) {
     return {
-      type: ASTTypes.NumberLiteral,
+      kind: ASTTypes.NumberLiteral,
       value: token.value,
       srcloc: token.srcloc,
     };
@@ -92,7 +92,7 @@ export const AST = {
    */
   StringLiteral(token) {
     return {
-      type: ASTTypes.StringLiteral,
+      kind: ASTTypes.StringLiteral,
       value: token.value,
       srcloc: token.srcloc,
     };
@@ -104,7 +104,7 @@ export const AST = {
    */
   BooleanLiteral(token) {
     return {
-      type: ASTTypes.BooleanLiteral,
+      kind: ASTTypes.BooleanLiteral,
       value: token.value,
       srcloc: token.srcloc,
     };
@@ -116,7 +116,7 @@ export const AST = {
    */
   KeywordLiteral(token) {
     return {
-      type: ASTTypes.KeywordLiteral,
+      kind: ASTTypes.KeywordLiteral,
       value: token.value,
       srcloc: token.srcloc,
     };
@@ -128,7 +128,7 @@ export const AST = {
    */
   NilLiteral(token) {
     return {
-      type: ASTTypes.NilLiteral,
+      kind: ASTTypes.NilLiteral,
       value: token.value,
       srcloc: token.srcloc,
     };
@@ -140,7 +140,7 @@ export const AST = {
    */
   Symbol(token) {
     return {
-      type: ASTTypes.Symbol,
+      kind: ASTTypes.Symbol,
       name: token.value,
       srcloc: token.srcloc,
     };
@@ -154,7 +154,7 @@ export const AST = {
    */
   CallExpression(func, args, srcloc) {
     return {
-      type: ASTTypes.CallExpression,
+      kind: ASTTypes.CallExpression,
       func,
       args,
       srcloc,
@@ -169,7 +169,7 @@ export const AST = {
    */
   VariableDeclaration(lhv, expression, srcloc) {
     return {
-      type: ASTTypes.VariableDeclaration,
+      kind: ASTTypes.VariableDeclaration,
       lhv,
       expression,
       srcloc,
@@ -184,7 +184,7 @@ export const AST = {
    */
   SetExpression(lhv, expression, srcloc) {
     return {
-      type: ASTTypes.SetExpression,
+      kind: ASTTypes.SetExpression,
       lhv,
       expression,
       srcloc,

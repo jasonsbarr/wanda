@@ -10,7 +10,7 @@ test("should parse a Program node from the readTree", () => {
   const input = "16";
   const ast = parse(input);
 
-  expect(ast.type).toEqual(ASTTypes.Program);
+  expect(ast.kind).toEqual(ASTTypes.Program);
 });
 
 test("should parse a NumericLiteral node from a number token", () => {
@@ -18,7 +18,7 @@ test("should parse a NumericLiteral node from a number token", () => {
   const ast = parse(input);
   const node = ast.body[0];
 
-  expect(node.type).toEqual(ASTTypes.NumberLiteral);
+  expect(node.kind).toEqual(ASTTypes.NumberLiteral);
   expect(node.value).toEqual("17.234");
 });
 
@@ -27,7 +27,7 @@ test("should parse a StringLiteral node from a string token", () => {
   const ast = parse(input);
   const node = ast.body[0];
 
-  expect(node.type).toEqual(ASTTypes.StringLiteral);
+  expect(node.kind).toEqual(ASTTypes.StringLiteral);
   expect(node.value).toEqual(`"hello"`);
 });
 
@@ -36,7 +36,7 @@ test("should parse a BooleanLiteral node from a boolean token", () => {
   const ast = parse(input);
   const node = ast.body[0];
 
-  expect(node.type).toEqual(ASTTypes.BooleanLiteral);
+  expect(node.kind).toEqual(ASTTypes.BooleanLiteral);
   expect(node.value).toEqual("true");
 });
 
@@ -45,7 +45,7 @@ test("should parse a KeywordLiteral node from a keyword token", () => {
   const ast = parse(input);
   const node = ast.body[0];
 
-  expect(node.type).toEqual(ASTTypes.KeywordLiteral);
+  expect(node.kind).toEqual(ASTTypes.KeywordLiteral);
   expect(node.value).toEqual(":hello");
 });
 
@@ -54,7 +54,7 @@ test("should parse a NilLiteral node from a nil token", () => {
   const ast = parse(input);
   const node = ast.body[0];
 
-  expect(node.type).toEqual(ASTTypes.NilLiteral);
+  expect(node.kind).toEqual(ASTTypes.NilLiteral);
 });
 
 test("should parse an empty string", () => {
@@ -62,7 +62,7 @@ test("should parse an empty string", () => {
   const ast = parse(input);
   const node = ast.body[0];
 
-  expect(node.type).toEqual(ASTTypes.StringLiteral);
+  expect(node.kind).toEqual(ASTTypes.StringLiteral);
   expect(node.value).toEqual(`""`);
 });
 
@@ -71,9 +71,9 @@ test("should parse a call expression", () => {
   const ast = parse(input);
   const node = ast.body[0];
 
-  expect(node.type).toEqual(ASTTypes.CallExpression);
-  expect(node.func.type).toEqual(ASTTypes.Symbol);
-  expect(node.args.map((a) => ({ type: a.type }))).toEqual([
+  expect(node.kind).toEqual(ASTTypes.CallExpression);
+  expect(node.func.kind).toEqual(ASTTypes.Symbol);
+  expect(node.args.map((a) => ({ type: a.kind }))).toEqual([
     { type: ASTTypes.NumberLiteral },
     { type: ASTTypes.NumberLiteral },
   ]);

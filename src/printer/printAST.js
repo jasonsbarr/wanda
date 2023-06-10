@@ -42,7 +42,7 @@ class ASTPrinter {
    * @returns {string}
    */
   print(node = this.program, indent = 0) {
-    switch (node.type) {
+    switch (node.kind) {
       case ASTTypes.Program:
         return this.printProgram(node, indent);
       case ASTTypes.NumberLiteral:
@@ -56,7 +56,7 @@ class ASTPrinter {
       case ASTTypes.CallExpression:
         return this.printCallExpression(node, indent);
       default:
-        throw new Exception(`Unknown AST type ${node.type} to print`);
+        throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
   }
 
@@ -87,8 +87,8 @@ class ASTPrinter {
    * @returns {string}
    */
   printPrimitive(node, indent) {
-    return `${prIndent(indent)}${node.type}: ${
-      node.type === "NilLiteral" ? "nil" : node.value
+    return `${prIndent(indent)}${node.kind}: ${
+      node.kind === "NilLiteral" ? "nil" : node.value
     }`;
   }
 

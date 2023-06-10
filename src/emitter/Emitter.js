@@ -40,7 +40,7 @@ export class Emitter {
    * @returns {string}
    */
   emit(node = this.program, ns = this.ns) {
-    switch (node.type) {
+    switch (node.kind) {
       case ASTTypes.Program:
         return this.emitProgram(node, ns);
       case ASTTypes.NumberLiteral:
@@ -62,7 +62,7 @@ export class Emitter {
       case ASTTypes.SetExpression:
         return this.emitSetExpression(node, ns);
       default:
-        throw new SyntaxException(node.type, node.srcloc);
+        throw new SyntaxException(node.kind, node.srcloc);
     }
   }
 
