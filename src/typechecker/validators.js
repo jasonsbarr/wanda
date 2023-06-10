@@ -5,43 +5,43 @@ import { TypeTypes } from "./types";
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
-export const number = (type) => {
+export const isNumber = (type) => {
   return type.kind === TypeTypes.Number;
 };
 
 /**
- * Checks if current type is a Number
+ * Checks if current type is a String
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
-export const string = (type) => {
+export const isString = (type) => {
   return type.kind === TypeTypes.String;
 };
 
 /**
- * Checks if current type is a Number
+ * Checks if current type is a Boolean
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
-export const boolean = (type) => {
+export const isBoolean = (type) => {
   return type.kind === TypeTypes.Boolean;
 };
 
 /**
- * Checks if current type is a Number
+ * Checks if current type is a Keyword
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
-export const keyword = (type) => {
+export const isKeyword = (type) => {
   return type.kind === TypeTypes.Keyword;
 };
 
 /**
- * Checks if current type is a Number
+ * Checks if current type is a Nil
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
-export const nil = (type) => {
+export const isNil = (type) => {
   return type.kind === TypeTypes.Nil;
 };
 
@@ -50,7 +50,7 @@ export const nil = (type) => {
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
-export const typeAlias = (type) => {
+export const isTypeAlias = (type) => {
   return type.kind === TypeTypes.TypeAlias;
 };
 
@@ -59,6 +59,6 @@ export const typeAlias = (type) => {
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
-export const list = (type) => {
+export const isList = (type) => {
   return type.kind === TypeTypes.List;
 };
