@@ -48,7 +48,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {func: AST, args: AST[]}} CallExpression
  */
 /**
- * @typedef {ASTNode & {lhv: AST, expression: AST}} VariableDeclaration
+ * @typedef {ASTNode & {lhv: AST, expression: AST, typeAnnotation?: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
  */
 /**
  * @typedef {ASTNode & {lhv: AST, expression: AST}} SetExpression
@@ -167,12 +167,13 @@ export const AST = {
    * @param {SrcLoc} srcloc
    * @returns {VariableDeclaration}
    */
-  VariableDeclaration(lhv, expression, srcloc) {
+  VariableDeclaration(lhv, expression, srcloc, typeAnnotation = null) {
     return {
       kind: ASTTypes.VariableDeclaration,
       lhv,
       expression,
       srcloc,
+      typeAnnotation,
     };
   },
   /**
