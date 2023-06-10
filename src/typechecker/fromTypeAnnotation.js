@@ -28,7 +28,7 @@ export const fromTypeAnnotation = (typeAnnotation, typeEnv) => {
 
       if (!type) {
         throw new Exception(
-          `Type alias ${name} not found in current type environment`
+          `Type ${name} not found in current type environment`
         );
       }
 
