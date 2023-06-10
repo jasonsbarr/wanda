@@ -64,6 +64,7 @@ class ASTPrinter {
    * Prints a CallExpression node
    * @param {import("../parser/ast.js").CallExpression} node
    * @param {number} indent
+   * @returns {string}
    */
   printCallExpression(node, indent) {
     let prStr = `${prIndent(indent)}CallExpression\n`;
@@ -75,6 +76,22 @@ class ASTPrinter {
 
     for (let arg of node.args) {
       prStr += this.print(arg, indent + 4) + "\n";
+    }
+
+    return prStr;
+  }
+
+  /**
+   * Prints a DoExpression node
+   * @param {import("../parser/ast.js").DoExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printDoExpression(node, indent) {
+    let prStr = `${prIndent(indent)}DoExpression:\n`;
+
+    for (let expr of node.body) {
+      prStr += `${this.print(expr, indent + 2)}\n`;
     }
 
     return prStr;

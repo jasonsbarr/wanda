@@ -61,6 +61,8 @@ export class Emitter {
         return this.emitVariableDeclaration(node, ns);
       case ASTTypes.SetExpression:
         return this.emitSetExpression(node, ns);
+      case ASTTypes.DoExpression:
+        return this.emitDoExpression(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -86,6 +88,29 @@ export class Emitter {
     return `(${this.emit(node.func, ns)})(${node.args
       .map((a) => this.emit(a, ns))
       .join(", ")})`;
+  }
+
+  /**
+   * Generates code for a DoExpression AST node
+   * @param {import("../parser/ast.js").DoExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitDoExpression(node, ns) {
+    let code = "(() => {";
+
+    let i = 0;
+    for (let expr of node.body) {
+      if (i === node.body.length - 1) {
+        code += "return " + this.emit(expr, ns) + "\n";
+      } else {
+        code += this.emit(expr, ns) + "\n";
+      }
+      i++;
+    }
+
+    code += "})();";
+    return code;
   }
 
   /**

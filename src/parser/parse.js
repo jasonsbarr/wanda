@@ -122,6 +122,8 @@ const parseList = (form) => {
       return parseVariableDeclaration(form);
     case "set!":
       return parseSetExpression(form);
+    case "do":
+      return parseDoExpression(form);
     default:
       return parseCall(form);
   }
