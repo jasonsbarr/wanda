@@ -4,7 +4,7 @@ import { expand } from "../../src/expander/expand.js";
 import { parse } from "../../src/parser/parse.js";
 import { desugar } from "../../src/desugarer/desugar.js";
 import { emit } from "../../src/emitter/emit.js";
-import { Namespace } from "../../src/runtime/Namespace.js";
+import { Namespace } from "../../src/shared/Namespace.js";
 import { makeSymbol } from "../../src/runtime/makeSymbol.js";
 
 const compile = (input) =>
