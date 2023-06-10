@@ -1,5 +1,8 @@
+import { Type } from "../typechecker/Type.js";
+
 export const makeFunction = (func) => {
   func.variadic = true;
+  func.contract = Type.functionType([Type.any], Type.any);
 
   Object.defineProperty(func, "length", {
     enumerable: false,
