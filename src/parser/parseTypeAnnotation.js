@@ -93,7 +93,7 @@ export const parseTypeAnnotation = (annotation) => {
         // annotation is array with listType as 2nd member
         return parseListAnnotation(annotation[1]);
       default:
-        // must be a type alias
+        // must be a named type
         return { kind: TATypes.Symbol, name: annot.value };
     }
   }
