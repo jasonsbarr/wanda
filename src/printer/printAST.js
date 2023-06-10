@@ -55,6 +55,10 @@ class ASTPrinter {
         return this.printSymbol(node, indent);
       case ASTTypes.CallExpression:
         return this.printCallExpression(node, indent);
+      case ASTTypes.VariableDeclaration:
+        return this.printVariableDeclaration(node, indent);
+      case ASTTypes.SetExpression:
+        return this.printSetExpression(node, indent);
       case ASTTypes.DoExpression:
         return this.printDoExpression(node, indent);
       case ASTTypes.TypeAlias:
@@ -78,8 +82,11 @@ class ASTPrinter {
     )}\n`;
     prStr += `${prIndent(indent + 2)}Args:\n`;
 
+    let i = 0;
     for (let arg of node.args) {
-      prStr += this.print(arg, indent + 4) + "\n";
+      prStr += this.print(arg, indent + 4);
+      prStr += i === node.args.length - 1 ? "" : "\n";
+      i++;
     }
 
     return prStr;
@@ -94,8 +101,11 @@ class ASTPrinter {
   printDoExpression(node, indent) {
     let prStr = `${prIndent(indent)}DoExpression:\n`;
 
+    let i = 0;
     for (let expr of node.body) {
-      prStr += `${this.print(expr, indent + 2)}\n`;
+      prStr += `${this.print(expr, indent + 2)}`;
+      prStr += i === node.body.length - 1 ? "" : "\n";
+      i++;
     }
 
     return prStr;
@@ -131,6 +141,19 @@ class ASTPrinter {
   }
 
   /**
+   * Prints SetExpression node
+   * @param {import("../parser/ast.js").SetExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printSetExpression(node, indent) {
+    let prStr = `${prIndent(indent)}SetExpression:\n`;
+    prStr += `${this.print(node.lhv, indent + 2)}\n`;
+    prStr += `${this.print(node.expression, indent + 2)}`;
+    return prStr;
+  }
+
+  /**
    * Prints Symbol node
    * @param {import("../parser/ast").Symbol} node
    * @param {number} indent
@@ -147,6 +170,19 @@ class ASTPrinter {
    */
   printTypeAlias(node, indent) {
     return "";
+  }
+
+  /**
+   * Prints VariableDeclaration node
+   * @param {import("../parser/ast.js").VariableDeclaration} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printVariableDeclaration(node, indent) {
+    let prStr = `${prIndent(indent)}VariableDeclaration:\n`;
+    prStr += `${this.print(node.lhv, indent + 2)}\n`;
+    prStr += `${this.print(node.expression, indent + 2)}`;
+    return prStr;
   }
 }
 
