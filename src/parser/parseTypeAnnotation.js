@@ -38,12 +38,7 @@ export const TATypes = {
 /**
  * @typedef SymbolAnnotation
  * @prop {TATypes.Symbol} kind
- */
-/**
- * @typedef TypeAlias
- * @prop {TATypes.Alias} kind
  * @prop {string} name
- * @prop {TypeAnnotation} base
  */
 /**
  * @typedef ListAnn
@@ -54,7 +49,7 @@ export const TATypes = {
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {PrimitiveAnn|ListAnn} TypeAnnotation
+ * @typedef {PrimitiveAnn|SymbolAnnotation|ListAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -98,7 +93,8 @@ export const parseTypeAnnotation = (annotation) => {
         // annotation is array with listType as 2nd member
         return parseListAnnotation(annotation[1]);
       default:
-        throw new SyntaxException(annot.value, annot.srcloc);
+        // must be a type alias
+        return { kind: TATypes.Symbol, name: annot.value };
     }
   }
 };
