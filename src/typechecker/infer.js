@@ -72,7 +72,7 @@ const inferCallExpression = (node, env) => {
 
   if (
     node.args.length !== func.params.length ||
-    (func.variadic && node.args.length >= func.params.length)
+    (func.variadic && node.args.length >= func.params.length - 1)
   ) {
     throw new Exception(
       `Expected${func.variadic ? " at least " : " "}arguments; ${
