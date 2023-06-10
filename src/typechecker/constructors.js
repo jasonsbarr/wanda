@@ -36,8 +36,8 @@ export const nil = { kind: TypeTypes.Nil };
  * @param {import("./types.js").Type} ret
  * @returns {import("./types.js").FunctionType}
  */
-export const functionType = (params, ret) => {
-  return { kind: TypeTypes.FunctionType, params, ret };
+export const functionType = (params, ret, variadic = false) => {
+  return { kind: TypeTypes.FunctionType, params, ret, variadic };
 };
 
 /**

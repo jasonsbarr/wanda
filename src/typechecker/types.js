@@ -47,6 +47,7 @@ export const TypeTypes = {
  * @prop {TypeTypes.FunctionType} kind
  * @prop {Type[]} params
  * @prop {Type} ret
+ * @prop {boolean} variadic
  */
 /**
  * @typedef List
