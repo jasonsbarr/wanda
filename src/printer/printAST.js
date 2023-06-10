@@ -127,12 +127,22 @@ class ASTPrinter {
   }
 
   /**
-   *
+   * Prints Symbol node
    * @param {import("../parser/ast").Symbol} node
    * @param {number} indent
    */
   printSymbol(node, indent) {
     return `${prIndent(indent)}Symbol: ${node.name}`;
+  }
+
+  /**
+   * Emits empty string for TypeAlias node
+   * @param {import("../parser/parseTypeAnnotation.js").TypeAlias} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printTypeAlias(node, indent) {
+    return "";
   }
 }
 
