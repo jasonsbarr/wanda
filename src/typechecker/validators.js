@@ -1,4 +1,4 @@
-import { TypeTypes } from "./types";
+import { TypeTypes } from "./types.js";
 
 /**
  * Checks if current type is a Number
