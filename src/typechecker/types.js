@@ -45,5 +45,5 @@ export const TypeTypes = {
  * @typedef {Number|String|Boolean|Keyword|Nil} PrimitiveTypes
  */
 /**
- * @typedef {Number|String|Boolean|Keyword|Nil|TypeAlias|List} Type
+ * @typedef {PrimitiveTypes|TypeAlias|List} Type
  */
