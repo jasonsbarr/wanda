@@ -4,6 +4,7 @@ import { ConsReader } from "./ConsReader.js";
 import { Cons } from "../shared/cons.js";
 import { AST } from "./ast.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
+import { parseTypeAnnotation } from "./parseTypeAnnotation.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST
@@ -55,11 +56,28 @@ const parseCall = (callExpression) => {
  * @returns {import("./ast.js").VariableDeclaration}
  */
 const parseVariableDeclaration = (decl) => {
-  const [_, lhv, expression] = decl;
-  const parsedLhv = parseExpr(lhv);
+  let [_, lhv, expression] = decl;
+
+  let parsedLhv,
+    typeAnnotation = null;
+  if (lhv instanceof Cons) {
+    // has type annotation
+    const realLhv = lhv.get(0);
+    // convert to array and get rid of ":" when passing into parseTypeAnnotation
+    typeAnnotation = parseTypeAnnotation([...lhv.cdr].slice(1));
+    parsedLhv = parseExpr(realLhv);
+  } else {
+    parsedLhv = parseExpr(lhv);
+  }
+
   const parsedExpression = parseExpr(expression);
 
-  return AST.VariableDeclaration(parsedLhv, parsedExpression, decl.srcloc);
+  return AST.VariableDeclaration(
+    parsedLhv,
+    parsedExpression,
+    decl.srcloc,
+    typeAnnotation
+  );
 };
 
 /**

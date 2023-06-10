@@ -165,6 +165,7 @@ export const AST = {
    * @param {AST} lhv
    * @param {AST} expression
    * @param {SrcLoc} srcloc
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} typeAnnotation
    * @returns {VariableDeclaration}
    */
   VariableDeclaration(lhv, expression, srcloc, typeAnnotation = null) {
