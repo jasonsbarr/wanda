@@ -20,6 +20,10 @@ export const typeToString = (type) => {
       return "keyword";
     case TypeTypes.Nil:
       return "nil";
+    case TypeTypes.FunctionType:
+      return `(${type.params.map(typeToString).join(", ")}) -> ${typeToString(
+        type.ret
+      )}`;
     case TypeTypes.TypeAlias:
       return `TypeAlias: ${type.name}, base: ${typeToString(type.base)}`;
     case TypeTypes.List:
