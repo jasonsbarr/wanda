@@ -199,6 +199,11 @@ export class Emitter {
       );
     }
 
+    // To make sure when compiling a variable definition the variable name hasn't already been accessed in the same scope
+    if (!ns.has(name)) {
+      ns.set(name, emittedName);
+    }
+
     return emittedName;
   }
 
@@ -220,6 +225,13 @@ export class Emitter {
    */
   emitVariableDeclaration(node, ns) {
     const name = node.lhv.name;
+
+    if (ns.has(name)) {
+      throw new Exception(
+        `Name ${name} has already been accessed in the current namespace`
+      );
+    }
+
     const translatedName = makeSymbol(name);
 
     ns.set(name, translatedName);
