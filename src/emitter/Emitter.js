@@ -1,6 +1,6 @@
 import { ASTTypes } from "../parser/ast.js";
 import { Exception, SyntaxException } from "../shared/exceptions.js";
-import { Namespace } from "../runtime/Namespace.js";
+import { Namespace } from "../shared/Namespace.js";
 import { makeSymbol } from "../runtime/makeSymbol.js";
 
 /**
