@@ -15,6 +15,7 @@ export const ASTTypes = {
   CallExpression: "CallExpression",
   VariableDeclaration: "VariableDeclaration",
   SetExpression: "SetExpression",
+  DoExpression: "DoExpression",
 };
 
 /**
@@ -52,6 +53,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {lhv: AST, expression: AST}} SetExpression
+ */
+/**
+ * @typedef {ASTNode & {body: AST[]}} DoExpression
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
@@ -189,6 +193,19 @@ export const AST = {
       kind: ASTTypes.SetExpression,
       lhv,
       expression,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a DoExpression AST node
+   * @param {AST[]} body
+   * @param {SrcLoc} srcloc
+   * @returns {DoExpression}
+   */
+  DoExpression(body, srcloc) {
+    return {
+      kind: ASTTypes.DoExpression,
+      body,
       srcloc,
     };
   },

@@ -94,6 +94,22 @@ const parseSetExpression = (expr) => {
 };
 
 /**
+ * Parses a do (block) expression
+ * @param {List} expr
+ * @returns {import("./ast.js").DoExpression}
+ */
+const parseDoExpression = (expr) => {
+  const [_, ...exprs] = expr;
+  let body = [];
+
+  for (let ex of exprs) {
+    body.push(parseExpr(ex));
+  }
+
+  return AST.DoExpression(body, expr.srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
