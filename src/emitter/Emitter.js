@@ -99,14 +99,15 @@ export class Emitter {
    * @returns {string}
    */
   emitDoExpression(node, ns) {
+    const childNs = ns.extend("doExpression");
     let code = "(() => {";
 
     let i = 0;
     for (let expr of node.body) {
       if (i === node.body.length - 1) {
-        code += "return " + this.emit(expr, ns) + "\n";
+        code += "return " + this.emit(expr, childNs) + "\n";
       } else {
-        code += this.emit(expr, ns) + "\n";
+        code += this.emit(expr, childNs) + "\n";
       }
       i++;
     }
