@@ -7,5 +7,3 @@ export const Type = {
   ...Constructors,
   ...Validators,
 };
-
-console.log(Type);
