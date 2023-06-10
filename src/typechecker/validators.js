@@ -5,6 +5,15 @@ import { TypeTypes } from "./types.js";
  * @param {import("./types").Type} type
  * @returns {boolean}
  */
+export const isAny = (type) => {
+  return type.kind === TypeTypes.Any;
+};
+
+/**
+ * Checks if current type is a Number
+ * @param {import("./types").Type} type
+ * @returns {boolean}
+ */
 export const isNumber = (type) => {
   return type.kind === TypeTypes.Number;
 };

@@ -2,6 +2,7 @@
  * @enum {string}
  */
 export const TypeTypes = {
+  Any: "Any",
   Number: "Number",
   String: "String",
   Boolean: "Boolean",
@@ -10,6 +11,10 @@ export const TypeTypes = {
   TypeAlias: "TypeAlias",
   List: "List",
 };
+/**
+ * @typedef Any
+ * @prop {TypeTypes.Any} kind
+ */
 /**
  * @typedef Number
  * @prop {TypeTypes.Number} kind
@@ -45,5 +50,5 @@ export const TypeTypes = {
  * @typedef {Number|String|Boolean|Keyword|Nil} PrimitiveTypes
  */
 /**
- * @typedef {PrimitiveTypes|TypeAlias|List} Type
+ * @typedef {Any|PrimitiveTypes|TypeAlias|List} Type
  */

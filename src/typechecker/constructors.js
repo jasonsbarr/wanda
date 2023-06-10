@@ -1,6 +1,11 @@
 import { TypeTypes } from "./types.js";
 
 /**
+ * @type {import("./types").Any}
+ */
+export const any = { kind: TypeTypes.Any };
+
+/**
  * @type {import("./types").Number}
  */
 export const number = { kind: TypeTypes.Number };
