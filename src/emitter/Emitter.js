@@ -228,7 +228,7 @@ export class Emitter {
 
     if (ns.has(name)) {
       throw new Exception(
-        `Name ${name} has already been accessed in the current namespace`
+        `Name ${name} defined at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col} has already been accessed in the current namespace; cannot access identifier before defining it`
       );
     }
 
