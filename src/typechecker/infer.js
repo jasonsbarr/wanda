@@ -77,15 +77,18 @@ const inferCallExpression = (node, env) => {
     throw new Exception(
       `Expected${func.variadic ? " at least " : " "}arguments; ${
         node.args.length
-      } given`
+      } given at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
     );
   }
 
   func.params.forEach((p, i) => {
     const argType = infer(node.args[i], env);
     if (!isSubtype(argType, p)) {
+      const node = node.args[i];
       throw new Exception(
-        `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`
+        `${Type.toString(argType)} is not a subtype of ${Type.toString(p)} at ${
+          node.srcloc.file
+        } ${node.srcloc.line}:${node.srcloc.col}`
       );
     }
   });
