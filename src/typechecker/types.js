@@ -42,5 +42,8 @@ export const TypeTypes = {
  * @prop {Type} listType
  */
 /**
+ * @typedef {Number|String|Boolean|Keyword|Nil} PrimitiveTypes
+ */
+/**
  * @typedef {Number|String|Boolean|Keyword|Nil|TypeAlias|List} Type
  */
