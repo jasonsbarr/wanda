@@ -132,21 +132,40 @@ const readVector = (reader) => {};
  * @param {Reader} reader
  * @returns {RecordLiteral|RecordPattern}
  */
-const readMaybeRecord = (reader) => {};
+const readMaybeRecord = (reader) => {
+  let tok = reader.next();
+  const srcloc = tok.srcloc;
+  // First token after brace should always be a symbol
+  tok = reader.peek();
+
+  if (tok.type !== TokenTypes.Symbol) {
+    throw new SyntaxException(tok.value, tok.srcloc);
+  }
+
+  tok = reader.lookahead(1);
+
+  if (tok.type === TokenTypes.Keyword && tok.value === ":") {
+    return readRecordLiteral(reader, srcloc);
+  } else {
+    return readRecordPattern(reader, srcloc);
+  }
+};
 
 /**
  * Reads a record literal
  * @param {Reader} reader
+ * @param {SrcLoc} srcloc
  * @returns {RecordLiteral}
  */
-const readRecordLiteral = (reader) => {};
+const readRecordLiteral = (reader, srcloc) => {};
 
 /**
  * Reads a record pattern
  * @param {Reader} reader
+ * @param {SrcLoc} srcloc
  * @returns {RecordPattern}
  */
-const readRecordPattern = (reader) => {};
+const readRecordPattern = (reader, srcloc) => {};
 
 /**
  * Reads a form from the token stream
@@ -168,6 +187,8 @@ const readForm = (reader) => {
       throw new SyntaxException(tok.value, tok.srcloc);
     case TokenTypes.LParen:
       return readList(reader);
+    case TokenTypes.LBrack:
+      return readVector(reader);
     case TokenTypes.LBrace:
       return readMaybeRecord(reader);
     default:
