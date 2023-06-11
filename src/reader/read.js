@@ -109,9 +109,23 @@ const readList = (reader) => {
 /**
  * Reads either a record literal or a record pattern
  * @param {Reader} reader
- * @returns {Form}
+ * @returns {RecordLiteral|RecordPattern}
  */
 const readMaybeRecord = (reader) => {};
+
+/**
+ * Reads a record literal
+ * @param {Reader} reader
+ * @returns {RecordLiteral}
+ */
+const readRecordLiteral = (reader) => {};
+
+/**
+ * Reads a record pattern
+ * @param {Reader} reader
+ * @returns {RecordPattern}
+ */
+const readRecordPattern = (reader) => {};
 
 /**
  * Reads a form from the token stream
