@@ -3,6 +3,7 @@ import { Exception } from "../shared/exceptions.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { isSubtype } from "./isSubtype.js";
+import { getAliasBase } from "./utils.js";
 
 /**
  * Infers a type from an AST node
@@ -52,15 +53,18 @@ const inferNil = () => Type.nil;
  */
 const inferSymbol = (node, env) => {
   const name = node.name;
-  const type = env.get(name);
+  const namedType = env.get(name);
+  const baseType = Type.isTypeAlias(namedType)
+    ? getAliasBase(namedType.name)
+    : namedType;
 
-  if (!type) {
+  if (!namedType) {
     throw new Exception(
       `Type not found in current environment for ${name} at ${node.srcloc.file} ${node.srcloc.col}:${node.srcloc.col}`
     );
   }
 
-  return type;
+  return baseType;
 };
 
 /**
