@@ -92,7 +92,7 @@ const inferCallExpression = (node, env) => {
   }
 
   if (env.checkingOn) {
-    func.params.forEach((p, i) => {
+    func.params.forEach((p, i, a) => {
       const argType = infer(node.args[i], env);
       if (!isSubtype(argType, p)) {
         const node = node.args[i];
@@ -101,6 +101,21 @@ const inferCallExpression = (node, env) => {
             p
           )} at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
         );
+      }
+
+      if (i === a.length - 1) {
+        for (let arg of node.args.slice(i)) {
+          const argType = infer(arg, env);
+
+          if (!isSubtype(argType, p)) {
+            const node = node.args[i];
+            throw new Exception(
+              `${Type.toString(argType)} is not a subtype of ${Type.toString(
+                p
+              )} at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
+            );
+          }
+        }
       }
     });
   }
@@ -116,11 +131,6 @@ const inferCallExpression = (node, env) => {
  */
 const inferVariableDeclaration = (node, env) => {
   const varType = infer(node.expression, env);
-
-  if (!env.has(node.lhv.name)) {
-    env.setType(node.lhv.name, varType);
-  }
-
   return varType;
 };
 
