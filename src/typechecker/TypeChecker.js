@@ -80,6 +80,20 @@ export class TypeChecker {
   }
 
   /**
+   * Type checks a do (block) expression
+   * @param {import("../parser/ast.js").DoExpression} node
+   * @param {TypeEnvironment} env
+   * @return {TypedAST}
+   */
+  checkDoExpression(node, env) {
+    for (let expr of node.body) {
+      this.check(expr, env);
+    }
+
+    return { ...node, type: infer(node, env) };
+  }
+
+  /**
    * Type checks a keyword literal
    * @param {import("../parser/ast").KeywordLiteral} node
    * @param {TypeEnvironment} env
@@ -107,6 +121,20 @@ export class TypeChecker {
    */
   checkNumber(node, env) {
     return { ...node, type: infer(node, env) };
+  }
+
+  /**
+   * Type checks a set expression
+   * @param {import("../parser/ast.js").SetExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkSetExpression(node, env) {
+    const nameType = env.getType(node.lhv.name);
+
+    check(node.expression, nameType, env);
+
+    return { ...node, type: nameType };
   }
 
   /**
