@@ -3,7 +3,6 @@ import { Exception } from "../shared/exceptions.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { check } from "./check.js";
 import { infer } from "./infer.js";
-import { Type } from "./types.js";
 
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST

@@ -1,5 +1,5 @@
 import { AST } from "../parser/ast.js";
-import { Exception } from "../shared/exceptions";
+import { Exception } from "../shared/exceptions.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { infer } from "./infer.js";
