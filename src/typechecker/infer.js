@@ -105,7 +105,10 @@ const inferCallExpression = (node, env) => {
 const inferVariableDeclaration = (node, env) => {
   const varType = infer(node.expression, env);
 
-  env.setType(node.lhv.name, varType);
+  if (!env.has(node.lhv.name)) {
+    env.setType(node.lhv.name, varType);
+  }
+
   return varType;
 };
 
