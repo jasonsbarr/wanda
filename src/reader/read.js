@@ -4,9 +4,27 @@ import { Exception, SyntaxException } from "../shared/exceptions.js";
 import { Reader } from "./Reader.js";
 import { Cons, cons } from "../shared/cons.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
+/**
+ * @typedef Property
+ * @prop {Token} name
+ * @prop {Form} value
+ * @prop {SrcLoc} srcloc
+ */
 
 /**
- * @typedef {Token | Cons} Form
+ * @typedef RecordLiteral
+ * @prop {Property[]} properties
+ * @prop {SrcLoc} srcloc
+ */
+
+/**
+ * @typedef RecordPattern
+ * @prop {Token[]} properties
+ * @prop {SrcLoc} srcloc
+ */
+
+/**
+ * @typedef {Token|Cons|RecordLiteral|RecordPattern} Form
  */
 
 /**
@@ -87,6 +105,13 @@ const readList = (reader) => {
 
   return list;
 };
+
+/**
+ * Reads either a record literal or a record pattern
+ * @param {Reader} reader
+ * @returns {Form}
+ */
+const readMaybeRecord = (reader) => {};
 
 /**
  * Reads a form from the token stream
