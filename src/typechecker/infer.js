@@ -55,7 +55,9 @@ const inferSymbol = (node, env) => {
   const type = env.getType(name);
 
   if (!type) {
-    return Type.any;
+    throw new Exception(
+      `Type not found in current environment for ${name} at ${node.srcloc.file} ${node.srcloc.col}:${node.srcloc.col}`
+    );
   }
 
   return type;
