@@ -1,7 +1,9 @@
 import { AST, ASTTypes } from "../parser/ast.js";
 import { Exception } from "../shared/exceptions.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
+import { check } from "./check.js";
 import { infer } from "./infer.js";
+import { Type } from "./types.js";
 
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
@@ -63,7 +65,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkBoolean(node, env) {
-    return infer(node, env);
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -74,7 +76,7 @@ export class TypeChecker {
    */
   checkCallExpression(node, env) {
     // infer handles checking for argument types
-    return infer(node, env);
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -84,7 +86,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkKeyword(node, env) {
-    return infer(node, env);
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -94,7 +96,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkNil(node, env) {
-    return infer(node, env);
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -104,7 +106,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkNumber(node, env) {
-    return infer(node, env);
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -114,7 +116,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkString(node, env) {
-    return infer(node, env);
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -124,6 +126,22 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkSymbol(node, env) {
-    return infer(node, env);
+    return { ...node, type: infer(node, env) };
+  }
+
+  /**
+   * Type checks a variable declaration
+   * @param {import("../parser/ast.js").VariableDeclaration} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkVariableDeclaration(node, env) {
+    if (node.typeAnnotation) {
+      const annotType = Type.fromTypeAnnotation(node.typeAnnotation);
+      check(node.expression, annotType, env);
+      return { ...node, type: annotType };
+    }
+
+    return { ...node, type: infer(node, env) };
   }
 }
