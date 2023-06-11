@@ -212,7 +212,7 @@ export class TypeChecker {
    */
   checkVariableDeclaration(node, env) {
     if (node.typeAnnotation) {
-      const annotType = Type.fromTypeAnnotation(node.typeAnnotation);
+      const annotType = Type.fromTypeAnnotation(node.typeAnnotation, env);
       check(node.expression, annotType, env);
       env.checkingOn = true;
       env.set(node.lhv.name, annotType);
