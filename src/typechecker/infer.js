@@ -72,6 +72,10 @@ const inferSymbol = (node, env) => {
 const inferCallExpression = (node, env) => {
   const func = synth(node.func, env);
 
+  if (Type.isAny(func)) {
+    return Type.any;
+  }
+
   if (
     node.args.length !== func.params.length ||
     (func.variadic && node.args.length >= func.params.length - 1)
