@@ -91,17 +91,19 @@ const inferCallExpression = (node, env) => {
     );
   }
 
-  func.params.forEach((p, i) => {
-    const argType = infer(node.args[i], env);
-    if (!isSubtype(argType, p)) {
-      const node = node.args[i];
-      throw new Exception(
-        `${Type.toString(argType)} is not a subtype of ${Type.toString(p)} at ${
-          node.srcloc.file
-        } ${node.srcloc.line}:${node.srcloc.col}`
-      );
-    }
-  });
+  if (env.checkingOn) {
+    func.params.forEach((p, i) => {
+      const argType = infer(node.args[i], env);
+      if (!isSubtype(argType, p)) {
+        const node = node.args[i];
+        throw new Exception(
+          `${Type.toString(argType)} is not a subtype of ${Type.toString(
+            p
+          )} at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
+        );
+      }
+    });
+  }
 
   return func.ret;
 };
