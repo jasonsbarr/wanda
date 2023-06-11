@@ -9,4 +9,6 @@ export const makeGlobalTypeEnv = () => {
   for (let [k, v] of globals) {
     typeEnv.set(k, v.contract ?? Type.any);
   }
+
+  return typeEnv;
 };
