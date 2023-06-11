@@ -16,3 +16,5 @@ export const countIndent = (str) => {
 
   return indentCount;
 };
+
+export const inputFinished = (input) => countIndent(input) === 0;
