@@ -130,8 +130,7 @@ const inferCallExpression = (node, env) => {
  * @returns {import("./types").Type}
  */
 const inferVariableDeclaration = (node, env) => {
-  const varType = infer(node.expression, env);
-  return varType;
+  return infer(node.expression, env);
 };
 
 /**
