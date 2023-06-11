@@ -23,15 +23,15 @@ export const infer = (ast, env) => {
     case ASTTypes.NilLiteral:
       return inferNil();
     case ASTTypes.Symbol:
-      return inferSymbol(node, env);
+      return inferSymbol(ast, env);
     case ASTTypes.CallExpression:
-      return inferCallExpression(node, env);
+      return inferCallExpression(ast, env);
     case ASTTypes.VariableDeclaration:
-      return inferVariableDeclaration(node, env);
+      return inferVariableDeclaration(ast, env);
     case ASTTypes.SetExpression:
-      return inferSetExpression(node, env);
+      return inferSetExpression(ast, env);
     case ASTTypes.DoExpression:
-      return inferDoExpression(node, env);
+      return inferDoExpression(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -70,7 +70,7 @@ const inferSymbol = (node, env) => {
  * @returns {import("./types").Type}
  */
 const inferCallExpression = (node, env) => {
-  const func = synth(node.func, env);
+  const func = infer(node.func, env);
 
   if (Type.isAny(func)) {
     return Type.any;
