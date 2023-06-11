@@ -67,6 +67,17 @@ export class TypeChecker {
   }
 
   /**
+   * Type checks a call expression
+   * @param {import("../parser/ast.js").CallExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkCallExpression(node, env) {
+    // infer handles checking for argument types
+    return infer(node, env);
+  }
+
+  /**
    * Type checks a keyword literal
    * @param {import("../parser/ast").KeywordLiteral} node
    * @param {TypeEnvironment} env
