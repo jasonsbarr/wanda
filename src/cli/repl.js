@@ -6,12 +6,14 @@ import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
 import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
 import { build } from "./build.js";
 import { compile } from "./compile.js";
+import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 
 const read = (prompt) => readlineSync.question(prompt);
 
 export const repl = (mode = "repl") => {
   // Create global compile environment
   const compileEnv = makeGlobalNameMap();
+  const typeEnv = makeGlobalTypeEnv();
 
   // Build global module and instantiate in REPL context
   // This should make all compiled global symbols available
@@ -36,7 +38,7 @@ export const repl = (mode = "repl") => {
           break;
         // If it's code, compile and run it
         default:
-          let compiled = compile(input, "stdin", compileEnv);
+          let compiled = compile(input, "stdin", compileEnv, typeEnv);
           let result = vm.runInThisContext(compiled);
 
           if (mode === "printAST") {
