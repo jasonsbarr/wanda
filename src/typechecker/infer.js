@@ -169,5 +169,5 @@ const inferDoExpression = (node, env) => {
  * @returns {import("./types").Type}
  */
 const inferTypeAlias = (node, env) => {
-  return Type.fromTypeAnnotation(node.type);
+  return Type.fromTypeAnnotation(node.type, env);
 };

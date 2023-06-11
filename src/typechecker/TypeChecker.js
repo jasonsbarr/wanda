@@ -199,7 +199,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkTypeAlias(node, env) {
-    const type = Type.fromTypeAnnotation(node.type);
+    const type = Type.fromTypeAnnotation(node.type, env);
     env.setType(node.name, type);
     return { ...node, type };
   }
