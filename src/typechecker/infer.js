@@ -52,7 +52,7 @@ const inferNil = () => Type.nil;
  */
 const inferSymbol = (node, env) => {
   const name = node.name;
-  const type = env.getType(name);
+  const type = env.get(name);
 
   if (!type) {
     throw new Exception(
