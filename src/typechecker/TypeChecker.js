@@ -29,7 +29,7 @@ export class TypeChecker {
    * @param {TypeEnvironment} env
    * @returns {TypeChecker}
    */
-  new(program, env = TypeEnvironment.new()) {
+  static new(program, env = TypeEnvironment.new()) {
     return new TypeChecker(program, env);
   }
 
@@ -53,6 +53,14 @@ export class TypeChecker {
         return this.checkKeyword(node, env);
       case ASTTypes.Symbol:
         return this.checkSymbol(node, env);
+      case ASTTypes.CallExpression:
+        return this.checkCallExpression(node, env);
+      case ASTTypes.VariableDeclaration:
+        return this.checkVariableDeclaration(node, env);
+      case ASTTypes.SetExpression:
+        return this.checkSetExpression(node, env);
+      case ASTTypes.DoExpression:
+        return this.checkDoExpression(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
