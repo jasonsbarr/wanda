@@ -38,6 +38,15 @@ export class Reader {
   }
 
   /**
+   * Gets the token at current position plus n
+   * @param {number} n
+   * @returns {Token}
+   */
+  lookahead(n = 1) {
+    return this.tokens[this.pos + n];
+  }
+
+  /**
    * Get the current token and advance the stream
    * @returns {Token}
    */
