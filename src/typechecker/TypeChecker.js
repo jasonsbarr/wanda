@@ -41,6 +41,8 @@ export class TypeChecker {
    */
   check(node = this.program, env = this.env) {
     switch (node.kind) {
+      case ASTTypes.Program:
+        return this.checkProgram(node, env);
       case ASTTypes.NumberLiteral:
         return this.checkNumber(node, env);
       case ASTTypes.StringLiteral:
@@ -129,6 +131,27 @@ export class TypeChecker {
    */
   checkNumber(node, env) {
     return { ...node, type: infer(node, env) };
+  }
+
+  /**
+   * Type checks a Program node
+   * @param {import("../parser/ast.js").Program} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkProgram(node, env) {
+    let type;
+    let i = 0;
+    for (let expr of node.body) {
+      if (i === node.body.length - 1) {
+        const node = this.check(expr, env);
+        type = node.type;
+      } else {
+        this.check(expr, env);
+      }
+    }
+
+    return { ...node, type };
   }
 
   /**
