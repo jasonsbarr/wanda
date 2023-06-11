@@ -254,6 +254,12 @@ export class Lexer {
         tokens.push(
           Token.new(TokenTypes.RBrace, ch, SrcLoc.new(pos, line, col, file))
         );
+      } else if (isDot(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.Dot, ch, SrcLoc.new(pos, line, col, file))
+        );
       } else {
         const { pos, line, col, file } = this.input;
         throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));

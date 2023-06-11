@@ -14,4 +14,5 @@ export const TokenTypes = {
   RBrack: "RBrack",
   LBrace: "LBrace",
   RBrace: "RBrace",
+  Dot: "Dot",
 };
