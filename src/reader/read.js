@@ -5,7 +5,15 @@ import { Reader } from "./Reader.js";
 import { Cons, cons } from "../shared/cons.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
 /**
+ * @typedef VectorLiteral
+ * @prop {"VectorLiteral"} kind
+ * @prop {Form[]} members
+ * @prop {SrcLoc} srcloc
+ */
+
+/**
  * @typedef Property
+ * @prop {"Property"} kind
  * @prop {Token} name
  * @prop {Form} value
  * @prop {SrcLoc} srcloc
@@ -13,18 +21,24 @@ import { SrcLoc } from "../lexer/SrcLoc.js";
 
 /**
  * @typedef RecordLiteral
+ * @prop {"RecordLiteral"} kind
  * @prop {Property[]} properties
  * @prop {SrcLoc} srcloc
  */
 
 /**
  * @typedef RecordPattern
+ * @prop {"RecordPattern"} kind
  * @prop {Token[]} properties
  * @prop {SrcLoc} srcloc
  */
 
 /**
- * @typedef {Token|Cons|RecordLiteral|RecordPattern} Form
+ * @typedef {VectorLiteral|RecordLiteral|RecordPattern} ComplexForm
+ */
+
+/**
+ * @typedef {Token|Cons|ComplexForm} Form
  */
 
 /**
@@ -107,6 +121,13 @@ const readList = (reader) => {
 };
 
 /**
+ * Reads a vector literal
+ * @param {Reader} reader
+ * @returns {VectorLiteral}
+ */
+const readVector = (reader) => {};
+
+/**
  * Reads either a record literal or a record pattern
  * @param {Reader} reader
  * @returns {RecordLiteral|RecordPattern}
@@ -147,6 +168,8 @@ const readForm = (reader) => {
       throw new SyntaxException(tok.value, tok.srcloc);
     case TokenTypes.LParen:
       return readList(reader);
+    case TokenTypes.LBrace:
+      return readMaybeRecord(reader);
     default:
       return readAtom(reader);
   }
