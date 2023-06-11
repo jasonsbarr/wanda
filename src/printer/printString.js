@@ -14,7 +14,9 @@ export const printString = (value, withQuotes) => {
     case "string":
       return withQuotes ? `"${value}"` : value;
     case "symbol":
-      return value.description;
+      return value.description.startsWith(":")
+        ? value.description
+        : `'${value.description}`;
     case "boolean":
       return String(value);
     case "undefined":
@@ -22,7 +24,7 @@ export const printString = (value, withQuotes) => {
     case "object":
       if (value === null) {
         return "nil";
-      } else if (value instanceof Cons) {
+      } else if (value.constructor?.name === "Cons") {
         return printList(value);
       }
     default:
@@ -36,7 +38,7 @@ export const printString = (value, withQuotes) => {
  * @returns {string}
  */
 const printList = (list) => {
-  let prStr = "(";
+  let prStr = "'(";
 
   let i = 0;
   let length = [...list].length;

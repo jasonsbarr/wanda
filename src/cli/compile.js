@@ -4,6 +4,15 @@ import { expand } from "../expander/expand.js";
 import { parse } from "../parser/parse.js";
 import { desugar } from "../desugarer/desugar.js";
 import { emit } from "../emitter/emit.js";
+import { typecheck } from "../typechecker/typecheck.js";
 
-export const compile = (input, file = "stdin", ns = undefined) =>
-  emit(desugar(parse(expand(read(tokenize(input, file))))), ns);
+export const compile = (
+  input,
+  file = "stdin",
+  ns = undefined,
+  typeEnv = undefined
+) =>
+  emit(
+    desugar(typecheck(parse(expand(read(tokenize(input, file)))), typeEnv)),
+    ns
+  );

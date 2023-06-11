@@ -4,6 +4,7 @@ import { ConsReader } from "./ConsReader.js";
 import { Cons } from "../shared/cons.js";
 import { AST } from "./ast.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
+import { parseTypeAnnotation } from "./parseTypeAnnotation.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST
@@ -50,6 +51,78 @@ const parseCall = (callExpression) => {
 };
 
 /**
+ * Parses a variable declaration
+ * @param {List} decl
+ * @returns {import("./ast.js").VariableDeclaration}
+ */
+const parseVariableDeclaration = (decl) => {
+  let [_, lhv, expression] = decl;
+
+  let parsedLhv,
+    typeAnnotation = null;
+  if (lhv instanceof Cons) {
+    // has type annotation
+    const realLhv = lhv.get(0);
+    // convert to array and get rid of ":" when passing into parseTypeAnnotation
+    typeAnnotation = parseTypeAnnotation([...lhv.cdr].slice(1));
+    parsedLhv = parseExpr(realLhv);
+  } else {
+    parsedLhv = parseExpr(lhv);
+  }
+
+  const parsedExpression = parseExpr(expression);
+
+  return AST.VariableDeclaration(
+    parsedLhv,
+    parsedExpression,
+    decl.srcloc,
+    typeAnnotation
+  );
+};
+
+/**
+ * Parses a set expression
+ * @param {List} expr
+ * @returns {import("./ast.js").SetExpression}
+ */
+const parseSetExpression = (expr) => {
+  const [_, lhv, expression] = expr;
+  const parsedLhv = parseExpr(lhv);
+  const parsedExpression = parseExpr(expression);
+
+  return AST.SetExpression(parsedLhv, parsedExpression, expr.srcloc);
+};
+
+/**
+ * Parses a do (block) expression
+ * @param {List} expr
+ * @returns {import("./ast.js").DoExpression}
+ */
+const parseDoExpression = (expr) => {
+  const [_, ...exprs] = expr;
+  let body = [];
+
+  for (let ex of exprs) {
+    body.push(parseExpr(ex));
+  }
+
+  return AST.DoExpression(body, expr.srcloc);
+};
+
+/**
+ * Parses a type alias
+ * @param {List} form
+ * @returns {import("./parseTypeAnnotation.js").TypeAlias}
+ */
+const parseTypeAlias = (form) => {
+  let [_, name, type] = form;
+  name = name.value;
+  const parsedType = parseTypeAnnotation(type);
+
+  return AST.TypeAlias(name, parsedType, form.srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -58,6 +131,14 @@ const parseList = (form) => {
   const [first] = form;
 
   switch (first.value) {
+    case "var":
+      return parseVariableDeclaration(form);
+    case "set!":
+      return parseSetExpression(form);
+    case "do":
+      return parseDoExpression(form);
+    case "type":
+      return parseTypeAlias(form);
     default:
       return parseCall(form);
   }
