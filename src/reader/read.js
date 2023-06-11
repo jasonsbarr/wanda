@@ -100,6 +100,12 @@ const readForm = (reader) => {
     case TokenTypes.RParen:
       // there shouldn't be an RParen here
       throw new SyntaxException(tok.value, tok.srcloc);
+    case TokenTypes.RBrack:
+      // there shouln't be an RBrack here
+      throw new SyntaxException(tok.value, tok.srcloc);
+    case TokenTypes.RBrace:
+      // there shouldn't be an RBrace here
+      throw new SyntaxException(tok.value, tok.srcloc);
     case TokenTypes.LParen:
       return readList(reader);
     default:
