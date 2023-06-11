@@ -116,7 +116,7 @@ const parseDoExpression = (expr) => {
  */
 const parseTypeAlias = (form) => {
   let [_, name, type] = form;
-  name = name.name;
+  name = name.value;
   const parsedType = parseTypeAnnotation(type);
 
   return AST.TypeAlias(name, parsedType, form.srcloc);
