@@ -12,7 +12,6 @@ export const TATypes = {
   KeywordLiteral: "KeywordLiteral",
   NilLiteral: "NilLiteral",
   Symbol: "Symbol",
-  Alias: "Alias",
   List: "List",
 };
 /**
