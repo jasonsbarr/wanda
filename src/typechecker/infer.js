@@ -33,6 +33,8 @@ export const infer = (ast, env) => {
       return inferSetExpression(ast, env);
     case ASTTypes.DoExpression:
       return inferDoExpression(ast, env);
+    case ASTTypes.TypeAlias:
+      return inferTypeAlias(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -158,4 +160,14 @@ const inferDoExpression = (node, env) => {
   }
 
   return doType;
+};
+
+/**
+ * Infers a type from a TypeAlias node
+ * @param {import("../parser/ast.js").TypeAlias} node
+ * @param {TypeEnvironment} env
+ * @returns {import("./types").Type}
+ */
+const inferTypeAlias = (node, env) => {
+  return Type.fromTypeAnnotation(node.type);
 };

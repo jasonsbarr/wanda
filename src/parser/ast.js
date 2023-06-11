@@ -59,7 +59,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {body: AST[]}} DoExpression
  */
 /**
- * @typedef {ASTNode & {type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
+ * @typedef {ASTNode & {name: string; type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive

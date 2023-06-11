@@ -63,6 +63,8 @@ export class TypeChecker {
         return this.checkSetExpression(node, env);
       case ASTTypes.DoExpression:
         return this.checkDoExpression(node, env);
+      case ASTTypes.TypeAlias:
+        return this.checkTypeAlias(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
@@ -188,6 +190,18 @@ export class TypeChecker {
    */
   checkSymbol(node, env) {
     return { ...node, type: infer(node, env) };
+  }
+
+  /**
+   * Adds a type alias to the type environment
+   * @param {import("../parser/ast.js").TypeAlias} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkTypeAlias(node, env) {
+    const type = Type.fromTypeAnnotation(node.type);
+    env.setType(node.name, type);
+    return { ...node, type };
   }
 
   /**
