@@ -161,11 +161,13 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkSetExpression(node, env) {
-    const nameType = env.getType(node.lhv.name);
+    if (env.checkingOn) {
+      const nameType = env.getType(node.lhv.name);
+      check(node.expression, nameType, env);
+      return { ...node, type: nameType };
+    }
 
-    check(node.expression, nameType, env);
-
-    return { ...node, type: nameType };
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -198,6 +200,7 @@ export class TypeChecker {
     if (node.typeAnnotation) {
       const annotType = Type.fromTypeAnnotation(node.typeAnnotation);
       check(node.expression, annotType, env);
+      env.checkingOn = true;
       env.set(node.lhv.name, annotType);
       return { ...node, type: annotType };
     }

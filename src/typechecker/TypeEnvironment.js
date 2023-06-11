@@ -5,11 +5,13 @@ import { Namespace } from "../shared/Namespace.js";
  * @extends Namespace
  * @desc Environment for type checking
  * @prop {Map<string, Type>} types
+ * @prop {boolean} checkingOn
  */
 export class TypeEnvironment extends Namespace {
   constructor(parent = null, { name = "global" } = {}) {
     super(parent, { name });
     this.types = new Map();
+    this.checkingOn = false;
   }
 
   static new(parent = null, { name = "global" } = {}) {
