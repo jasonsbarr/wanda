@@ -254,38 +254,84 @@ export const AST = {
   },
   /**
    * Constructs a VectorPattern AST node
-   * @param {import("../reader/read.js").VectorLiteral} form
+   * @param {Symbol[]} members
+   * @param {SrcLoc} srcloc
    * @returns {VectorPattern}
    */
-  VectorPattern(form) {},
+  VectorPattern(members, srcloc) {
+    return {
+      kind: ASTTypes.VectorPattern,
+      members,
+      srcloc,
+    };
+  },
   /**
    * Constructs a VectorLiteral AST node
-   * @param {import("../reader/read.js").VectorLiteral} form
+   * @param {AST[]} members
+   * @param {SrcLoc} srcloc
    * @returns {VectorLiteral}
    */
-  VectorLiteral(form) {},
+  VectorLiteral(members, srcloc) {
+    return {
+      kind: ASTTypes.VectorLiteral,
+      members,
+      srcloc,
+    };
+  },
   /**
    * Constructs a Property AST node
-   * @param {import("../reader/read.js").Property} form
+   * @param {Symbol} key
+   * @param {AST} value
+   * @param {SrcLoc} srcloc
    * @returns {Property}
    */
-  Property(form) {},
+  Property(key, value, srcloc) {
+    return {
+      kind: ASTTypes.Property,
+      key,
+      value,
+      srcloc,
+    };
+  },
   /**
    * Constructs a RecordPattern AST node
-   * @param {import("../reader/read.js").RecordPattern} form
+   * @param {Symbol[]} properties
+   * @param {SrcLoc} srcloc
    * @returns {RecordPattern}
    */
-  RecordPattern(form) {},
+  RecordPattern(properties, srcloc) {
+    return {
+      kind: ASTTypes.RecordPattern,
+      properties,
+      srcloc,
+    };
+  },
   /**
    * Constructs a RecordLiteral AST node
-   * @param {import("../reader/read.js").RecordLiteral} form
+   * @param {Property[]} properties
+   * @param {SrcLoc} srcloc
    * @returns {RecordLiteral}
    */
-  RecordLiteral(form) {},
+  RecordLiteral(properties, srcloc) {
+    return {
+      kind: ASTTypes.RecordLiteral,
+      properties,
+      srcloc,
+    };
+  },
   /**
    * Constructs a MemberExpression AST node
-   * @param {import("../reader/read.js").MemberExpression} form
+   * @param {AST} object
+   * @param {AST} property
+   * @param {SrcLoc} srcloc
    * @returns {MemberExpression}
    */
-  MemberExpression(form) {},
+  MemberExpression(object, property, srcloc) {
+    return {
+      kind: ASTTypes.MemberExpression,
+      object,
+      property,
+      srcloc,
+    };
+  },
 };
