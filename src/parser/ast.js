@@ -22,6 +22,7 @@ export const ASTTypes = {
   Property: "Property",
   RecordLiteral: "RecordLiteral",
   RecordPattern: "RecordPattern",
+  MemberExpression: "MemberExpression",
 };
 
 /**
@@ -80,6 +81,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: Symbol[]}} RecordPattern
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: AST}} MemberExpression
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
