@@ -34,12 +34,24 @@ import { SrcLoc } from "../lexer/SrcLoc.js";
  */
 
 /**
+ * @typedef MemberExpression
+ * @prop {"MemberExpression"} type
+ * @prop {Form} object
+ * @prop {Form} property
+ * @prop {SrcLoc} srcloc
+ */
+
+/**
  * @typedef {VectorLiteral|RecordLiteral|RecordPattern} ComplexForm
  */
 
 /**
  * @typedef {Token|Cons|ComplexForm} Form
  */
+
+const PREC = {
+  [TokenTypes.Dot]: 90,
+};
 
 /**
  * @param {Reader} reader
@@ -250,6 +262,24 @@ const readRecordPattern = (reader, srcloc) => {
 };
 
 /**
+ * Reads a member expression
+ * @param {Reader} reader
+ * @param {Form} left
+ * @returns {MemberExpression}
+ */
+const readMemberExpression = (reader, left) => {
+  const tok = reader.next();
+  reader.expect(TokenTypes.Dot, tok.type);
+  const property = readExpr(reader);
+  return {
+    type: "MemberExpression",
+    object: left,
+    property,
+    srcloc: left.srcloc,
+  };
+};
+
+/**
  * Reads a form from the token stream
  * @param {Reader} reader
  * @returns {Form}
@@ -278,13 +308,25 @@ const readForm = (reader) => {
   }
 };
 
+const getPrec = (token) => PREC[token.type] ?? 0;
+
 /**
  * Reads expressions, including reader macros
  * @param {Reader} reader
  * @returns {Form}
  */
-const readExpr = (reader) => {
-  return readForm(reader);
+const readExpr = (reader, bp = 0) => {
+  let left = readForm(reader);
+  let tok = reader.peek();
+  let prec = getPrec(tok);
+
+  while (bp < prec) {
+    left = readMemberExpression(reader, left);
+    tok = reader.peek();
+    prec = getPrec(tok);
+  }
+
+  return left;
 };
 
 /**
