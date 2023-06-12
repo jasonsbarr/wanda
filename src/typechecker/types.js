@@ -11,6 +11,9 @@ export const TypeTypes = {
   FunctionType: "FunctionType",
   TypeAlias: "TypeAlias",
   List: "List",
+  Vector: "Vector",
+  Property: "Property",
+  Object: "Object",
 };
 /**
  * @typedef Any
@@ -55,8 +58,24 @@ export const TypeTypes = {
  * @prop {Type} listType
  */
 /**
+ * @typedef Vector
+ * @prop {TypeTypes.Vector} kind
+ * @prop {Type} vectorType
+ */
+/**
+ * @typedef Property
+ * @prop {TypeTypes.Property} kind
+ * @prop {string} name
+ * @prop {Type} type
+ */
+/**
+ * @typedef Object
+ * @prop {TypeTypes.Object} kind
+ * @prop {Property[]} properties
+ */
+/**
  * @typedef {Number|String|Boolean|Keyword|Nil} PrimitiveTypes
  */
 /**
- * @typedef {Any|PrimitiveTypes|FunctionType|TypeAlias|List} Type
+ * @typedef {Any|PrimitiveTypes|FunctionType|TypeAlias|List|Vector|Object} Type
  */
