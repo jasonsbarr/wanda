@@ -1,10 +1,11 @@
 import { AST, ASTTypes } from "../parser/ast.js";
-import { Exception } from "../shared/exceptions.js";
+import { Exception, TypeException } from "../shared/exceptions.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { isSubtype } from "./isSubtype.js";
 import { getAliasBase } from "./utils.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
+import { unifyAll } from "./unify.js";
 
 /**
  * Infers a type from an AST node
@@ -36,6 +37,8 @@ export const infer = (ast, env) => {
       return inferDoExpression(ast, env);
     case ASTTypes.TypeAlias:
       return inferTypeAlias(ast, env);
+    case ASTTypes.VectorLiteral:
+      return inferVectorLiteral(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -171,4 +174,30 @@ const inferDoExpression = (node, env) => {
  */
 const inferTypeAlias = (node, env) => {
   return fromTypeAnnotation(node.type, env);
+};
+
+/**
+ * Infer the type of a VectorLiteral node
+ * @param {import("../parser/ast.js").VectorLiteral} node
+ * @param {TypeEnvironment} env
+ */
+const inferVectorLiteral = (node, env) => {
+  if (node.members.length === 0) {
+    // change this to never when we add union types
+    return Type.vector(Type.any);
+  }
+
+  const types = node.members.map((m) => infer(m, env));
+  const unified = unifyAll(...types);
+
+  if (unified === null && env.checkingOn) {
+    throw new TypeException(
+      `Incompatible types in Vector literal`,
+      node.srcloc
+    );
+  } else if (unified === null) {
+    return Type.any;
+  }
+
+  return unified;
 };
