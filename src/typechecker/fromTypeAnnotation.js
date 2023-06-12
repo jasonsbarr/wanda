@@ -10,7 +10,10 @@ import { Exception } from "../shared/exceptions.js";
  * @returns {import("./types.js").Type}
  */
 
-export const fromTypeAnnotation = (typeAnnotation, typeEnv) => {
+export const fromTypeAnnotation = (
+  typeAnnotation,
+  typeEnv = TypeEnvironment.new()
+) => {
   switch (typeAnnotation.kind) {
     case TATypes.NumberLiteral:
       return Type.number;
