@@ -39,6 +39,8 @@ export const infer = (ast, env) => {
       return inferTypeAlias(ast, env);
     case ASTTypes.VectorLiteral:
       return inferVectorLiteral(ast, env);
+    case ASTTypes.RecordLiteral:
+      return inferRecordLiteral(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -180,6 +182,7 @@ const inferTypeAlias = (node, env) => {
  * Infer the type of a VectorLiteral node
  * @param {import("../parser/ast.js").VectorLiteral} node
  * @param {TypeEnvironment} env
+ * @returns {import("./types").Vector}
  */
 const inferVectorLiteral = (node, env) => {
   if (node.members.length === 0) {
@@ -200,4 +203,19 @@ const inferVectorLiteral = (node, env) => {
   }
 
   return unified;
+};
+
+/**
+ * Infer the type of a RecordLiteral node
+ * @param {import("../parser/ast.js").RecordLiteral} node
+ * @param {TypeEnvironment} env
+ * @returns {import("./types").Object}
+ */
+const inferRecordLiteral = (node, env) => {
+  const properties = node.properties.map((prop) => ({
+    kind: Type.Type.Property,
+    name: prop.key.name,
+    type: infer(prop.value, env),
+  }));
+  return Type.object(properties);
 };
