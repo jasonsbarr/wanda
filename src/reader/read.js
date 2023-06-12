@@ -274,6 +274,7 @@ const readMemberExpression = (reader, left) => {
   const tok = reader.next();
   reader.expect(TokenTypes.Dot, tok.type);
   const property = readExpr(reader);
+  console.log(property);
   return {
     type: "MemberExpression",
     object: left,
@@ -311,7 +312,7 @@ const readForm = (reader) => {
   }
 };
 
-const getPrec = (token) => PREC[token.type] ?? 0;
+const getPrec = (token) => PREC[token?.type] ?? 0;
 
 /**
  * Reads expressions, including reader macros
@@ -343,7 +344,7 @@ export const read = (tokens) => {
   const form =
     reader.length === 0
       ? Token.new(TokenTypes.Nil, "nil", SrcLoc.new(0, 1, 1, "reader"))
-      : readForm(reader);
+      : readExpr(reader);
   let parseTree = cons(form, null);
 
   while (!reader.eof()) {
