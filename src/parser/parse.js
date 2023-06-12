@@ -104,14 +104,21 @@ const parseSetExpression = (expr) => {
 
 const convertVectorLiteralToVectorPattern = (parsedLhv) => {
   let members = [];
+  let rest = false;
   for (let mem of parsedLhv.members) {
+    if (mem instanceof Token && mem.type === TokenTypes.Amp) {
+      rest = true;
+      continue;
+    }
+
     if (mem.kind !== ASTTypes.Symbol) {
       throw new SyntaxException(mem.kind, mem.srcloc, ASTTypes.Symbol);
     }
+
     members.push(mem);
   }
 
-  return AST.VectorPattern(members, parsedLhv.srcloc);
+  return AST.VectorPattern(members, parsedLhv.srcloc, rest);
 };
 
 /**
@@ -159,8 +166,19 @@ const parseComplexForm = (form) => {
       return AST.RecordLiteral(properties, form.srcloc);
     }
     case "RecordPattern": {
-      const properties = form.properties.map(parseExpr);
-      return AST.RecordPattern(properties, form.srcloc);
+      let properties = [];
+      let rest = false;
+
+      for (let prop of form.properties) {
+        if (prop instanceof Token && prop.type === TokenTypes.Amp) {
+          rest = true;
+          continue;
+        }
+
+        properties.push(parseProperty(prop));
+      }
+
+      return AST.RecordPattern(properties, form.srcloc, rest);
     }
     case "MemberExpression": {
       const object = parseExpr(form.object);
@@ -214,6 +232,11 @@ const parseList = (form) => {
 const parseExpr = (form) => {
   if (form instanceof Cons) {
     return parseList(form);
+  }
+
+  if (form instanceof Token && form.type === TokenTypes.Amp) {
+    // Will be handled when parsing vector or record pattern
+    return form;
   }
 
   if (form instanceof Token) {
