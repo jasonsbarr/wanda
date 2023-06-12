@@ -1,4 +1,6 @@
 import { Token } from "../lexer/Token.js";
+import { TokenTypes } from "../lexer/TokenTypes.js";
+import { Exception } from "../shared/exceptions.js";
 
 /**
  * @class
@@ -35,6 +37,17 @@ export class Reader {
    */
   eof() {
     return this.pos >= this.length;
+  }
+
+  /**
+   * Checks expected token type against actual token type
+   * @param {TokenTypes} expected
+   * @param {TokenTypes} actual
+   */
+  expect(expected, actual) {
+    if (expected !== actual) {
+      throw new Exception(`Expected ${expected} token; got ${actual}`);
+    }
   }
 
   /**
