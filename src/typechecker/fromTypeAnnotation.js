@@ -48,7 +48,7 @@ export const fromTypeAnnotation = (
     case TATypes.Object: {
       const propTypes = typeAnnotation.properties.map((prop) => ({
         name: prop.name,
-        type: fromTypeAnnotation(prop.type, typeEnv),
+        type: fromTypeAnnotation(prop.propType, typeEnv),
       }));
       return Type.object(propTypes);
     }
