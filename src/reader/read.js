@@ -6,29 +6,29 @@ import { Cons, cons } from "../shared/cons.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
 /**
  * @typedef VectorLiteral
- * @prop {"VectorLiteral"} kind
+ * @prop {"VectorLiteral"} type
  * @prop {Form[]} members
  * @prop {SrcLoc} srcloc
  */
 
 /**
  * @typedef Property
- * @prop {"Property"} kind
- * @prop {Token} name
+ * @prop {"Property"} type
+ * @prop {Token} key
  * @prop {Form} value
  * @prop {SrcLoc} srcloc
  */
 
 /**
  * @typedef RecordLiteral
- * @prop {"RecordLiteral"} kind
+ * @prop {"RecordLiteral"} type
  * @prop {Property[]} properties
  * @prop {SrcLoc} srcloc
  */
 
 /**
  * @typedef RecordPattern
- * @prop {"RecordPattern"} kind
+ * @prop {"RecordPattern"} type
  * @prop {Token[]} properties
  * @prop {SrcLoc} srcloc
  */
@@ -130,6 +130,7 @@ const readVector = (reader) => {
   let tok = reader.next();
   const srcloc = tok.srcloc;
   tok = reader.peek();
+  /** @type {Form[]} */
   let members = [];
 
   while (tok.type !== TokenTypes.RBrack) {
@@ -138,7 +139,7 @@ const readVector = (reader) => {
   }
 
   return {
-    kind: "VectorLiteral",
+    type: "VectorLiteral",
     members,
     srcloc,
   };
@@ -158,10 +159,39 @@ const readMaybeRecord = (reader) => {
   tok = reader.lookahead(1);
 
   if (tok.type === TokenTypes.Keyword && tok.value === ":") {
+    // record literal = { prop : value, prop2: value2 }
     return readRecordLiteral(reader, srcloc);
   } else {
+    // record pattern = { prop, prop2 }
     return readRecordPattern(reader, srcloc);
   }
+};
+
+/**
+ * Reads a record property
+ * @param {Reader} reader
+ * @returns {Property}
+ */
+const readProperty = (reader) => {
+  let tok = reader.peek();
+  let srcloc = tok.srcloc;
+
+  reader.expect(TokenTypes.Symbol, tok.type);
+
+  const key = readExpr(reader);
+
+  tok = reader.peek();
+  reader.expect(":", tok.value);
+  reader.skip();
+
+  const value = readExpr(reader);
+
+  return {
+    type: "Property",
+    key,
+    value,
+    srcloc,
+  };
 };
 
 /**
@@ -170,7 +200,26 @@ const readMaybeRecord = (reader) => {
  * @param {SrcLoc} srcloc
  * @returns {RecordLiteral}
  */
-const readRecordLiteral = (reader, srcloc) => {};
+const readRecordLiteral = (reader, srcloc) => {
+  let tok = reader.peek();
+  /** @type {Property[]} */
+  let properties = [];
+
+  while (tok.type !== TokenTypes.RBrace) {
+    reader.expect(TokenTypes.Symbol, tok.type);
+    properties.push(readProperty(reader));
+    tok = reader.peek();
+  }
+
+  // skip closing brace
+  reader.skip();
+
+  return {
+    type: "RecordLiteral",
+    properties,
+    srcloc,
+  };
+};
 
 /**
  * Reads a record pattern
@@ -178,7 +227,27 @@ const readRecordLiteral = (reader, srcloc) => {};
  * @param {SrcLoc} srcloc
  * @returns {RecordPattern}
  */
-const readRecordPattern = (reader, srcloc) => {};
+const readRecordPattern = (reader, srcloc) => {
+  /** @type {Token[]} */
+  let properties = [];
+  let tok = reader.peek();
+
+  while (tok.type !== TokenTypes.RBrace) {
+    tok = reader.peek();
+    reader.expect(TokenTypes.Symbol, tok.type);
+    properties.push(readExpr(reader));
+    tok = reader.peek();
+  }
+
+  // skip closing brace
+  reader.skip();
+
+  return {
+    type: "RecordPattern",
+    properties,
+    srcloc,
+  };
+};
 
 /**
  * Reads a form from the token stream
