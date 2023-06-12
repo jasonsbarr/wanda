@@ -108,8 +108,8 @@ const convertVectorLiteralToVectorPattern = (parsedLhv) => {
       throw new SyntaxException(mem.kind, mem.srcloc, ASTTypes.Symbol);
     }
   }
-  parsedLhv.kind = ASTTypes.VectorPattern;
-  return parsedLhv;
+
+  return AST.VectorPattern(members, parsedLhv.srcloc);
 };
 
 /**
