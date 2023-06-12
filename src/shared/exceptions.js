@@ -57,9 +57,9 @@ export class SyntaxException extends Exception {
    */
   constructor(value, srcloc, expected = "") {
     super(
-      `Syntax Exception: invalid syntax ${value}${
-        expected ? ` (expected ${expected})` : ""
-      } found at ${srcloc.file} (${srcloc.line}:${srcloc.col})`
+      `Syntax Exception: invalid syntax ${value} found at ${srcloc.file} (${
+        srcloc.line
+      }:${srcloc.col})${expected ? ` (expected ${expected})` : ""}`
     );
   }
 }
