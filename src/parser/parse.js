@@ -150,15 +150,20 @@ const parseComplexForm = (form) => {
   switch (form.type) {
     case "VectorLiteral": {
       const members = form.members.map(parseExpr);
-      return { kind: ASTTypes.VectorLiteral, members, srcloc: form.srcloc };
+      return AST.VectorLiteral(members, form.srcloc);
     }
     case "RecordLiteral": {
       const properties = form.properties.map(parseProperty);
-      return { kind: ASTTypes.RecordLiteral, properties, srcloc: form.srcloc };
+      return AST.RecordLiteral(properties, form.srcloc);
     }
     case "RecordPattern": {
       const properties = form.properties.map(parseExpr);
-      return { kind: ASTTypes.RecordPattern, properties, srcloc: form.srcloc };
+      return AST.RecordPattern(properties, form.srcloc);
+    }
+    case "MemberExpression": {
+      const object = parseExpr(form.object);
+      const property = parseExpr(form.property);
+      return AST.MemberExpression(object, property, form.srcloc);
     }
     default:
       // this should never happen
@@ -174,7 +179,7 @@ const parseComplexForm = (form) => {
 const parseProperty = (form) => {
   const key = parseExpr(form.key);
   const value = parseExpr(form.value);
-  return { kind: ASTTypes.Property, key, value, srcloc: form.srcloc };
+  return AST.Property(key, value, form.srcloc);
 };
 
 /**

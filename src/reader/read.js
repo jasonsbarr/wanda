@@ -42,7 +42,7 @@ import { SrcLoc } from "../lexer/SrcLoc.js";
  */
 
 /**
- * @typedef {VectorLiteral|RecordLiteral|RecordPattern} ComplexForm
+ * @typedef {VectorLiteral|RecordLiteral|RecordPattern|MemberExpression} ComplexForm
  */
 
 /**
