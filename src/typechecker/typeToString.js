@@ -28,6 +28,12 @@ export const typeToString = (type) => {
       return `TypeAlias: ${type.name}, base: ${typeToString(type.base)}`;
     case TypeTypes.List:
       return `list (${typeToString(type.listType)})`;
+    case TypeTypes.Vector:
+      return `vector (${typeToString(type.vectorType)})`;
+    case TypeTypes.Object:
+      return `{ ${type.properties
+        .map((p) => `${p.name} : ${typeToString(p.type)}`)
+        .join(", ")} }`;
     default:
       throw new Exception(`String conversion not implemented for ${type.kind}`);
   }
