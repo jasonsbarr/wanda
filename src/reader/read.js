@@ -116,9 +116,7 @@ const readList = (reader) => {
   while (tok?.type !== TokenTypes.RParen) {
     if (!tok) {
       // Whoops, we're past the end of the token stream without ending the list
-      throw new Exception(
-        `Expected ); got EOF at ${lastTok.srcloc.line}:${lastTok.srcloc.col}`
-      );
+      throw new SyntaxException("EOF", lastTok.srcloc, ")");
     }
 
     list.append(readExpr(reader));
@@ -141,12 +139,18 @@ const readVector = (reader) => {
   // Get srcloc info from opening bracket and skip it
   let tok = reader.next();
   const srcloc = tok.srcloc;
+  let lastTok = tok;
   tok = reader.peek();
   /** @type {Form[]} */
   let members = [];
 
-  while (tok.type !== TokenTypes.RBrack) {
+  while (tok?.type !== TokenTypes.RBrack) {
+    if (!tok) {
+      throw new SyntaxException("EOF", lastTok.srcloc, "]");
+    }
+
     members.push(readExpr(reader));
+    lastTok = tok;
     tok = reader.peek();
   }
 
@@ -219,10 +223,16 @@ const readRecordLiteral = (reader, srcloc) => {
   let tok = reader.peek();
   /** @type {Property[]} */
   let properties = [];
+  let lastTok = tok;
 
-  while (tok.type !== TokenTypes.RBrace) {
+  while (tok?.type !== TokenTypes.RBrace) {
+    if (!tok) {
+      throw new SyntaxException("EOF", lastTok.srcloc, "}");
+    }
+
     reader.expect(TokenTypes.Symbol, tok.type);
     properties.push(readProperty(reader));
+    lastTok = tok;
     tok = reader.peek();
   }
 
@@ -246,11 +256,19 @@ const readRecordPattern = (reader, srcloc) => {
   /** @type {Token[]} */
   let properties = [];
   let tok = reader.peek();
+  let lastTok = tok;
 
-  while (tok.type !== TokenTypes.RBrace) {
+  while (tok?.type !== TokenTypes.RBrace) {
+    if (!tok) {
+      if (!tok) {
+        throw new SyntaxException("EOF", lastTok.srcloc, "}");
+      }
+    }
+
     tok = reader.peek();
     reader.expect(TokenTypes.Symbol, tok.type);
     properties.push(readExpr(reader));
+    lastTok = tok;
     tok = reader.peek();
   }
 
