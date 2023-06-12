@@ -252,4 +252,10 @@ export const AST = {
       srcloc,
     };
   },
+  VectorPattern() {},
+  VectorLiteral() {},
+  Property() {},
+  RecordPattern() {},
+  RecordLiteral() {},
+  MemberExpression() {},
 };
