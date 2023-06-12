@@ -1,6 +1,6 @@
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { Cons } from "../shared/cons.js";
-import { SyntaxException } from "../shared/exceptions.js";
+import { Exception } from "../shared/exceptions.js";
 
 /**
  * @enum {string}
@@ -13,6 +13,8 @@ export const TATypes = {
   NilLiteral: "NilLiteral",
   Symbol: "Symbol",
   List: "List",
+  Vector: "Vector",
+  Object: "Object",
 };
 /**
  * @typedef NumberAnnotation
@@ -45,17 +47,59 @@ export const TATypes = {
  * @prop {TypeAnnotation} listType
  */
 /**
+ * @typedef VectorAnn
+ * @prop {TATypes.Vector} kind
+ * @prop {TypeAnnotation} vectorType
+ */
+/**
+ * @typedef PropertyAnn
+ * @prop {string} name
+ * @prop {TypeAnnotation} propType
+ */
+/**
+ * @typedef ObjectAnn
+ * @prop {TATypes.Object} kind
+ * @prop {PropertyAnn[]} properties
+ */
+/**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {PrimitiveAnn|SymbolAnnotation|ListAnn} TypeAnnotation
+ * @typedef {PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
+ * @returns {ListAnn}
  */
 const parseListAnnotation = (type) => {
   const listType = parseTypeAnnotation(type);
   return { kind: TATypes.List, listType };
+};
+
+/**
+ * Parse the vectorType for a vector type annotation
+ * @returns {VectorAnn}
+ */
+const parseVectorAnnotation = (type) => {
+  const vectorType = parseTypeAnnotation(type);
+  return { kind: TATypes.Vector, vectorType };
+};
+
+/**
+ * Parse the ObjectType for an object type annotation
+ * @param {import("./ast.js").RecordLiteral}
+ * @returns {ObjectAnn}
+ */
+const parseObjectAnnotation = (annot) => {
+  /** @type {PropertyAnn[]} */
+  let properties = [];
+  for (let prop of annot.properties) {
+    const name = prop.key.value;
+    const propType = parseTypeAnnotation(prop.value);
+    properties.push({ name, propType });
+  }
+
+  return { kind: TATypes.Object, properties };
 };
 
 /**
@@ -76,6 +120,10 @@ export const parseTypeAnnotation = (annotation) => {
     annot = annotation;
   }
 
+  if (annot.type === "RecordLiteral") {
+    return parseObjectAnnotation(annot);
+  }
+
   if (annot.type === TokenTypes.Symbol) {
     switch (annot.value) {
       case "number":
@@ -91,9 +139,15 @@ export const parseTypeAnnotation = (annotation) => {
       case "list":
         // annotation is array with listType as 2nd member
         return parseListAnnotation(annotation[1]);
+      case "vector":
+        return parseVectorAnnotation(annotation[1]);
       default:
         // must be a named type
         return { kind: TATypes.Symbol, name: annot.value };
     }
   }
+
+  throw new Exception(
+    `Unknown type annotation kind ${JSON.stringify(annot, null, 2)}`
+  );
 };
