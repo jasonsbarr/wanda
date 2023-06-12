@@ -71,7 +71,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.VectorLiteral; members: AST[]}} VectorLiteral
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.VectorPattern; members: Symbol[]}} VectorPattern
+ * @typedef {ASTNode & {kind: ASTTypes.VectorPattern; members: Symbol[]; rest: boolean}} VectorPattern
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.Property; key: Symbol; value: AST}} Property
@@ -80,7 +80,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.RecordLiteral; properties: Property[]}} RecordLiteral
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: Symbol[]}} RecordPattern
+ * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: Symbol[]; rest: boolean}} RecordPattern
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: AST}} MemberExpression
@@ -256,13 +256,15 @@ export const AST = {
    * Constructs a VectorPattern AST node
    * @param {Symbol[]} members
    * @param {SrcLoc} srcloc
+   * @param {boolean} [rest=false]
    * @returns {VectorPattern}
    */
-  VectorPattern(members, srcloc) {
+  VectorPattern(members, srcloc, rest = false) {
     return {
       kind: ASTTypes.VectorPattern,
       members,
       srcloc,
+      rest,
     };
   },
   /**
@@ -297,13 +299,15 @@ export const AST = {
    * Constructs a RecordPattern AST node
    * @param {Symbol[]} properties
    * @param {SrcLoc} srcloc
+   * @param {boolean} [rest=false]
    * @returns {RecordPattern}
    */
-  RecordPattern(properties, srcloc) {
+  RecordPattern(properties, srcloc, rest = false) {
     return {
       kind: ASTTypes.RecordPattern,
       properties,
       srcloc,
+      rest,
     };
   },
   /**
