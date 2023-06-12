@@ -2,7 +2,7 @@ import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
 import { Cons } from "../shared/cons.js";
-import { AST } from "./ast.js";
+import { AST, ASTTypes } from "./ast.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
 import { parseTypeAnnotation } from "./parseTypeAnnotation.js";
 import { Token } from "../lexer/Token.js";
@@ -128,7 +128,36 @@ const parseTypeAlias = (form) => {
  * @param {import("../reader/read.js").ComplexForm} form
  * @returns {AST}
  */
-const parseComplexForm = (form) => {};
+const parseComplexForm = (form) => {
+  switch (form.type) {
+    case "VectorLiteral": {
+      const members = form.members.map(parseExpr);
+      return { kind: ASTTypes.VectorLiteral, members, srcloc: form.srcloc };
+    }
+    case "RecordLiteral": {
+      const properties = form.properties.map(parseProperty);
+      return { kind: ASTTypes.RecordLiteral, properties, srcloc: form.srcloc };
+    }
+    case "RecordPattern": {
+      const properties = form.properties.map(parseExpr);
+      return { kind: ASTTypes.RecordPattern, properties, srcloc: form.srcloc };
+    }
+    default:
+      // this should never happen
+      throw new SyntaxException(form.type, form.srcloc);
+  }
+};
+
+/**
+ * Parses an object property
+ * @param {import("../reader/read.js").Property} form
+ * @returns {import("./ast.js").Property}
+ */
+const parseProperty = (form) => {
+  const key = parseExpr(form.key);
+  const value = parseExpr(form.value);
+  return { kind: ASTTypes.Property, key, value, srcloc: form.srcloc };
+};
 
 /**
  * Parses a list form into AST
