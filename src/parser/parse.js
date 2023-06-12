@@ -175,7 +175,7 @@ const parseComplexForm = (form) => {
           continue;
         }
 
-        properties.push(prop);
+        properties.push(parseExpr(prop));
       }
 
       return AST.RecordPattern(properties, form.srcloc, rest);
