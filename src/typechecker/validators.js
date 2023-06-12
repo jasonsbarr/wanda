@@ -89,3 +89,12 @@ export const isList = (type) => {
 export const isVector = (type) => {
   return type.kind === TypeTypes.Vector;
 };
+
+/**
+ * Checks if current type is an object
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isObject = (type) => {
+  return type.kind === TypeTypes.Object;
+};
