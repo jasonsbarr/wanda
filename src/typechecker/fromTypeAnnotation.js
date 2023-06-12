@@ -38,6 +38,17 @@ export const fromTypeAnnotation = (typeAnnotation, typeEnv) => {
       const listType = fromTypeAnnotation(typeAnnotation.listType, typeEnv);
       return Type.list(listType);
     }
+    case TATypes.Vector: {
+      const vectorType = fromTypeAnnotation(typeAnnotation.vectorType, typeEnv);
+      return Type.vector(vectorType);
+    }
+    case TATypes.Object: {
+      const propTypes = typeAnnotation.properties.map((prop) => ({
+        name: prop.name,
+        type: fromTypeAnnotation(prop.type, typeEnv),
+      }));
+      return Type.object(propTypes);
+    }
     default:
       throw new Exception(
         `Type not found for type annotation ${JSON.parse(
