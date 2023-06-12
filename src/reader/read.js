@@ -269,7 +269,6 @@ const readRecordPattern = (reader, srcloc) => {
     }
 
     tok = reader.peek();
-    reader.expect(TokenTypes.Symbol, tok.type);
     properties.push(readExpr(reader));
     lastTok = tok;
     tok = reader.peek();

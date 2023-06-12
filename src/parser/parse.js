@@ -175,6 +175,10 @@ const parseComplexForm = (form) => {
           continue;
         }
 
+        if (prop instanceof Token && prop.type !== TokenTypes.Symbol) {
+          throw new SyntaxException(prop.type, prop.srcloc, TokenTypes.Symbol);
+        }
+
         properties.push(parseExpr(prop));
       }
 
