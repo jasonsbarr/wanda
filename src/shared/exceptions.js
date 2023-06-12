@@ -75,3 +75,18 @@ export class TypeException extends Exception {
     super(`${msg} at ${srcloc.file} ${srcloc.line}:${srcloc.col}`);
   }
 }
+
+/**
+ * @class
+ * @desc Reference errors found during compilation
+ */
+export class ReferenceException extends Exception {
+  /**
+   * Constructs a ReferenceException
+   * @param {string} msg
+   * @param {SrcLoc} srcloc
+   */
+  constructor(msg, srcloc) {
+    super(`${msg} at ${srcloc.file} ${srcloc.line}:${srcloc.col}`);
+  }
+}

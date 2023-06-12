@@ -1,5 +1,5 @@
 import { ASTTypes } from "../parser/ast.js";
-import { Exception, SyntaxException } from "../shared/exceptions.js";
+import { ReferenceException, SyntaxException } from "../shared/exceptions.js";
 import { Namespace } from "../shared/Namespace.js";
 import { makeSymbol } from "../runtime/makeSymbol.js";
 
@@ -192,8 +192,9 @@ export class Emitter {
     const emittedName = ns.get(name);
 
     if (!emittedName) {
-      throw new Exception(
-        `The name ${name} has not been defined in ${node.srcloc.file} at ${node.srcloc.line}:${node.srcloc.col}`
+      throw new ReferenceException(
+        `Cannot access name ${name} before its definition`,
+        srcloc
       );
     }
 
@@ -225,8 +226,9 @@ export class Emitter {
     const name = node.lhv.name;
 
     if (ns.has(name)) {
-      throw new Exception(
-        `Name ${name} defined at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col} has already been accessed in the current namespace; cannot access identifier before defining it`
+      throw new ReferenceException(
+        `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
+        node.srcloc
       );
     }
 
