@@ -150,6 +150,9 @@ const readVector = (reader) => {
     tok = reader.peek();
   }
 
+  // skip closing bracket
+  reader.skip();
+
   return {
     type: "VectorLiteral",
     members,
