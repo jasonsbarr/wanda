@@ -17,6 +17,11 @@ export const ASTTypes = {
   SetExpression: "SetExpression",
   DoExpression: "DoExpression",
   TypeAlias: "TypeAlias",
+  VectorLiteral: "VectorLiteral",
+  VectorPattern: "VectorPattern",
+  Property: "Property",
+  RecordLiteral: "RecordLiteral",
+  RecordPattern: "RecordPattern",
 };
 
 /**
@@ -47,19 +52,34 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.Symbol; name: string}} Symbol
  */
 /**
- * @typedef {ASTNode & {func: AST, args: AST[]}} CallExpression
+ * @typedef {ASTNode & {kind: ASTTypes.CallExpression; func: AST, args: AST[]}} CallExpression
  */
 /**
- * @typedef {ASTNode & {lhv: AST, expression: AST, typeAnnotation?: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
+ * @typedef {ASTNode & {kind: ASTTypes.VariableDeclaration; lhv: AST, expression: AST, typeAnnotation?: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
  */
 /**
- * @typedef {ASTNode & {lhv: AST, expression: AST}} SetExpression
+ * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: AST, expression: AST}} SetExpression
  */
 /**
- * @typedef {ASTNode & {body: AST[]}} DoExpression
+ * @typedef {ASTNode & {kind: ASTTypes.DoExpression; body: AST[]}} DoExpression
  */
 /**
- * @typedef {ASTNode & {name: string; type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
+ * @typedef {ASTNode & {kind: ASTTypes.TypeAlias; name: string; type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.VectorLiteral; members: AST[]}} VectorLiteral
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.VectorPattern; members: Symbol[]}} VectorPattern
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.Property; key: Symbol; value: AST}} Property
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.RecordLiteral; properties: Property[]}} RecordLiteral
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: Symbol[]}} RecordPattern
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
