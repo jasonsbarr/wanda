@@ -83,7 +83,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: Symbol[]; rest: boolean}} RecordPattern
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: AST}} MemberExpression
+ * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: Symbol}} MemberExpression
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive

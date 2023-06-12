@@ -6,6 +6,7 @@ import { isSubtype } from "./isSubtype.js";
 import { getAliasBase } from "./utils.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 import { unifyAll } from "./unify.js";
+import { propType } from "./propType.js";
 
 /**
  * Infers a type from an AST node
@@ -218,4 +219,35 @@ const inferRecordLiteral = (node, env) => {
     type: infer(prop.value, env),
   }));
   return Type.object(properties);
+};
+
+/**
+ * Infer the type of a MemberExpression node
+ * @param {import("../parser/ast.js").MemberExpression} node
+ * @param {TypeEnvironment} env
+ * @returns {import("./types").Type}
+ */
+const inferMemberExpression = (node, env) => {
+  const prop = node.property;
+  const object = infer(node.object, env);
+
+  if (!Type.isObject(object)) {
+    throw new TypeException(
+      `Member expression expects object type; ${Type.toString(object)} given`,
+      node.srcloc
+    );
+  }
+
+  const type = propType(object, prop.name);
+
+  if (!type) {
+    throw new TypeException(
+      `Property ${prop.name} not found on object of type ${Type.toString(
+        object
+      )}`,
+      node.srcloc
+    );
+  }
+
+  return type;
 };
