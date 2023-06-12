@@ -80,3 +80,12 @@ export const isTypeAlias = (type) => {
 export const isList = (type) => {
   return type.kind === TypeTypes.List;
 };
+
+/**
+ * Checks if current type is a vector
+ * @param {import("./types").Type} type
+ * @returns {boolean}
+ */
+export const isVector = (type) => {
+  return type.kind === TypeTypes.Vector;
+};

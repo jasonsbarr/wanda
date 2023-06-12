@@ -36,7 +36,7 @@ export const fromTypeAnnotation = (typeAnnotation, typeEnv) => {
     }
     case TATypes.List: {
       const listType = fromTypeAnnotation(typeAnnotation.listType, typeEnv);
-      return Type.listType(listType);
+      return Type.list(listType);
     }
     default:
       throw new Exception(
