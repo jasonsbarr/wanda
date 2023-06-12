@@ -42,6 +42,8 @@ export const infer = (ast, env) => {
       return inferVectorLiteral(ast, env);
     case ASTTypes.RecordLiteral:
       return inferRecordLiteral(ast, env);
+    case ASTTypes.MemberExpression:
+      return inferMemberExpression(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
