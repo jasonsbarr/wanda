@@ -103,10 +103,12 @@ const parseSetExpression = (expr) => {
 };
 
 const convertVectorLiteralToVectorPattern = (parsedLhv) => {
+  let members = [];
   for (let mem of parsedLhv.members) {
     if (mem.kind !== ASTTypes.Symbol) {
       throw new SyntaxException(mem.kind, mem.srcloc, ASTTypes.Symbol);
     }
+    members.push(mem);
   }
 
   return AST.VectorPattern(members, parsedLhv.srcloc);
