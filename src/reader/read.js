@@ -125,7 +125,24 @@ const readList = (reader) => {
  * @param {Reader} reader
  * @returns {VectorLiteral}
  */
-const readVector = (reader) => {};
+const readVector = (reader) => {
+  // Get srcloc info from opening bracket and skip it
+  let tok = reader.next();
+  const srcloc = tok.srcloc;
+  tok = reader.peek();
+  let members = [];
+
+  while (tok.type !== TokenTypes.RBrack) {
+    members.push(readExpr(reader));
+    tok = reader.peek();
+  }
+
+  return {
+    kind: "VectorLiteral",
+    members,
+    srcloc,
+  };
+};
 
 /**
  * Reads either a record literal or a record pattern
@@ -137,11 +154,7 @@ const readMaybeRecord = (reader) => {
   const srcloc = tok.srcloc;
   // First token after brace should always be a symbol
   tok = reader.peek();
-
-  if (tok.type !== TokenTypes.Symbol) {
-    throw new SyntaxException(tok.value, tok.srcloc);
-  }
-
+  reader.expect(TokenTypes.Symbol, tok.type);
   tok = reader.lookahead(1);
 
   if (tok.type === TokenTypes.Keyword && tok.value === ":") {
