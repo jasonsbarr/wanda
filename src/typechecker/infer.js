@@ -4,6 +4,7 @@ import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { isSubtype } from "./isSubtype.js";
 import { getAliasBase } from "./utils.js";
+import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 
 /**
  * Infers a type from an AST node
@@ -169,5 +170,5 @@ const inferDoExpression = (node, env) => {
  * @returns {import("./types").Type}
  */
 const inferTypeAlias = (node, env) => {
-  return Type.fromTypeAnnotation(node.type, env);
+  return fromTypeAnnotation(node.type, env);
 };

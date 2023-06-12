@@ -3,7 +3,7 @@ import { Exception } from "../shared/exceptions.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { check } from "./check.js";
 import { infer } from "./infer.js";
-import { Type } from "./Type.js";
+import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
@@ -199,7 +199,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkTypeAlias(node, env) {
-    const type = Type.fromTypeAnnotation(node.type, env);
+    const type = fromTypeAnnotation(node.type, env);
     env.setType(node.name, type);
     return { ...node, type };
   }
@@ -212,7 +212,7 @@ export class TypeChecker {
    */
   checkVariableDeclaration(node, env) {
     if (node.typeAnnotation) {
-      const annotType = Type.fromTypeAnnotation(node.typeAnnotation, env);
+      const annotType = fromTypeAnnotation(node.typeAnnotation, env);
       check(node.expression, annotType, env);
       env.checkingOn = true;
       env.set(node.lhv.name, annotType);
