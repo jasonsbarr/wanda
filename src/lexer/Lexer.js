@@ -4,6 +4,7 @@ import { SrcLoc } from "./SrcLoc.js";
 import { Token } from "./Token.js";
 import { TokenTypes } from "./TokenTypes.js";
 import {
+  isAmp,
   isBoolean,
   isColon,
   isDash,
@@ -259,6 +260,12 @@ export class Lexer {
         this.input.next(); // skip over punc
         tokens.push(
           Token.new(TokenTypes.Dot, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isAmp(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.Amp, ch, SrcLoc.new(pos, line, col, file))
         );
       } else {
         const { pos, line, col, file } = this.input;

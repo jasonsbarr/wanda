@@ -17,6 +17,7 @@ export const isLBrack = (ch) => /\[/.test(ch);
 export const isRBrack = (ch) => /\]/.test(ch);
 export const isLBrace = (ch) => /\{/.test(ch);
 export const isRBrace = (ch) => /\}/.test(ch);
+export const isAmp = (ch) => /&/.test(ch);
 
 // String matchers
 export const isNumber = (str) => /^[+-]?\d+(\.\d+)?$/.test(str);
