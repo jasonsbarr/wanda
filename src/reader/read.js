@@ -295,7 +295,6 @@ const readMemberExpression = (reader, left) => {
   const tok = reader.next();
   reader.expect(TokenTypes.Dot, tok.type);
   const property = readExpr(reader);
-  console.log(property);
   return {
     type: "MemberExpression",
     object: left,
