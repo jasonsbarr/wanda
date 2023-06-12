@@ -252,10 +252,40 @@ export const AST = {
       srcloc,
     };
   },
-  VectorPattern() {},
-  VectorLiteral() {},
-  Property() {},
-  RecordPattern() {},
-  RecordLiteral() {},
-  MemberExpression() {},
+  /**
+   * Constructs a VectorPattern AST node
+   * @param {import("../reader/read.js").VectorLiteral} form
+   * @returns {VectorPattern}
+   */
+  VectorPattern(form) {},
+  /**
+   * Constructs a VectorLiteral AST node
+   * @param {import("../reader/read.js").VectorLiteral} form
+   * @returns {VectorLiteral}
+   */
+  VectorLiteral(form) {},
+  /**
+   * Constructs a Property AST node
+   * @param {import("../reader/read.js").Property} form
+   * @returns {Property}
+   */
+  Property(form) {},
+  /**
+   * Constructs a RecordPattern AST node
+   * @param {import("../reader/read.js").RecordPattern} form
+   * @returns {RecordPattern}
+   */
+  RecordPattern(form) {},
+  /**
+   * Constructs a RecordLiteral AST node
+   * @param {import("../reader/read.js").RecordLiteral} form
+   * @returns {RecordLiteral}
+   */
+  RecordLiteral(form) {},
+  /**
+   * Constructs a MemberExpression AST node
+   * @param {import("../reader/read.js").MemberExpression} form
+   * @returns {MemberExpression}
+   */
+  MemberExpression(form) {},
 };
