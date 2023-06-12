@@ -16,9 +16,9 @@ export const check = (ast, type, env) => {
 
   if (!isSubtype(inferredType, type)) {
     throw new TypeException(
-      `Type ${Type.toString(inferredType)} is not a subtype of ${Type.toString(
-        type
-      )}`,
+      `Type ${Type.toString(
+        inferredType
+      )} is not a valid subtype of ${Type.toString(type)}`,
       ast.srcloc
     );
   }
