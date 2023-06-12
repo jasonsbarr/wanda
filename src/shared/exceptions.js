@@ -50,7 +50,7 @@ export class Exception extends Error {
  */
 export class SyntaxException extends Exception {
   /**
-   *
+   * Constructs a SyntaxException
    * @param {string} value
    * @param {SrcLoc} srcloc
    */
@@ -58,5 +58,20 @@ export class SyntaxException extends Exception {
     super(
       `Syntax Exception: invalid syntax ${value} found at ${srcloc.file} (${srcloc.line}:${srcloc.col})`
     );
+  }
+}
+
+/**
+ * @class
+ * @desc Type errors found during type checking
+ */
+export class TypeException extends Exception {
+  /**
+   * Constructs a TypeException
+   * @param {string} msg
+   * @param {SrcLoc} srcloc
+   */
+  constructor(msg, srcloc) {
+    super(`${msg} at ${srcloc.file} ${srcloc.line}:${srcloc.col}`);
   }
 }
