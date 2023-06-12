@@ -50,7 +50,6 @@ const parseCall = (callExpression) => {
 
   return AST.CallExpression(parsedFunc, parsedArgs, srcloc);
 };
-
 /**
  * Parses a variable declaration
  * @param {List} decl
@@ -71,6 +70,10 @@ const parseVariableDeclaration = (decl) => {
     parsedLhv = parseExpr(lhv);
   }
 
+  if (parsedLhv.kind === ASTTypes.VectorLiteral) {
+    parsedLhv = convertVectorLiteralToVectorPattern(parsedLhv);
+  }
+
   const parsedExpression = parseExpr(expression);
 
   return AST.VariableDeclaration(
@@ -89,9 +92,24 @@ const parseVariableDeclaration = (decl) => {
 const parseSetExpression = (expr) => {
   const [_, lhv, expression] = expr;
   const parsedLhv = parseExpr(lhv);
+
+  if (parsedLhv.kind === ASTTypes.VectorLiteral) {
+    parsedLhv = convertVectorLiteralToVectorPattern(parsedLhv);
+  }
+
   const parsedExpression = parseExpr(expression);
 
   return AST.SetExpression(parsedLhv, parsedExpression, expr.srcloc);
+};
+
+const convertVectorLiteralToVectorPattern = (parsedLhv) => {
+  for (let mem of parsedLhv.members) {
+    if (mem.kind !== ASTTypes.Symbol) {
+      throw new SyntaxException(mem.kind, mem.srcloc, ASTTypes.Symbol);
+    }
+  }
+  parsedLhv.kind = ASTTypes.VectorPattern;
+  return parsedLhv;
 };
 
 /**

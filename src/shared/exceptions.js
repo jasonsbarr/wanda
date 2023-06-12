@@ -53,10 +53,13 @@ export class SyntaxException extends Exception {
    * Constructs a SyntaxException
    * @param {string} value
    * @param {SrcLoc} srcloc
+   * @param {string} [expected=""]
    */
-  constructor(value, srcloc) {
+  constructor(value, srcloc, expected = "") {
     super(
-      `Syntax Exception: invalid syntax ${value} found at ${srcloc.file} (${srcloc.line}:${srcloc.col})`
+      `Syntax Exception: invalid syntax ${value}${
+        expected ? ` (expected ${expected})` : ""
+      } found at ${srcloc.file} (${srcloc.line}:${srcloc.col})`
     );
   }
 }
