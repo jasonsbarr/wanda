@@ -5,6 +5,7 @@ import { Cons } from "../shared/cons.js";
 import { AST } from "./ast.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
 import { parseTypeAnnotation } from "./parseTypeAnnotation.js";
+import { Token } from "../lexer/Token.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST
@@ -123,6 +124,13 @@ const parseTypeAlias = (form) => {
 };
 
 /**
+ * Parses a complex form passed in from the reader
+ * @param {import("../reader/read.js").ComplexForm} form
+ * @returns {AST}
+ */
+const parseComplexForm = (form) => {};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -154,7 +162,11 @@ const parseExpr = (form) => {
     return parseList(form);
   }
 
-  return parsePrimitive(form);
+  if (form instanceof Token) {
+    return parsePrimitive(form);
+  }
+
+  return parseComplexForm(form);
 };
 
 /**
