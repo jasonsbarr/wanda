@@ -180,17 +180,39 @@ export class Emitter {
    * @returns {string}
    */
   emitRecordLiteral(node, ns) {
-    let code = "({";
+    let code = "rt.makeObject({";
 
     for (let prop of node.properties) {
-      code += `"${prop.key.name}": ${this.emit(prop.value, ns)}`;
+      code += `"${prop.key.name}": ${this.emit(prop.value, ns)}, `;
     }
 
     code += "})";
     return code;
   }
 
-  emitRecordPattern(node, ns) {}
+  /**
+   * Generates code from a RecordPattern node
+   * @param {import("../parser/ast.js").RecordPattern} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitRecordPattern(node, ns) {
+    let code = "{";
+
+    let i = 0;
+    for (let prop of node.properties) {
+      if (node.rest && i === node.properties.length - 1) {
+        code += `...${makeSymbol(prop.name)}`;
+      } else {
+        code += `${makeSymbol(prop.name)}, `;
+      }
+
+      i++;
+    }
+
+    code += "}";
+    return code;
+  }
 
   /**
    * Generates code from a SetExpression AST node
@@ -254,18 +276,39 @@ export class Emitter {
    * @returns {string}
    */
   emitVariableDeclaration(node, ns) {
-    const name = node.lhv.name;
+    if (node.lhv.kind === ASTTypes.Symbol) {
+      const name = node.lhv.name;
 
-    if (ns.has(name)) {
-      throw new ReferenceException(
-        `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
-        node.srcloc
-      );
+      if (ns.has(name)) {
+        throw new ReferenceException(
+          `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
+          node.srcloc
+        );
+      }
+
+      const translatedName = makeSymbol(name);
+      ns.set(name, translatedName);
+      return `var ${translatedName} = ${this.emit(node.expression, ns)};`;
+    } else if (node.lhv.kind === ASTTypes.RecordPattern) {
+      for (let prop of node.lhv.properties) {
+        if (ns.has(prop.name)) {
+          throw new ReferenceException(
+            `Name ${prop.name} has already been accessed in the current namespace; cannot access name before its definition`,
+            node.lhv.srcloc
+          );
+        }
+
+        const translatedName = makeSymbol(prop.name);
+        ns.set(prop.name, translatedName);
+      }
+
+      const code = `var ${this.emit(node.lhv, ns)} = ${this.emit(
+        node.expression,
+        ns
+      )}`;
+      console.log(code);
+      return code;
     }
-
-    const translatedName = makeSymbol(name);
-    ns.set(name, translatedName);
-    return `var ${translatedName} = ${this.emit(node.expression, ns)};`;
   }
 
   emitVectorLiteral(node, ns) {}
