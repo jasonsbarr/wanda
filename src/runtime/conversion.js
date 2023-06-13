@@ -1,4 +1,5 @@
-import { hasDict, makeObject } from "./object.js";
+import { makeFunction } from "./makeFunction.js";
+import { hasDict, hasMetaField, makeObject } from "./object.js";
 import { makeKeyword } from "./utils.js";
 
 /**
@@ -8,6 +9,10 @@ import { makeKeyword } from "./utils.js";
  */
 export const makeWandaValue = (val) => {
   switch (typeof val) {
+    case "function":
+      if (!hasMetaField(val, "wanda")) {
+        return makeFunction(val);
+      }
     case "object":
       if (Array.isArray(val)) {
         return val;
