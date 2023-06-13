@@ -59,7 +59,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.VariableDeclaration; lhv: AST, expression: AST, typeAnnotation?: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: AST, expression: AST}} SetExpression
+ * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: LHV, expression: AST}} SetExpression
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.DoExpression; body: AST[]}} DoExpression
@@ -84,6 +84,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: Symbol}} MemberExpression
+ */
+/**
+ * @typedef {Symbol|VectorPattern|RecordPattern} LHV
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
