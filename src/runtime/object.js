@@ -1,5 +1,6 @@
 import { RuntimeException } from "../shared/exceptions.js";
 import { hasProperty, hasMethod as hM } from "../shared/utils.js";
+import { makeSymbol } from "./makeSymbol.js";
 import { makeKeyword } from "./utils.js";
 
 const DICT = makeKeyword("dict");
@@ -129,6 +130,10 @@ export const makeObject = (obj) => {
     writable: false,
     value: obj.constructor?.name ?? "WandaObject",
   });
+
+  for (let [k, v] of Object.entries(obj)) {
+    newObj[makeSymbol(k)] = v;
+  }
 
   return newObj;
 };
