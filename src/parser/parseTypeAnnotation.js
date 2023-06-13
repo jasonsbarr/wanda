@@ -6,6 +6,7 @@ import { Exception } from "../shared/exceptions.js";
  * @enum {string}
  */
 export const TATypes = {
+  AnyLiteral: "AnyLiteral",
   NumberLiteral: "NumberLiteral",
   StringLiteral: "StringLiteral",
   BooleanLiteral: "BooleanLiteral",
@@ -16,6 +17,10 @@ export const TATypes = {
   Vector: "Vector",
   Object: "Object",
 };
+/**
+ * @typedef AnyAnnotation
+ * @prop {TATypes.AnyLiteral} kind
+ */
 /**
  * @typedef NumberAnnotation
  * @prop {TATypes.NumberLiteral} kind
@@ -65,7 +70,7 @@ export const TATypes = {
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn} TypeAnnotation
+ * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -126,6 +131,8 @@ export const parseTypeAnnotation = (annotation) => {
 
   if (annot.type === TokenTypes.Symbol) {
     switch (annot.value) {
+      case "any":
+        return { kind: TATypes.AnyLiteral };
       case "number":
         return { kind: TATypes.NumberLiteral };
       case "string":

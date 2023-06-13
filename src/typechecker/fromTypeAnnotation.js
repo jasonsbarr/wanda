@@ -15,6 +15,8 @@ export const fromTypeAnnotation = (
   typeEnv = TypeEnvironment.new()
 ) => {
   switch (typeAnnotation.kind) {
+    case TATypes.AnyLiteral:
+      return Type.any;
     case TATypes.NumberLiteral:
       return Type.number;
     case TATypes.StringLiteral:
