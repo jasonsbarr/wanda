@@ -173,7 +173,22 @@ export class Emitter {
     return code;
   }
 
-  emitRecordLiteral(node, ns) {}
+  /**
+   * Generates code from a RecordLiteral node
+   * @param {import("../parser/ast.js").RecordLiteral} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitRecordLiteral(node, ns) {
+    let code = "({";
+
+    for (let prop of node.properties) {
+      code += `"${prop.key.name}": ${this.emit(prop.value, ns)}`;
+    }
+
+    code += "})";
+    return code;
+  }
 
   emitRecordPattern(node, ns) {}
 
