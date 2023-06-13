@@ -2,6 +2,7 @@ import { makeFunction } from "./makeFunction.js";
 import * as utils from "./utils.js";
 import * as obj from "./object.js";
 import { makeSymbol } from "./makeSymbol.js";
+import { makeWandaValue } from "./conversion.js";
 
 /**
  * @typedef Runtime
@@ -17,5 +18,6 @@ export const makeRuntime = () => {
     makeFunction,
     ...obj,
     makeSymbol,
+    makeWandaValue,
   };
 };
