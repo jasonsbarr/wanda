@@ -1,5 +1,7 @@
 import { makeFunction } from "./makeFunction.js";
-import { isNil, isTruthy, isFalsy } from "./utils.js";
+import * as utils from "./utils.js";
+import * as obj from "./object.js";
+import { makeSymbol } from "./makeSymbol.js";
 
 /**
  * @typedef Runtime
@@ -11,9 +13,9 @@ import { isNil, isTruthy, isFalsy } from "./utils.js";
  */
 export const makeRuntime = () => {
   return {
-    isFalsy,
-    isNil,
-    isTruthy,
+    ...utils,
     makeFunction,
+    ...obj,
+    makeSymbol,
   };
 };
