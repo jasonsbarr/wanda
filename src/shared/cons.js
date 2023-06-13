@@ -108,6 +108,10 @@ export class Cons extends Array {
     return undefined;
   }
 
+  toArray() {
+    return [...this];
+  }
+
   *[Symbol.iterator]() {
     let value = this.car;
     let tail = this.cdr;
