@@ -1,8 +1,7 @@
 import { SrcLoc } from "../lexer/SrcLoc.js";
 
 /**
- * @class
- * @desc Base error class for Wanda
+ * Base error class for Wanda
  * @prop {string} msg
  * @prop {string[]} stack
  */
@@ -45,8 +44,7 @@ export class Exception extends Error {
 }
 
 /**
- * @class
- * @desc Syntax errors found during lexing, reading, and parsing
+ * Syntax errors found during lexing, reading, and parsing
  */
 export class SyntaxException extends Exception {
   /**
@@ -65,8 +63,7 @@ export class SyntaxException extends Exception {
 }
 
 /**
- * @class
- * @desc Type errors found during type checking
+ * Type errors found during type checking
  */
 export class TypeException extends Exception {
   /**
@@ -80,8 +77,7 @@ export class TypeException extends Exception {
 }
 
 /**
- * @class
- * @desc Reference errors found during compilation
+ *  Reference errors found during compilation
  */
 export class ReferenceException extends Exception {
   /**
@@ -91,5 +87,28 @@ export class ReferenceException extends Exception {
    */
   constructor(msg, srcloc) {
     super(`${msg} at ${srcloc.file} ${srcloc.line}:${srcloc.col}`);
+  }
+}
+
+/**
+ * Errors found during runtime
+ */
+export class RuntimeException extends Exception {
+  /**
+   * Constructs a RuntimeException
+   * @param {string} msg
+   */
+  constructor(msg) {
+    super(msg);
+    this[Symbol.for(":dict")] = { message: msg };
+  }
+
+  /**
+   * Static constructor
+   * @param {string} msg
+   * @returns {RuntimeException}
+   */
+  static new(msg) {
+    return new RuntimeException(msg);
   }
 }
