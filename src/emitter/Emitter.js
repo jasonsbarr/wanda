@@ -133,7 +133,7 @@ export class Emitter {
    * @returns {string}
    */
   emitNil(node, ns) {
-    return `rt.makeWandaValue(${"null"})`;
+    return `rt.makeWandaValue(${null})`;
   }
 
   /**
