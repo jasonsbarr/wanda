@@ -22,6 +22,10 @@ export class Cons extends Array {
    * @returns {Cons}
    */
   static of(first, ...args) {
+    if (first === undefined) {
+      return null;
+    }
+
     let list = cons(first, null);
 
     for (let arg of args) {
