@@ -143,7 +143,7 @@ export class Emitter {
    * @returns {string}
    */
   emitNumber(node, ns) {
-    return `rt.makeWandaValue(${node.value})`;
+    return `rt.makeNumber("${node.value}")`;
   }
 
   /**

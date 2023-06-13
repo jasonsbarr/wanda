@@ -4,6 +4,7 @@ import * as utils from "./utils.js";
 import * as obj from "./object.js";
 import { makeSymbol } from "./makeSymbol.js";
 import { makeWandaValue, makeJSValue } from "./conversion.js";
+import { makeNumber } from "./number.js";
 
 /**
  * @typedef Runtime
@@ -23,6 +24,7 @@ import { makeWandaValue, makeJSValue } from "./conversion.js";
  * @prop {Function} getMetaField
  * @prop {Function} addMetaField
  * @prop {Function} makeObject
+ * @prop {Function} makeNumber
  * @prop {Function} failRuntime
  * @prop {Function} fail
  */
@@ -39,5 +41,6 @@ export const makeRuntime = () => {
     makeWandaValue,
     makeJSValue,
     fail,
+    makeNumber,
   };
 };
