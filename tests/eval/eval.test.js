@@ -1,6 +1,11 @@
 import vm from "vm";
 import { EVAL } from "../../src/cli/eval.js";
 import { compileAndBuild } from "../../src/cli/compileAndBuild.js";
+import { build } from "../../src/cli/build.js";
+import { emitGlobalEnv } from "../../src/emitter/emitGlobalEnv.js";
+import { compile } from "../../src/cli/compile.js";
+import { makeGlobalTypeEnv } from "../../src/typechecker/makeGlobalTypeEnv.js";
+import { makeGlobalNameMap } from "../../src/runtime/makeGlobals.js";
 
 test("should evaluate an integer properly", () => {
   const input = "15";
@@ -58,10 +63,14 @@ test("should evaluate nested call expressions properly", () => {
   expect(vm.runInThisContext(built)).toEqual(8);
 });
 
-test.skip("should return the value of the last expression in a program", () => {
+test("should return the value of the last expression in a program", () => {
   const input = `(+ 1 2)
 (append "Hello, " "world")`;
-  const built = compileAndBuild(input, { fileName: "test-input" });
+  const globalCode = build(emitGlobalEnv());
+  vm.runInThisContext(globalCode);
+  const globalEnv = makeGlobalNameMap();
+  const typeEnv = makeGlobalTypeEnv();
+  const compiled = compile(input, "test-input", globalEnv, typeEnv);
 
-  expect(vm.runInThisContext(built)).toEqual("Hello, world");
+  expect(vm.runInThisContext(compiled)).toEqual("Hello, world");
 });
