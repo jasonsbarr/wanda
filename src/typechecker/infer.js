@@ -234,15 +234,19 @@ const inferMemberExpression = (node, env) => {
   const object = infer(node.object, env);
 
   if (!Type.isObject(object)) {
-    throw new TypeException(
-      `Member expression expects object type; ${Type.toString(object)} given`,
-      node.srcloc
-    );
+    if (env.checkingOn) {
+      throw new TypeException(
+        `Member expression expects object type; ${Type.toString(object)} given`,
+        node.srcloc
+      );
+    } else {
+      return Type.any;
+    }
   }
 
   const type = propType(object, prop.name);
 
-  if (!type) {
+  if (!type && env.checkingOn) {
     throw new TypeException(
       `Property ${prop.name} not found on object of type ${Type.toString(
         object
@@ -251,5 +255,5 @@ const inferMemberExpression = (node, env) => {
     );
   }
 
-  return type;
+  return type ?? Type.any;
 };
