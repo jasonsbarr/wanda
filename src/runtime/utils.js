@@ -18,3 +18,10 @@ export const isFalsy = (val) => val === false || isNil(val);
  * @returns {boolean}
  */
 export const isTruthy = (val) => !isFalsy(val);
+
+/**
+ * Makes a string into a Wanda keyword
+ * @param {string} str
+ * @returns {symbol}
+ */
+export const makeKeyword = (str) => Symbol.for(`:${str}`);
