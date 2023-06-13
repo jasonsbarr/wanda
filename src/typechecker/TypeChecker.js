@@ -115,7 +115,9 @@ export class TypeChecker {
     return { ...node, type: infer(node, env) };
   }
 
-  checkMemberExpression(node, env) {}
+  checkMemberExpression(node, env) {
+    return { ...node, type: infer(node, env) };
+  }
 
   /**
    * Type checks a nil literal
@@ -158,7 +160,9 @@ export class TypeChecker {
     return { ...node, type };
   }
 
-  checkRecordLiteral(node, env) {}
+  checkRecordLiteral(node, env) {
+    return { ...node, type: infer(node, env) };
+  }
 
   /**
    * Type checks a set expression
@@ -228,5 +232,13 @@ export class TypeChecker {
     return { ...node, type };
   }
 
-  checkVectorLiteral(node, env) {}
+  /**
+   * Type checks a vector literal
+   * @param {import("../parser/ast.js").VectorLiteral} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkVectorLiteral(node, env) {
+    return { ...node, type: infer(node, env) };
+  }
 }
