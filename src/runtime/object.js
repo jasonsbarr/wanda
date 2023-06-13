@@ -118,7 +118,18 @@ export const addMetaField = (obj, field, value) => {
  */
 export const makeObject = (obj) => {
   let newObj = {};
-  addMetaField(newObj, DICT, obj);
+  addMetaField(newObj, "dict", obj);
+  addMetaField(newObj, "constructor", function (...args) {
+    return new obj.constructor(...args);
+  });
+
+  Object.defineProperty(newObj[makeKeyword("constructor")], "name", {
+    configurable: false,
+    enumerable: false,
+    writable: false,
+    value: obj.constructor?.name ?? "WandaObject",
+  });
+
   return newObj;
 };
 
