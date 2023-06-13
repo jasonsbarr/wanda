@@ -9,11 +9,17 @@ import { makeKeyword } from "./utils.js";
  */
 export const makeWandaValue = (val) => {
   switch (typeof val) {
+    case "undefined":
+      return null;
     case "function":
       if (!hasMetaField(val, "wanda")) {
         return makeFunction(val);
       }
     case "object":
+      if (val === null) {
+        return null;
+      }
+
       if (Array.isArray(val)) {
         return val;
       }
@@ -29,6 +35,10 @@ export const makeWandaValue = (val) => {
 };
 
 export const makeJSValue = (val) => {
+  if (val === null) {
+    return null;
+  }
+
   switch (typeof val) {
     case "object":
       if (hasDict(val)) {

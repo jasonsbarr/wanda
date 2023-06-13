@@ -77,7 +77,7 @@ export class Emitter {
    * @returns {string}
    */
   emitBoolean(node, ns) {
-    return node.value;
+    return `rt.makeWandaValue(${node.value})`;
   }
 
   /**
@@ -133,7 +133,7 @@ export class Emitter {
    * @returns {string}
    */
   emitNil(node, ns) {
-    return "null";
+    return `rt.makeWandaValue(${"null"})`;
   }
 
   /**
@@ -143,7 +143,7 @@ export class Emitter {
    * @returns {string}
    */
   emitNumber(node, ns) {
-    return node.value;
+    return `rt.makeWandaValue(${node.value})`;
   }
 
   /**
@@ -178,7 +178,7 @@ export class Emitter {
    * @returns {string}
    */
   emitString(node, ns) {
-    return "`" + node.value.slice(1, -1) + "`";
+    return `rt.makeWandaValue(${"`" + node.value.slice(1, -1) + "`"})`;
   }
 
   /**
