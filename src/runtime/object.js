@@ -131,6 +131,7 @@ export const makeObject = (obj) => {
     value: obj.constructor?.name ?? "WandaObject",
   });
 
+  // to allow destructuring
   for (let [k, v] of Object.entries(obj)) {
     newObj[makeSymbol(k)] = v;
   }
