@@ -67,6 +67,12 @@ export class TypeChecker {
         return this.checkDoExpression(node, env);
       case ASTTypes.TypeAlias:
         return this.checkTypeAlias(node, env);
+      case ASTTypes.MemberExpression:
+        return this.checkMemberExpression(node, env);
+      case ASTTypes.RecordLiteral:
+        return this.checkMemberExpression(node, env);
+      case ASTTypes.VectorLiteral:
+        return this.checkVectorLiteral(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
