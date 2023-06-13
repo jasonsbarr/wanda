@@ -3,13 +3,14 @@ import { makeFunction } from "./makeFunction.js";
 import * as utils from "./utils.js";
 import * as obj from "./object.js";
 import { makeSymbol } from "./makeSymbol.js";
-import { makeWandaValue } from "./conversion.js";
+import { makeWandaValue, makeJSValue } from "./conversion.js";
 
 /**
  * @typedef Runtime
  * @prop {Function} makeFunction
  * @prop {Function} makeSymbol
  * @prop {Function} makeWandaValue
+ * @prop {Function} makeJSValue
  * @prop {Function} isNil
  * @prop {Function} isFalsy
  * @prop {Function} isTruthy
@@ -36,6 +37,7 @@ export const makeRuntime = () => {
     ...obj,
     makeSymbol,
     makeWandaValue,
+    makeJSValue,
     fail,
   };
 };

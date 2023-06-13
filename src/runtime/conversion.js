@@ -1,4 +1,5 @@
-import { makeObject } from "./object.js";
+import { hasDict, makeObject } from "./object.js";
+import { makeKeyword } from "./utils.js";
 
 /**
  * Converts a JS value into a Wanda value
@@ -17,6 +18,17 @@ export const makeWandaValue = (val) => {
       }
 
       return makeObject(val);
+    default:
+      return val;
+  }
+};
+
+export const makeJSValue = (val) => {
+  switch (typeof val) {
+    case "object":
+      if (hasDict(val)) {
+        return val[makeKeyword("dict")];
+      }
     default:
       return val;
   }
