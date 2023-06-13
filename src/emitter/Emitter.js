@@ -126,6 +126,8 @@ export class Emitter {
     return `Symbol.for("${node.value}")`;
   }
 
+  emitMemberExpression(node, ns) {}
+
   /**
    * Generates code from a Nil AST node
    * @param {import("../parser/ast.js").NilLiteral} node
@@ -160,6 +162,10 @@ export class Emitter {
 
     return code;
   }
+
+  emitRecordLiteral(node, ns) {}
+
+  emitRecordPattern(node, ns) {}
 
   /**
    * Generates code from a SetExpression AST node
@@ -233,9 +239,11 @@ export class Emitter {
     }
 
     const translatedName = makeSymbol(name);
-
     ns.set(name, translatedName);
-
     return `var ${translatedName} = ${this.emit(node.expression, ns)};`;
   }
+
+  emitVectorLiteral(node, ns) {}
+
+  emitVectorPattern(node, ns) {}
 }
