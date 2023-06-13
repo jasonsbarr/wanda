@@ -65,6 +65,16 @@ export class Emitter {
         return this.emitDoExpression(node, ns);
       case ASTTypes.TypeAlias:
         return this.emitTypeAlias(node, ns);
+      case ASTTypes.MemberExpression:
+        return this.emitMemberExpression(node, ns);
+      case ASTTypes.RecordLiteral:
+        return this.emitRecordLiteral(node, ns);
+      case ASTTypes.RecordPattern:
+        return this.emitRecordPattern(node, ns);
+      case ASTTypes.VectorLiteral:
+        return this.emitVectorLiteral(node, ns);
+      case ASTTypes.VectorPattern:
+        return this.emitVectorPattern(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
