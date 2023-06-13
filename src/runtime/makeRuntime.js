@@ -1,3 +1,4 @@
+import { fail } from "../shared/fail.js";
 import { makeFunction } from "./makeFunction.js";
 import * as utils from "./utils.js";
 import * as obj from "./object.js";
@@ -22,6 +23,7 @@ import { makeWandaValue } from "./conversion.js";
  * @prop {Function} addMetaField
  * @prop {Function} makeObject
  * @prop {Function} failRuntime
+ * @prop {Function} fail
  */
 /**
  * Creates a Wanda runtime
@@ -34,5 +36,6 @@ export const makeRuntime = () => {
     ...obj,
     makeSymbol,
     makeWandaValue,
+    fail,
   };
 };
