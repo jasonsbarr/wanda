@@ -241,9 +241,9 @@ export class TypeChecker {
     if (node.lhv.kind === ASTTypes.Symbol) {
       env.set(node.lhv.name, type);
     } else if (node.lhv.kind === ASTTypes.VectorPattern) {
-      if (!Type.isVector(type)) {
+      if (!Type.isVector(type) && !Type.isList(type)) {
         throw new TypeException(
-          `Cannot destructure non-vector type with vector pattern`,
+          `Vector pattern destructuring must take a vector or list type`,
           node.srcloc
         );
       } else {
