@@ -8,8 +8,13 @@ export const emitGlobalEnv = () => {
     ROOT_PATH,
     "./src/runtime/makeGlobals.js"
   )}";
+import { makeRuntime } from "${path.join(
+    ROOT_PATH,
+    "./src/runtime/makeRuntime.js"
+  )}";
 
 const globalEnv = makeGlobal();
+const rt = makeRuntime();
 `;
 
   for (let [k] of globalEnv) {
