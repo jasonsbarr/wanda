@@ -173,6 +173,13 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkSetExpression(node, env) {
+    if (node.lhv.kind !== ASTTypes.Symbol) {
+      throw new TypeException(
+        `Cannot use destructuring with set! assignment`,
+        node.srcloc
+      );
+    }
+
     if (env.checkingOn) {
       const nameType = env.getType(node.lhv.name);
       check(node.expression, nameType, env);
