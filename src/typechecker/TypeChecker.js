@@ -115,6 +115,8 @@ export class TypeChecker {
     return { ...node, type: infer(node, env) };
   }
 
+  checkMemberExpression(node, env) {}
+
   /**
    * Type checks a nil literal
    * @param {import("../parser/ast").NilLiteral} node
@@ -155,6 +157,8 @@ export class TypeChecker {
 
     return { ...node, type };
   }
+
+  checkRecordLiteral(node, env) {}
 
   /**
    * Type checks a set expression
@@ -223,4 +227,6 @@ export class TypeChecker {
     env.set(node.lhv.name, type);
     return { ...node, type };
   }
+
+  checkVectorLiteral(node, env) {}
 }
