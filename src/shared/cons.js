@@ -36,6 +36,15 @@ export class Cons extends Array {
   }
 
   /**
+   * Converts an iterable to a list
+   * @param {Array} iter
+   * @returns {Cons}
+   */
+  static from(iter) {
+    return Cons.of(...iter);
+  }
+
+  /**
    * Get the head of the Cons cell
    */
   get car() {
