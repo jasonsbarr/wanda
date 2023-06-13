@@ -7,6 +7,21 @@ import { makeWandaValue } from "./conversion.js";
 /**
  * @typedef Runtime
  * @prop {Function} makeFunction
+ * @prop {Function} makeSymbol
+ * @prop {Function} makeWandaValue
+ * @prop {Function} isNil
+ * @prop {Function} isFalsy
+ * @prop {Function} isTruthy
+ * @prop {Function} makeKeyword
+ * @prop {Function} hasDict
+ * @prop {Function} hasField
+ * @prop {Function} hasMethod
+ * @prop {Function} getField
+ * @prop {Function} hasMetaField
+ * @prop {Function} getMetaField
+ * @prop {Function} addMetaField
+ * @prop {Function} makeObject
+ * @prop {Function} failRuntime
  */
 /**
  * Creates a Wanda runtime
