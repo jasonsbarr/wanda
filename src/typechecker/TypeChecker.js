@@ -1,9 +1,11 @@
 import { AST, ASTTypes } from "../parser/ast.js";
-import { Exception } from "../shared/exceptions.js";
+import { Exception, TypeException } from "../shared/exceptions.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { check } from "./check.js";
 import { infer } from "./infer.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
+import { Type } from "./Type.js";
+import { propType } from "./propType.js";
 
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
@@ -219,16 +221,73 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkVariableDeclaration(node, env) {
+    let type;
+
     if (node.typeAnnotation) {
-      const annotType = fromTypeAnnotation(node.typeAnnotation, env);
-      check(node.expression, annotType, env);
+      type = fromTypeAnnotation(node.typeAnnotation, env);
+      check(node.expression, type, env);
       env.checkingOn = true;
-      env.set(node.lhv.name, annotType);
-      return { ...node, type: annotType };
+    } else {
+      type = infer(node, env);
     }
 
-    const type = infer(node, env);
-    env.set(node.lhv.name, type);
+    if (node.lhv.kind === ASTTypes.Symbol) {
+      env.set(node.lhv.name, type);
+    } else if (node.lhv.kind === ASTTypes.VectorPattern) {
+      if (!Type.isVector(type)) {
+        throw new TypeException(
+          `Cannot destructure non-vector type with vector pattern`,
+          node.srcloc
+        );
+      } else {
+        let i = 0;
+        for (let mem of node.lhv.members) {
+          if (node.lhv.rest && i === node.lhv.members.length - 1) {
+            env.set(mem.name, type);
+          } else {
+            env.set(mem.name, type.vectorType);
+          }
+          i++;
+        }
+      }
+    } else if (node.lhv.kind === ASTTypes.RecordPattern) {
+      if (!Type.isObject(type)) {
+        throw new TypeException(
+          `Cannot destructure non-object type with record pattern`,
+          node.srcloc
+        );
+      } else {
+        let i = 0;
+        /** @type {string[]} */
+        let used = [];
+        for (let prop of node.lhv.properties) {
+          if (node.lhv.rest && i === node.lhv.properties.length - 1) {
+            const unusedProps = type.properties.filter(
+              (p) => !used.includes(p.name)
+            );
+
+            env.set(prop.name, Type.object(unusedProps));
+          } else {
+            const pType = propType(type, prop.name);
+
+            if (!pType) {
+              throw new TypeException(
+                `Property ${
+                  prop.name
+                } not found on object of type ${Type.toString(type)}`,
+                node.srcloc
+              );
+            }
+
+            env.set(prop.name, pType);
+            used.push(prop.name);
+          }
+
+          i++;
+        }
+      }
+    }
+
     return { ...node, type };
   }
 
