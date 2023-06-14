@@ -111,8 +111,17 @@ const convertVectorLiteralToVectorPattern = (parsedLhv) => {
       continue;
     }
 
-    if (mem.kind !== ASTTypes.Symbol) {
-      throw new SyntaxException(mem.kind, mem.srcloc, ASTTypes.Symbol);
+    if (mem.kind === ASTTypes.VectorLiteral) {
+      mem = convertVectorLiteralToVectorPattern(mem);
+    } else if (
+      mem.kind !== ASTTypes.Symbol &&
+      mem.kind !== ASTTypes.RecordPattern
+    ) {
+      throw new SyntaxException(
+        mem.kind,
+        mem.srcloc,
+        `${ASTTypes.Symbol} or ${ASTTypes.RecordPattern}`
+      );
     }
 
     members.push(mem);
