@@ -1,3 +1,4 @@
+import { hasDict } from "../runtime/object.js";
 import { Cons } from "../shared/cons.js";
 import { Exception } from "../shared/exceptions.js";
 
@@ -28,7 +29,9 @@ export const printString = (value, withQuotes) => {
         return printList(value);
       }
 
-      return JSON.stringify(value, null, 2);
+      return hasDict(value)
+        ? JSON.stringify(value.dict, null, 2)
+        : JSON.stringify(value, null, 2);
     default:
       throw new Exception(`Invalid print value ${value}`);
   }
