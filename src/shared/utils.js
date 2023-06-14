@@ -3,7 +3,7 @@
  * @param {any} obj
  * @returns {boolean}
  */
-export const isNullish = (obj) => obj != null;
+export const isNullish = (obj) => obj == null;
 
 /**
  * Checks if object has property prop
