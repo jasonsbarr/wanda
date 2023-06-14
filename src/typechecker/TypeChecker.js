@@ -106,11 +106,19 @@ export class TypeChecker {
    * @return {TypedAST}
    */
   checkDoExpression(node, env) {
+    /** @type {TypedAST[]} */
+    let body = [];
     for (let expr of node.body) {
-      this.check(expr, env);
+      const node = this.check(expr, env);
+      body.push(node);
     }
 
-    return { ...node, type: infer(node, env) };
+    return {
+      kind: node.kind,
+      body,
+      srcloc: node.srcloc,
+      type: infer(node, env),
+    };
   }
 
   /**
@@ -154,18 +162,22 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkProgram(node, env) {
+    /** @type {TypedAST[]} */
+    let body = [];
     let type;
     let i = 0;
     for (let expr of node.body) {
       if (i === node.body.length - 1) {
         const node = this.check(expr, env);
         type = node.type;
+        body.push(node);
       } else {
-        this.check(expr, env);
+        const node = this.check(expr, env);
+        body.push(node);
       }
     }
 
-    return { ...node, type };
+    return { kind: node.kind, body, srcloc: node.srcloc, type };
   }
 
   checkRecordLiteral(node, env) {
@@ -192,7 +204,13 @@ export class TypeChecker {
       return { ...node, type: nameType };
     }
 
-    return { ...node, type: infer(node, env) };
+    return {
+      kind: node.kind,
+      lhv: node.lhv,
+      expression: this.check(node.expression, env),
+      srcloc: node.srcloc,
+      type: infer(node, env),
+    };
   }
 
   /**
@@ -301,7 +319,13 @@ export class TypeChecker {
       }
     }
 
-    return { ...node, type };
+    return {
+      kind: node.kind,
+      lhv: node.lhv,
+      expression: this.check(node.expression, env),
+      srcloc: node.srcloc,
+      type,
+    };
   }
 
   /**
