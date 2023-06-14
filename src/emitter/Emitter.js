@@ -202,7 +202,7 @@ export class Emitter {
     let i = 0;
     for (let prop of node.properties) {
       if (node.rest && i === node.properties.length - 1) {
-        code += `...${makeSymbol(prop.name)}`;
+        break;
       } else {
         code += `${makeSymbol(prop.name)}, `;
       }
