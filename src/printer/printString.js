@@ -27,6 +27,8 @@ export const printString = (value, withQuotes) => {
       } else if (value.constructor?.name === "Cons") {
         return printList(value);
       }
+
+      return JSON.stringify(value, null, 2);
     default:
       throw new Exception(`Invalid print value ${value}`);
   }
