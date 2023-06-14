@@ -27,6 +27,8 @@ export const printString = (value, withQuotes) => {
         return "nil";
       } else if (value.constructor?.name === "Cons") {
         return printList(value);
+      } else if (Array.isArray(value)) {
+        return `[${value.map(printString).join(", ")}]`;
       }
 
       return hasDict(value)
