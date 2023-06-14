@@ -2,7 +2,7 @@ import { fail } from "../shared/fail.js";
 import { makeFunction } from "./makeFunction.js";
 import * as utils from "./utils.js";
 import * as obj from "./object.js";
-import { makeSymbol } from "./makeSymbol.js";
+import { makeSymbol, makeGenSym } from "./makeSymbol.js";
 import { makeWandaValue, makeJSValue } from "./conversion.js";
 import { makeNumber } from "./number.js";
 
@@ -10,6 +10,7 @@ import { makeNumber } from "./number.js";
  * @typedef Runtime
  * @prop {Function} makeFunction
  * @prop {Function} makeSymbol
+ * @prop {Function} makeGenSym
  * @prop {Function} makeWandaValue
  * @prop {Function} makeJSValue
  * @prop {Function} isNil
@@ -38,6 +39,7 @@ export const makeRuntime = () => {
     makeFunction,
     ...obj,
     makeSymbol,
+    makeGenSym,
     makeWandaValue,
     makeJSValue,
     fail,
