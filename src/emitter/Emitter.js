@@ -1,7 +1,7 @@
 import { ASTTypes } from "../parser/ast.js";
 import { ReferenceException, SyntaxException } from "../shared/exceptions.js";
 import { Namespace } from "../shared/Namespace.js";
-import { makeSymbol } from "../runtime/makeSymbol.js";
+import { makeGenSym, makeSymbol } from "../runtime/makeSymbol.js";
 
 /**
  * @typedef {import("../parser/ast.js").AST} AST
@@ -115,7 +115,7 @@ export class Emitter {
     let i = 0;
     for (let expr of node.body) {
       if (i === node.body.length - 1) {
-        code += "return " + this.emit(expr, childNs) + "\n";
+        code += "return " + this.emit(expr, childNs) + ";\n";
       } else {
         code += this.emit(expr, childNs) + "\n";
       }
@@ -202,6 +202,8 @@ export class Emitter {
     let i = 0;
     for (let prop of node.properties) {
       if (node.rest && i === node.properties.length - 1) {
+        // this is the rest variable, which requires extra work
+        // see: this.emitVariableDeclarationAssignment
         break;
       } else {
         code += `${makeSymbol(prop.name)}, `;
@@ -288,7 +290,6 @@ export class Emitter {
 
       const translatedName = makeSymbol(name);
       ns.set(name, translatedName);
-      return `var ${translatedName} = ${this.emit(node.expression, ns)};`;
     } else if (node.lhv.kind === ASTTypes.RecordPattern) {
       for (let prop of node.lhv.properties) {
         if (ns.has(prop.name)) {
@@ -301,11 +302,62 @@ export class Emitter {
         const translatedName = makeSymbol(prop.name);
         ns.set(prop.name, translatedName);
       }
+    } else if (node.lhv.kind === ASTTypes.VectorPattern) {
+    }
 
-      const code = `var ${this.emit(node.lhv, ns)} = ${this.emit(
-        node.expression,
-        ns
-      )}`;
+    return this.emitVariableDeclarationAssignment(
+      node.lhv,
+      node.expression,
+      ns
+    );
+  }
+
+  /**
+   * Generates code for a variable assignment.
+   * @param {import("../parser/ast.js").LHV} lhv
+   * @param {AST} rhv
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitVariableDeclarationAssignment(lhv, rhv, ns) {
+    if (lhv.kind === ASTTypes.Symbol) {
+      return `var ${makeSymbol(lhv.name)} = ${this.emit(rhv, ns)}`;
+    } else if (lhv.kind === ASTTypes.RecordPattern) {
+      // create random variable name to hold object being destructured
+      const gensym = makeGenSym();
+      let origObjCode = `var ${gensym} = ${this.emit(rhv, ns)}`;
+      let code = `${origObjCode};\n`;
+
+      code += `var ${this.emit(lhv, ns)} = ${gensym};\n`;
+
+      if (lhv.rest) {
+        /** @type {string[]} */
+        let used = [];
+        let i = 0;
+        for (let prop of lhv.properties) {
+          if (i !== lhv.properties.length - 1) {
+            used.push(prop.name);
+          }
+          i++;
+        }
+
+        /** @type {import("../parser/ast.js").Property[]} */
+        const unusedProps = rhv.type.properties.filter((p) => {
+          return !used.includes(p.name);
+        });
+
+        const restVarName = lhv.properties[lhv.properties.length - 1].name;
+        let restObjCode = "{ ";
+
+        for (let prop of unusedProps) {
+          restObjCode += `"${prop.name}": rt.getField(${gensym}, "${prop.name}"), `;
+        }
+
+        restObjCode += "}";
+
+        code += `var ${makeSymbol(restVarName)} = ${restObjCode}`;
+      }
+
       return code;
     }
   }
