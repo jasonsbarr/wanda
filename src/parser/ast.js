@@ -71,7 +71,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.VectorLiteral; members: AST[]}} VectorLiteral
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.VectorPattern; members: Symbol[]; rest: boolean}} VectorPattern
+ * @typedef {ASTNode & {kind: ASTTypes.VectorPattern; members: (Symbol|VectorPattern|RecordPattern)[]; rest: boolean}} VectorPattern
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.Property; key: Symbol; value: AST}} Property
@@ -80,7 +80,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.RecordLiteral; properties: Property[]}} RecordLiteral
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: Symbol[]; rest: boolean}} RecordPattern
+ * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: (Symbol|VectorPattern|RecordPattern)[]; rest: boolean}} RecordPattern
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: Symbol}} MemberExpression
