@@ -205,7 +205,7 @@ const inferVectorLiteral = (node, env) => {
     return Type.any;
   }
 
-  return unified;
+  return Type.vector(unified);
 };
 
 /**
