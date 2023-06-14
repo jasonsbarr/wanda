@@ -70,7 +70,7 @@ export class TypeChecker {
       case ASTTypes.MemberExpression:
         return this.checkMemberExpression(node, env);
       case ASTTypes.RecordLiteral:
-        return this.checkMemberExpression(node, env);
+        return this.checkRecordLiteral(node, env);
       case ASTTypes.VectorLiteral:
         return this.checkVectorLiteral(node, env);
       default:
