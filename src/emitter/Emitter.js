@@ -322,6 +322,7 @@ export class Emitter {
   emitVariableDeclarationAssignment(lhv, rhv, ns) {
     if (lhv.kind === ASTTypes.Symbol) {
       return `var ${makeSymbol(lhv.name)} = ${this.emit(rhv, ns)}`;
+    } else if (lhv.kind === ASTTypes.VectorPattern) {
     } else if (lhv.kind === ASTTypes.RecordPattern) {
       // create random variable name to hold object being destructured
       const gensym = makeGenSym();
@@ -362,7 +363,22 @@ export class Emitter {
     }
   }
 
-  emitVectorLiteral(node, ns) {}
+  /**
+   * Generates code from a VectorLiteral node
+   * @param {import("../parser/ast.js").VectorLiteral} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitVectorLiteral(node, ns) {
+    let code = "rt.makeWandaValue([";
+
+    for (let mem of node.members) {
+      code += `${this.emit(mem, ns)}, `;
+    }
+
+    code += "])";
+    return code;
+  }
 
   emitVectorPattern(node, ns) {}
 }
