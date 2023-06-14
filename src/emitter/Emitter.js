@@ -317,7 +317,8 @@ export class Emitter {
     } else if (lhv.kind === ASTTypes.VectorPattern) {
       return `var ${this.emit(lhv, ns)} = ${this.emit(rhv, ns)}`;
     } else if (lhv.kind === ASTTypes.RecordPattern) {
-      // create random variable name to hold object being destructured
+      /* Note that this DOES NOT WORK on rest variables in nested record patterns */
+      // create random variable to hold object being destructured
       const gensym = makeGenSym();
       let origObjCode = `var ${gensym} = ${this.emit(rhv, ns)}`;
       let code = `${origObjCode};\n`;
