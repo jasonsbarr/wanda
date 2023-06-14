@@ -206,7 +206,7 @@ export class Emitter {
         // see: this.emitVariableDeclarationAssignment
         break;
       } else {
-        code += `${makeSymbol(prop.name)}, `;
+        code += `${this.emit(prop, ns)}, `;
       }
 
       i++;
@@ -249,7 +249,7 @@ export class Emitter {
     if (!emittedName) {
       throw new ReferenceException(
         `Cannot access name ${name} before its definition`,
-        srcloc
+        node.srcloc
       );
     }
 
@@ -290,19 +290,11 @@ export class Emitter {
 
       const translatedName = makeSymbol(name);
       ns.set(name, translatedName);
-    } else if (node.lhv.kind === ASTTypes.RecordPattern) {
-      for (let prop of node.lhv.properties) {
-        if (ns.has(prop.name)) {
-          throw new ReferenceException(
-            `Name ${prop.name} has already been accessed in the current namespace; cannot access name before its definition`,
-            node.lhv.srcloc
-          );
-        }
-
-        const translatedName = makeSymbol(prop.name);
-        ns.set(prop.name, translatedName);
-      }
-    } else if (node.lhv.kind === ASTTypes.VectorPattern) {
+    } else if (
+      node.lhv.kind === ASTTypes.VectorPattern ||
+      node.lhv.kind === ASTTypes.RecordPattern
+    ) {
+      this.setPatternNamesInNamespace(node.lhv, ns);
     }
 
     return this.emitVariableDeclarationAssignment(
@@ -323,6 +315,7 @@ export class Emitter {
     if (lhv.kind === ASTTypes.Symbol) {
       return `var ${makeSymbol(lhv.name)} = ${this.emit(rhv, ns)}`;
     } else if (lhv.kind === ASTTypes.VectorPattern) {
+      return `var ${this.emit(lhv, ns)} = ${this.emit(rhv, ns)}`;
     } else if (lhv.kind === ASTTypes.RecordPattern) {
       // create random variable name to hold object being destructured
       const gensym = makeGenSym();
@@ -380,5 +373,53 @@ export class Emitter {
     return code;
   }
 
-  emitVectorPattern(node, ns) {}
+  /**
+   * Generates code from a VectorPattern node
+   * @param {import("../parser/ast.js").VectorPattern} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitVectorPattern(node, ns) {
+    let code = "[";
+
+    let i = 0;
+    for (let mem of node.members) {
+      if (node.rest && i === node.members.length - 1) {
+        code += `...${this.emit(mem, ns)}`;
+      } else {
+        code += `${this.emit(mem, ns)}, `;
+      }
+      i++;
+    }
+
+    code += "]";
+    return code;
+  }
+
+  /**
+   * Sets names from a vector or record pattern in the namespace so they can be emitted
+   * @param {import("../parser/ast.js").RecordPattern|import("../parser/ast.js").VectorPattern} pattern
+   * @param {Namespace} ns
+   */
+  setPatternNamesInNamespace(pattern, ns) {
+    const members =
+      pattern.kind === ASTTypes.RecordPattern
+        ? pattern.properties
+        : pattern.members;
+
+    for (let mem of members) {
+      if (mem.kind === ASTTypes.Symbol) {
+        if (ns.has(mem.name)) {
+          throw new ReferenceException(
+            `Name ${mem.name} has already been accessed in the current namespace; cannot access name before its definition`,
+            mem.srcloc
+          );
+        }
+
+        ns.set(mem.name, makeSymbol(mem.name));
+      } else {
+        this.setPatternNamesInNamespace(mem, ns);
+      }
+    }
+  }
 }
