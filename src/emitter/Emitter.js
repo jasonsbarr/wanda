@@ -306,7 +306,6 @@ export class Emitter {
         node.expression,
         ns
       )}`;
-      console.log(code);
       return code;
     }
   }
