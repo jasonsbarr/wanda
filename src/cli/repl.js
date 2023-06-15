@@ -61,7 +61,6 @@ export const repl = (mode = "repl") => {
           }
       }
     } catch (e) {
-      console.error(e.message);
       console.error(e.stack);
     }
   }
