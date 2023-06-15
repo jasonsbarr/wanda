@@ -136,7 +136,17 @@ export class Emitter {
     return `Symbol.for("${node.value}")`;
   }
 
-  emitMemberExpression(node, ns) {}
+  /**
+   * Generates code from a MemberExpression AST node
+   * @param {import("../parser/ast.js").MemberExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitMemberExpression(node, ns) {
+    return `rt.getField(${this.emit(node.object, ns)}, "${
+      node.property.name
+    }")`;
+  }
 
   /**
    * Generates code from a Nil AST node
