@@ -32,7 +32,7 @@ export const printString = (value, withQuotes) => {
       }
 
       return hasDict(value)
-        ? JSON.stringify(value.dict, null, 2)
+        ? JSON.stringify(value[Symbol.for(":dict")], null, 2)
         : JSON.stringify(value, null, 2);
     default:
       throw new Exception(`Invalid print value ${value}`);
