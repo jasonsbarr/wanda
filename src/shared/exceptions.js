@@ -13,7 +13,7 @@ export class Exception extends Error {
    */
   constructor(msg, stack = []) {
     super(msg);
-    this.stack = stack;
+    this.wandaStack = stack;
   }
 
   /**
@@ -21,7 +21,7 @@ export class Exception extends Error {
    * @param {string} frame
    */
   appendStack(frame) {
-    this.stack.push(frame);
+    this.wandaStack.push(frame);
   }
 
   /**
@@ -29,7 +29,7 @@ export class Exception extends Error {
    * @returns {string}
    */
   dumpStack() {
-    let stack = [...this.stack].reverse();
+    let stack = [...this.wandaStack].reverse();
 
     let dump = "";
 
