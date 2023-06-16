@@ -6,11 +6,28 @@ import { SyntaxException } from "../shared/exceptions.js";
  */
 export class Visitor {
   /**
+   * Constructs a Visitor
+   * @param {AST} program
+   */
+  constructor(program) {
+    this.program = program;
+  }
+
+  /**
+   * Static constructor
+   * @param {AST} program
+   * @returns {Visitor}
+   */
+  static new(program) {
+    return new Visitor(program);
+  }
+
+  /**
    * Visitor dispatch method
    * @param {AST} node
    * @returns {AST}
    */
-  visit(node) {
+  visit(node = this.program) {
     switch (node.kind) {
       case ASTTypes.Program:
         return this.visitProgram(node);
