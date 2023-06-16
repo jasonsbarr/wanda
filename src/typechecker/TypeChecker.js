@@ -276,7 +276,7 @@ export class TypeChecker {
           if (node.lhv.rest && i === node.lhv.members.length - 1) {
             env.set(mem.name, type);
           } else {
-            env.set(mem.name, type.vectorType);
+            env.set(mem.name, type.vectorType ? type.vectorType : type.listType);
           }
           i++;
         }
