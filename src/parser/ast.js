@@ -17,6 +17,12 @@ export const ASTTypes = {
   SetExpression: "SetExpression",
   DoExpression: "DoExpression",
   TypeAlias: "TypeAlias",
+  VectorLiteral: "VectorLiteral",
+  VectorPattern: "VectorPattern",
+  Property: "Property",
+  RecordLiteral: "RecordLiteral",
+  RecordPattern: "RecordPattern",
+  MemberExpression: "MemberExpression",
 };
 
 /**
@@ -47,25 +53,46 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.Symbol; name: string}} Symbol
  */
 /**
- * @typedef {ASTNode & {func: AST, args: AST[]}} CallExpression
+ * @typedef {ASTNode & {kind: ASTTypes.CallExpression; func: AST, args: AST[]}} CallExpression
  */
 /**
- * @typedef {ASTNode & {lhv: AST, expression: AST, typeAnnotation?: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
+ * @typedef {ASTNode & {kind: ASTTypes.VariableDeclaration; lhv: AST, expression: AST, typeAnnotation?: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
  */
 /**
- * @typedef {ASTNode & {lhv: AST, expression: AST}} SetExpression
+ * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: LHV, expression: AST}} SetExpression
  */
 /**
- * @typedef {ASTNode & {body: AST[]}} DoExpression
+ * @typedef {ASTNode & {kind: ASTTypes.DoExpression; body: AST[]}} DoExpression
  */
 /**
- * @typedef {ASTNode & {name: string; type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
+ * @typedef {ASTNode & {kind: ASTTypes.TypeAlias; name: string; type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.VectorLiteral; members: AST[]}} VectorLiteral
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.VectorPattern; members: (Symbol|VectorPattern|RecordPattern)[]; rest: boolean}} VectorPattern
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.Property; key: Symbol; value: AST}} Property
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.RecordLiteral; properties: Property[]}} RecordLiteral
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.RecordPattern; properties: (Symbol|VectorPattern|RecordPattern)[]; rest: boolean}} RecordPattern
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: Symbol}} MemberExpression
+ */
+/**
+ * @typedef {Symbol|VectorPattern|RecordPattern} LHV
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias} AST
  */
 export const AST = {
   /**
@@ -225,6 +252,92 @@ export const AST = {
       kind: ASTTypes.TypeAlias,
       name,
       type,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a VectorPattern AST node
+   * @param {Symbol[]} members
+   * @param {SrcLoc} srcloc
+   * @param {boolean} [rest=false]
+   * @returns {VectorPattern}
+   */
+  VectorPattern(members, srcloc, rest = false) {
+    return {
+      kind: ASTTypes.VectorPattern,
+      members,
+      srcloc,
+      rest,
+    };
+  },
+  /**
+   * Constructs a VectorLiteral AST node
+   * @param {AST[]} members
+   * @param {SrcLoc} srcloc
+   * @returns {VectorLiteral}
+   */
+  VectorLiteral(members, srcloc) {
+    return {
+      kind: ASTTypes.VectorLiteral,
+      members,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a Property AST node
+   * @param {Symbol} key
+   * @param {AST} value
+   * @param {SrcLoc} srcloc
+   * @returns {Property}
+   */
+  Property(key, value, srcloc) {
+    return {
+      kind: ASTTypes.Property,
+      key,
+      value,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a RecordPattern AST node
+   * @param {Symbol[]} properties
+   * @param {SrcLoc} srcloc
+   * @param {boolean} [rest=false]
+   * @returns {RecordPattern}
+   */
+  RecordPattern(properties, srcloc, rest = false) {
+    return {
+      kind: ASTTypes.RecordPattern,
+      properties,
+      srcloc,
+      rest,
+    };
+  },
+  /**
+   * Constructs a RecordLiteral AST node
+   * @param {Property[]} properties
+   * @param {SrcLoc} srcloc
+   * @returns {RecordLiteral}
+   */
+  RecordLiteral(properties, srcloc) {
+    return {
+      kind: ASTTypes.RecordLiteral,
+      properties,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a MemberExpression AST node
+   * @param {AST} object
+   * @param {AST} property
+   * @param {SrcLoc} srcloc
+   * @returns {MemberExpression}
+   */
+  MemberExpression(object, property, srcloc) {
+    return {
+      kind: ASTTypes.MemberExpression,
+      object,
+      property,
       srcloc,
     };
   },

@@ -10,4 +10,10 @@ export const TokenTypes = {
   Symbol: "Symbol",
   LParen: "LParen",
   RParen: "RParen",
+  LBrack: "LBrack",
+  RBrack: "RBrack",
+  LBrace: "LBrace",
+  RBrace: "RBrace",
+  Dot: "Dot",
+  Amp: "Amp",
 };

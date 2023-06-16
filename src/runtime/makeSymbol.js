@@ -1,4 +1,5 @@
 import objectHash from "object-hash";
+import { createId } from "@paralleldrive/cuid2";
 
 export const PREFIX = "$W_";
 
@@ -8,3 +9,9 @@ export const PREFIX = "$W_";
  * @returns {string}
  */
 export const makeSymbol = (str) => PREFIX + objectHash(str);
+
+/**
+ * Generates a random valid JavaScript identifier
+ * @returns {string}
+ */
+export const makeGenSym = () => PREFIX + createId();

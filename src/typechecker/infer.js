@@ -1,9 +1,12 @@
 import { AST, ASTTypes } from "../parser/ast.js";
-import { Exception } from "../shared/exceptions.js";
+import { Exception, TypeException } from "../shared/exceptions.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { isSubtype } from "./isSubtype.js";
 import { getAliasBase } from "./utils.js";
+import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
+import { unifyAll } from "./unify.js";
+import { propType } from "./propType.js";
 
 /**
  * Infers a type from an AST node
@@ -35,6 +38,12 @@ export const infer = (ast, env) => {
       return inferDoExpression(ast, env);
     case ASTTypes.TypeAlias:
       return inferTypeAlias(ast, env);
+    case ASTTypes.VectorLiteral:
+      return inferVectorLiteral(ast, env);
+    case ASTTypes.RecordLiteral:
+      return inferRecordLiteral(ast, env);
+    case ASTTypes.MemberExpression:
+      return inferMemberExpression(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -169,5 +178,82 @@ const inferDoExpression = (node, env) => {
  * @returns {import("./types").Type}
  */
 const inferTypeAlias = (node, env) => {
-  return Type.fromTypeAnnotation(node.type, env);
+  return fromTypeAnnotation(node.type, env);
+};
+
+/**
+ * Infer the type of a VectorLiteral node
+ * @param {import("../parser/ast.js").VectorLiteral} node
+ * @param {TypeEnvironment} env
+ * @returns {import("./types").Vector}
+ */
+const inferVectorLiteral = (node, env) => {
+  if (node.members.length === 0) {
+    // change this to never when we add union types
+    return Type.vector(Type.any);
+  }
+
+  const types = node.members.map((m) => infer(m, env));
+  const unified = unifyAll(...types);
+
+  if (unified === null && env.checkingOn) {
+    throw new TypeException(
+      `Incompatible types in Vector literal`,
+      node.srcloc
+    );
+  } else if (unified === null) {
+    return Type.any;
+  }
+
+  return Type.vector(unified);
+};
+
+/**
+ * Infer the type of a RecordLiteral node
+ * @param {import("../parser/ast.js").RecordLiteral} node
+ * @param {TypeEnvironment} env
+ * @returns {import("./types").Object}
+ */
+const inferRecordLiteral = (node, env) => {
+  const properties = node.properties.map((prop) => ({
+    kind: Type.Type.Property,
+    name: prop.key.name,
+    type: infer(prop.value, env),
+  }));
+  return Type.object(properties);
+};
+
+/**
+ * Infer the type of a MemberExpression node
+ * @param {import("../parser/ast.js").MemberExpression} node
+ * @param {TypeEnvironment} env
+ * @returns {import("./types").Type}
+ */
+const inferMemberExpression = (node, env) => {
+  const prop = node.property;
+  const object = infer(node.object, env);
+
+  if (!Type.isObject(object)) {
+    if (env.checkingOn) {
+      throw new TypeException(
+        `Member expression expects object type; ${Type.toString(object)} given`,
+        node.srcloc
+      );
+    } else {
+      return Type.any;
+    }
+  }
+
+  const type = propType(object, prop.name);
+
+  if (!type && env.checkingOn) {
+    throw new TypeException(
+      `Property ${prop.name} not found on object of type ${Type.toString(
+        object
+      )}`,
+      node.srcloc
+    );
+  }
+
+  return type ?? Type.any;
 };

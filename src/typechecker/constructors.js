@@ -57,4 +57,21 @@ export const typeAlias = (name, base) => ({
  * @param {import("./types").Type} listType
  * @returns {import("./types").List}
  */
-export const listType = (listType) => ({ kind: TypeTypes.List, listType });
+export const list = (listType) => ({ kind: TypeTypes.List, listType });
+
+/**
+ * Vector type constructor
+ * @param {import("./types.js").Type} vectorType
+ * @returns {import("./types.js").Vector}
+ */
+export const vector = (vectorType) => ({
+  kind: TypeTypes.Vector,
+  vectorType,
+});
+
+/**
+ * Object type constructor
+ * @param {import("./types.js").Property[]} properties
+ * @returns {import("./types.js").Object}
+ */
+export const object = (properties) => ({ kind: TypeTypes.Object, properties });

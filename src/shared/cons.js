@@ -22,6 +22,10 @@ export class Cons extends Array {
    * @returns {Cons}
    */
   static of(first, ...args) {
+    if (first === undefined) {
+      return null;
+    }
+
     let list = cons(first, null);
 
     for (let arg of args) {
@@ -29,6 +33,15 @@ export class Cons extends Array {
     }
 
     return list;
+  }
+
+  /**
+   * Converts an iterable to a list
+   * @param {Array} iter
+   * @returns {Cons}
+   */
+  static from(iter) {
+    return Cons.of(...iter);
   }
 
   /**
@@ -102,6 +115,10 @@ export class Cons extends Array {
     }
 
     return undefined;
+  }
+
+  toArray() {
+    return [...this];
   }
 
   *[Symbol.iterator]() {

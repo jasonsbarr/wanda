@@ -1,4 +1,5 @@
 import { Type } from "./Type.js";
+import { propType } from "./propType.js";
 
 /**
  * Checks if type1 is a subtype of type2
@@ -28,6 +29,18 @@ export const isSubtype = (type1, type2) => {
 
   if (Type.isList(type1) && Type.isList(type2)) {
     return isSubtype(type1.listType, type2.listType);
+  }
+
+  if (Type.isVector(type1) && Type.isVector(type2)) {
+    return isSubtype(type1.vectorType, type2.vectorType);
+  }
+
+  if (Type.isObject(type1) && Type.isObject(type2)) {
+    return type2.properties.every(({ name: type2name, type: type2type }) => {
+      const type1type = propType(type1, type2name);
+      if (!type1type) return false;
+      else return isSubtype(type1type, type2type);
+    });
   }
 
   return false;

@@ -1,8 +1,7 @@
 import { SrcLoc } from "../lexer/SrcLoc.js";
 
 /**
- * @class
- * @desc Base error class for Wanda
+ * Base error class for Wanda
  * @prop {string} msg
  * @prop {string[]} stack
  */
@@ -14,7 +13,7 @@ export class Exception extends Error {
    */
   constructor(msg, stack = []) {
     super(msg);
-    this.stack = stack;
+    this.wandaStack = stack;
   }
 
   /**
@@ -22,7 +21,7 @@ export class Exception extends Error {
    * @param {string} frame
    */
   appendStack(frame) {
-    this.stack.push(frame);
+    this.wandaStack.push(frame);
   }
 
   /**
@@ -30,7 +29,7 @@ export class Exception extends Error {
    * @returns {string}
    */
   dumpStack() {
-    let stack = [...this.stack].reverse();
+    let stack = [...this.wandaStack].reverse();
 
     let dump = "";
 
@@ -45,18 +44,62 @@ export class Exception extends Error {
 }
 
 /**
- * @class
- * @desc Syntax errors found during lexing, reading, and parsing
+ * Syntax errors found during lexing, reading, and parsing
  */
 export class SyntaxException extends Exception {
   /**
-   *
+   * Constructs a SyntaxException
    * @param {string} value
    * @param {SrcLoc} srcloc
+   * @param {string} [expected=""]
    */
-  constructor(value, srcloc) {
+  constructor(value, srcloc, expected = "") {
     super(
-      `Syntax Exception: invalid syntax ${value} found at ${srcloc.file} (${srcloc.line}:${srcloc.col})`
+      `Syntax Exception: invalid syntax ${value} found at ${srcloc.file} (${
+        srcloc.line
+      }:${srcloc.col})${expected ? ` (expected ${expected})` : ""}`
     );
+  }
+}
+
+/**
+ * Type errors found during type checking
+ */
+export class TypeException extends Exception {
+  /**
+   * Constructs a TypeException
+   * @param {string} msg
+   * @param {SrcLoc} srcloc
+   */
+  constructor(msg, srcloc) {
+    super(`${msg} at ${srcloc.file} ${srcloc.line}:${srcloc.col}`);
+  }
+}
+
+/**
+ *  Reference errors found during compilation
+ */
+export class ReferenceException extends Exception {
+  /**
+   * Constructs a ReferenceException
+   * @param {string} msg
+   * @param {SrcLoc} srcloc
+   */
+  constructor(msg, srcloc) {
+    super(`${msg} at ${srcloc.file} ${srcloc.line}:${srcloc.col}`);
+  }
+}
+
+/**
+ * Errors found during runtime
+ */
+export class RuntimeException extends Exception {
+  /**
+   * Constructs a RuntimeException
+   * @param {string} msg
+   */
+  constructor(msg) {
+    super(msg);
+    this[Symbol.for(":dict")] = { message: msg };
   }
 }
