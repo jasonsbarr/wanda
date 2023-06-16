@@ -1,9 +1,11 @@
 import { AST, ASTTypes } from "../parser/ast.js";
-import { Exception } from "../shared/exceptions.js";
+import { Exception, TypeException } from "../shared/exceptions.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { check } from "./check.js";
 import { infer } from "./infer.js";
+import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 import { Type } from "./Type.js";
+import { propType } from "./propType.js";
 
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
@@ -65,6 +67,12 @@ export class TypeChecker {
         return this.checkDoExpression(node, env);
       case ASTTypes.TypeAlias:
         return this.checkTypeAlias(node, env);
+      case ASTTypes.MemberExpression:
+        return this.checkMemberExpression(node, env);
+      case ASTTypes.RecordLiteral:
+        return this.checkRecordLiteral(node, env);
+      case ASTTypes.VectorLiteral:
+        return this.checkVectorLiteral(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
@@ -98,11 +106,19 @@ export class TypeChecker {
    * @return {TypedAST}
    */
   checkDoExpression(node, env) {
+    /** @type {TypedAST[]} */
+    let body = [];
     for (let expr of node.body) {
-      this.check(expr, env);
+      const node = this.check(expr, env);
+      body.push(node);
     }
 
-    return { ...node, type: infer(node, env) };
+    return {
+      kind: node.kind,
+      body,
+      srcloc: node.srcloc,
+      type: infer(node, env),
+    };
   }
 
   /**
@@ -112,6 +128,10 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkKeyword(node, env) {
+    return { ...node, type: infer(node, env) };
+  }
+
+  checkMemberExpression(node, env) {
     return { ...node, type: infer(node, env) };
   }
 
@@ -142,18 +162,26 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkProgram(node, env) {
+    /** @type {TypedAST[]} */
+    let body = [];
     let type;
     let i = 0;
     for (let expr of node.body) {
       if (i === node.body.length - 1) {
         const node = this.check(expr, env);
         type = node.type;
+        body.push(node);
       } else {
-        this.check(expr, env);
+        const node = this.check(expr, env);
+        body.push(node);
       }
     }
 
-    return { ...node, type };
+    return { kind: node.kind, body, srcloc: node.srcloc, type };
+  }
+
+  checkRecordLiteral(node, env) {
+    return { ...node, type: infer(node, env) };
   }
 
   /**
@@ -163,13 +191,26 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkSetExpression(node, env) {
+    if (node.lhv.kind !== ASTTypes.Symbol) {
+      throw new TypeException(
+        `Cannot use destructuring with set! assignment`,
+        node.srcloc
+      );
+    }
+
     if (env.checkingOn) {
       const nameType = env.getType(node.lhv.name);
       check(node.expression, nameType, env);
       return { ...node, type: nameType };
     }
 
-    return { ...node, type: infer(node, env) };
+    return {
+      kind: node.kind,
+      lhv: node.lhv,
+      expression: this.check(node.expression, env),
+      srcloc: node.srcloc,
+      type: infer(node, env),
+    };
   }
 
   /**
@@ -199,7 +240,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkTypeAlias(node, env) {
-    const type = Type.fromTypeAnnotation(node.type, env);
+    const type = fromTypeAnnotation(node.type, env);
     env.setType(node.name, type);
     return { ...node, type };
   }
@@ -211,16 +252,89 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkVariableDeclaration(node, env) {
+    let type;
+
     if (node.typeAnnotation) {
-      const annotType = Type.fromTypeAnnotation(node.typeAnnotation, env);
-      check(node.expression, annotType, env);
+      type = fromTypeAnnotation(node.typeAnnotation, env);
+      check(node.expression, type, env);
       env.checkingOn = true;
-      env.set(node.lhv.name, annotType);
-      return { ...node, type: annotType };
+    } else {
+      type = infer(node, env);
     }
 
-    const type = infer(node, env);
-    env.set(node.lhv.name, type);
-    return { ...node, type };
+    if (node.lhv.kind === ASTTypes.Symbol) {
+      env.set(node.lhv.name, type);
+    } else if (node.lhv.kind === ASTTypes.VectorPattern) {
+      if (!Type.isVector(type) && !Type.isList(type)) {
+        throw new TypeException(
+          `Vector pattern destructuring must take a vector or list type`,
+          node.srcloc
+        );
+      } else {
+        let i = 0;
+        for (let mem of node.lhv.members) {
+          if (node.lhv.rest && i === node.lhv.members.length - 1) {
+            env.set(mem.name, type);
+          } else {
+            env.set(mem.name, type.vectorType ? type.vectorType : type.listType);
+          }
+          i++;
+        }
+      }
+    } else if (node.lhv.kind === ASTTypes.RecordPattern) {
+      if (!Type.isObject(type)) {
+        throw new TypeException(
+          `Cannot destructure non-object type with record pattern`,
+          node.srcloc
+        );
+      } else {
+        let i = 0;
+        /** @type {string[]} */
+        let used = [];
+        for (let prop of node.lhv.properties) {
+          if (node.lhv.rest && i === node.lhv.properties.length - 1) {
+            const unusedProps = type.properties.filter(
+              (p) => !used.includes(p.name)
+            );
+
+            env.set(prop.name, Type.object(unusedProps));
+          } else {
+            const pType = propType(type, prop.name);
+
+            if (!pType) {
+              throw new TypeException(
+                `Property ${
+                  prop.name
+                } not found on object of type ${Type.toString(type)}`,
+                node.srcloc
+              );
+            }
+
+            env.set(prop.name, pType);
+            used.push(prop.name);
+          }
+
+          i++;
+        }
+      }
+    }
+
+    return {
+      kind: node.kind,
+      lhv: node.lhv,
+      expression: this.check(node.expression, env),
+      srcloc: node.srcloc,
+      type,
+    };
+  }
+
+  /**
+   * Type checks a vector literal
+   * @param {import("../parser/ast.js").VectorLiteral} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkVectorLiteral(node, env) {
+    return { ...node, type: infer(node, env) };
   }
 }

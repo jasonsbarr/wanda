@@ -2,9 +2,10 @@ import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
 import { Cons } from "../shared/cons.js";
-import { AST } from "./ast.js";
+import { AST, ASTTypes } from "./ast.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
 import { parseTypeAnnotation } from "./parseTypeAnnotation.js";
+import { Token } from "../lexer/Token.js";
 
 /**
  * @typedef {import("./ast.js").AST} AST
@@ -49,7 +50,6 @@ const parseCall = (callExpression) => {
 
   return AST.CallExpression(parsedFunc, parsedArgs, srcloc);
 };
-
 /**
  * Parses a variable declaration
  * @param {List} decl
@@ -70,6 +70,10 @@ const parseVariableDeclaration = (decl) => {
     parsedLhv = parseExpr(lhv);
   }
 
+  if (parsedLhv.kind === ASTTypes.VectorLiteral) {
+    parsedLhv = convertVectorLiteralToVectorPattern(parsedLhv);
+  }
+
   const parsedExpression = parseExpr(expression);
 
   return AST.VariableDeclaration(
@@ -88,9 +92,42 @@ const parseVariableDeclaration = (decl) => {
 const parseSetExpression = (expr) => {
   const [_, lhv, expression] = expr;
   const parsedLhv = parseExpr(lhv);
+
+  if (parsedLhv.kind === ASTTypes.VectorLiteral) {
+    parsedLhv = convertVectorLiteralToVectorPattern(parsedLhv);
+  }
+
   const parsedExpression = parseExpr(expression);
 
   return AST.SetExpression(parsedLhv, parsedExpression, expr.srcloc);
+};
+
+const convertVectorLiteralToVectorPattern = (parsedLhv) => {
+  let members = [];
+  let rest = false;
+  for (let mem of parsedLhv.members) {
+    if (mem instanceof Token && mem.type === TokenTypes.Amp) {
+      rest = true;
+      continue;
+    }
+
+    if (mem.kind === ASTTypes.VectorLiteral) {
+      mem = convertVectorLiteralToVectorPattern(mem);
+    } else if (
+      mem.kind !== ASTTypes.Symbol &&
+      mem.kind !== ASTTypes.RecordPattern
+    ) {
+      throw new SyntaxException(
+        mem.kind,
+        mem.srcloc,
+        `${ASTTypes.Symbol} or ${ASTTypes.RecordPattern}`
+      );
+    }
+
+    members.push(mem);
+  }
+
+  return AST.VectorPattern(members, parsedLhv.srcloc, rest);
 };
 
 /**
@@ -120,6 +157,62 @@ const parseTypeAlias = (form) => {
   const parsedType = parseTypeAnnotation(type);
 
   return AST.TypeAlias(name, parsedType, form.srcloc);
+};
+
+/**
+ * Parses a complex form passed in from the reader
+ * @param {import("../reader/read.js").ComplexForm} form
+ * @returns {AST}
+ */
+const parseComplexForm = (form) => {
+  switch (form.type) {
+    case "VectorLiteral": {
+      const members = form.members.map(parseExpr);
+      return AST.VectorLiteral(members, form.srcloc);
+    }
+    case "RecordLiteral": {
+      const properties = form.properties.map(parseProperty);
+      return AST.RecordLiteral(properties, form.srcloc);
+    }
+    case "RecordPattern": {
+      let properties = [];
+      let rest = false;
+
+      for (let prop of form.properties) {
+        if (prop instanceof Token && prop.type === TokenTypes.Amp) {
+          rest = true;
+          continue;
+        }
+
+        if (prop instanceof Token && prop.type !== TokenTypes.Symbol) {
+          throw new SyntaxException(prop.type, prop.srcloc, TokenTypes.Symbol);
+        }
+
+        properties.push(parseExpr(prop));
+      }
+
+      return AST.RecordPattern(properties, form.srcloc, rest);
+    }
+    case "MemberExpression": {
+      const object = parseExpr(form.object);
+      const property = parseExpr(form.property);
+      return AST.MemberExpression(object, property, form.srcloc);
+    }
+    default:
+      // this should never happen
+      throw new SyntaxException(form.type, form.srcloc);
+  }
+};
+
+/**
+ * Parses an object property
+ * @param {import("../reader/read.js").Property} form
+ * @returns {import("./ast.js").Property}
+ */
+const parseProperty = (form) => {
+  const key = parseExpr(form.key);
+  const value = parseExpr(form.value);
+  return AST.Property(key, value, form.srcloc);
 };
 
 /**
@@ -154,7 +247,16 @@ const parseExpr = (form) => {
     return parseList(form);
   }
 
-  return parsePrimitive(form);
+  if (form instanceof Token && form.type === TokenTypes.Amp) {
+    // Will be handled when parsing vector or record pattern
+    return form;
+  }
+
+  if (form instanceof Token) {
+    return parsePrimitive(form);
+  }
+
+  return parseComplexForm(form);
 };
 
 /**

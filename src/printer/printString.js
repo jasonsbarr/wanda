@@ -1,3 +1,4 @@
+import { hasDict } from "../runtime/object.js";
 import { Cons } from "../shared/cons.js";
 import { Exception } from "../shared/exceptions.js";
 
@@ -26,7 +27,13 @@ export const printString = (value, withQuotes) => {
         return "nil";
       } else if (value.constructor?.name === "Cons") {
         return printList(value);
+      } else if (Array.isArray(value)) {
+        return `[${value.map(printString).join(", ")}]`;
       }
+
+      return hasDict(value)
+        ? JSON.stringify(value[Symbol.for(":dict")], null, 2)
+        : JSON.stringify(value, null, 2);
     default:
       throw new Exception(`Invalid print value ${value}`);
   }

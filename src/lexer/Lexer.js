@@ -4,17 +4,22 @@ import { SrcLoc } from "./SrcLoc.js";
 import { Token } from "./Token.js";
 import { TokenTypes } from "./TokenTypes.js";
 import {
+  isAmp,
   isBoolean,
   isColon,
   isDash,
   isDigit,
   isDot,
   isDoubleQuote,
+  isLBrace,
+  isLBrack,
   isLParen,
   isNewline,
   isNil,
   isNumber,
   isPlus,
+  isRBrace,
+  isRBrack,
   isRParen,
   isSemicolon,
   isSymbolChar,
@@ -225,6 +230,42 @@ export class Lexer {
         this.input.next(); // skip over punc
         tokens.push(
           Token.new(TokenTypes.RParen, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isLBrack(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.LBrack, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isRBrack(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.RBrack, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isLBrace(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.LBrace, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isRBrace(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.RBrace, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isDot(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.Dot, ch, SrcLoc.new(pos, line, col, file))
+        );
+      } else if (isAmp(ch)) {
+        const { pos, line, col, file } = this.input;
+        this.input.next(); // skip over punc
+        tokens.push(
+          Token.new(TokenTypes.Amp, ch, SrcLoc.new(pos, line, col, file))
         );
       } else {
         const { pos, line, col, file } = this.input;

@@ -10,8 +10,13 @@ import { Exception } from "../shared/exceptions.js";
  * @returns {import("./types.js").Type}
  */
 
-export const fromTypeAnnotation = (typeAnnotation, typeEnv) => {
+export const fromTypeAnnotation = (
+  typeAnnotation,
+  typeEnv = TypeEnvironment.new()
+) => {
   switch (typeAnnotation.kind) {
+    case TATypes.AnyLiteral:
+      return Type.any;
     case TATypes.NumberLiteral:
       return Type.number;
     case TATypes.StringLiteral:
@@ -36,7 +41,18 @@ export const fromTypeAnnotation = (typeAnnotation, typeEnv) => {
     }
     case TATypes.List: {
       const listType = fromTypeAnnotation(typeAnnotation.listType, typeEnv);
-      return Type.listType(listType);
+      return Type.list(listType);
+    }
+    case TATypes.Vector: {
+      const vectorType = fromTypeAnnotation(typeAnnotation.vectorType, typeEnv);
+      return Type.vector(vectorType);
+    }
+    case TATypes.Object: {
+      const propTypes = typeAnnotation.properties.map((prop) => ({
+        name: prop.name,
+        type: fromTypeAnnotation(prop.propType, typeEnv),
+      }));
+      return Type.object(propTypes);
     }
     default:
       throw new Exception(

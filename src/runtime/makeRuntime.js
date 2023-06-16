@@ -1,9 +1,33 @@
+import { fail } from "../shared/fail.js";
 import { makeFunction } from "./makeFunction.js";
-import { isNil, isTruthy, isFalsy } from "./utils.js";
+import * as utils from "./utils.js";
+import * as obj from "./object.js";
+import { makeSymbol, makeGenSym } from "./makeSymbol.js";
+import { makeWandaValue, makeJSValue } from "./conversion.js";
+import { makeNumber } from "./number.js";
 
 /**
  * @typedef Runtime
  * @prop {Function} makeFunction
+ * @prop {Function} makeSymbol
+ * @prop {Function} makeGenSym
+ * @prop {Function} makeWandaValue
+ * @prop {Function} makeJSValue
+ * @prop {Function} isNil
+ * @prop {Function} isFalsy
+ * @prop {Function} isTruthy
+ * @prop {Function} makeKeyword
+ * @prop {Function} hasDict
+ * @prop {Function} hasField
+ * @prop {Function} hasMethod
+ * @prop {Function} getField
+ * @prop {Function} hasMetaField
+ * @prop {Function} getMetaField
+ * @prop {Function} addMetaField
+ * @prop {Function} makeObject
+ * @prop {Function} makeNumber
+ * @prop {Function} failRuntime
+ * @prop {Function} fail
  */
 /**
  * Creates a Wanda runtime
@@ -11,9 +35,14 @@ import { isNil, isTruthy, isFalsy } from "./utils.js";
  */
 export const makeRuntime = () => {
   return {
-    isFalsy,
-    isNil,
-    isTruthy,
+    ...utils,
     makeFunction,
+    ...obj,
+    makeSymbol,
+    makeGenSym,
+    makeWandaValue,
+    makeJSValue,
+    fail,
+    makeNumber,
   };
 };
