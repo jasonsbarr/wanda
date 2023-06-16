@@ -1,16 +1,10 @@
-/**
- * Checks if a value is nil
- * @param {any} val
- * @returns {boolean}
- */
-export const isNil = (val) => val == null;
-
+import { isNullish } from "../shared/utils.js";
 /**
  * Checks if a value is falsy (false or nil)
  * @param {any} val
  * @returns {boolean}
  */
-export const isFalsy = (val) => val === false || isNil(val);
+export const isFalsy = (val) => val === false || isNullish(val);
 
 /**
  * Checks if a value is truthy (not false or nil)
