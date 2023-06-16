@@ -128,11 +128,11 @@ class ASTPrinter {
    * @returns {string}
    */
   printMemberExpression(node, indent) {
-    let prStr = `${prIndent(indent)}MemberExpression:`
-    prStr += `${prIndent(indent + 2)}Object:`
+    let prStr = `${prIndent(indent)}MemberExpression:`;
+    prStr += `${prIndent(indent + 2)}Object:`;
     prStr += `${this.print(node.object, indent + 4)}`;
-    prStr += `${prIndent(indent + 2)}Property:`
-    prStr += `${this.print(node.property, indent + 4)}`
+    prStr += `${prIndent(indent + 2)}Property:`;
+    prStr += `${this.print(node.property, indent + 4)}`;
 
     return prStr;
   }
@@ -173,15 +173,15 @@ class ASTPrinter {
    * @returns {string}
    */
   printRecordLiteral(node, indent) {
-    const prStr = `${prIndent(indent)}RecordLiteral:`
-    prStr += `${prIndent(indent + 2)}Properties:`
+    const prStr = `${prIndent(indent)}RecordLiteral:`;
+    prStr += `${prIndent(indent + 2)}Properties:`;
 
     for (let prop of node.properties) {
       prStr += `${this.print(prop.key, indent + 4)}`;
       prStr += `${this.print(prop.value, indent + 4)}`;
     }
 
-    return prStr
+    return prStr;
   }
 
   /**
@@ -191,7 +191,9 @@ class ASTPrinter {
    * @returns {string}
    */
   printRecordPattern(node, indent) {
-    return `${prIndent(indent)}${node.properties.map(p => p.name).join(", ")}`;
+    return `${prIndent(indent)}${node.properties
+      .map((p) => p.name)
+      .join(", ")}`;
   }
 
   /**
@@ -246,7 +248,7 @@ class ASTPrinter {
    * @returns {string}
    */
   printVectorLiteral(node, indent) {
-    let prStr = `${prIndent(indent)}VectorLiteral:`
+    let prStr = `${prIndent(indent)}VectorLiteral:`;
 
     for (let mem of node.members) {
       prStr += `${this.print(mem, indent + 2)}`;
@@ -262,7 +264,7 @@ class ASTPrinter {
    * @returns {string}
    */
   printVectorPattern(node, indent) {
-    return `${prIndent(indent)}${node.members.map (p => p.name).join(", ")}`;
+    return `${prIndent(indent)}${node.members.map((p) => p.name).join(", ")}`;
   }
 }
 
