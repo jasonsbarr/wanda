@@ -63,6 +63,16 @@ class ASTPrinter {
         return this.printDoExpression(node, indent);
       case ASTTypes.TypeAlias:
         return this.printTypeAlias(node, indent);
+      case ASTTypes.RecordLiteral:
+        return this.printRecordLiteral(node, indent);
+      case ASTTypes.RecordPattern:
+        return this.printRecordPattern(node, indent);
+      case ASTTypes.VectorLiteral:
+        return this.printVectorLiteral(node, indent);
+      case ASTTypes.VectorPattern:
+        return this.printVectorPattern(node, indent);
+      case ASTTypes.MemberExpression:
+        return this.printMemberExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
@@ -112,6 +122,22 @@ class ASTPrinter {
   }
 
   /**
+   * Prints a MemberExpression node
+   * @param {import("../parser/ast.js").MemberExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printMemberExpression(node, indent) {
+    let prStr = `${prIndent(indent)}MemberExpression:`
+    prStr += `${prIndent(indent + 2)}Object:`
+    prStr += `${this.print(node.object, indent + 4)}`;
+    prStr += `${prIndent(indent + 2)}Property:`
+    prStr += `${this.print(node.property, indent + 4)}`
+
+    return prStr;
+  }
+
+  /**
    * Prints a primitive node
    * @param {import("../parser/ast.js").Primitive} node
    * @param {number} indent
@@ -138,6 +164,34 @@ class ASTPrinter {
     }
 
     return pStr;
+  }
+
+  /**
+   * Prints RecordLiteral node
+   * @param {import("../parser/ast.js").RecordLiteral} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printRecordLiteral(node, indent) {
+    const prStr = `${prIndent(indent)}RecordLiteral:`
+    prStr += `${prIndent(indent + 2)}Properties:`
+
+    for (let prop of node.properties) {
+      prStr += `${this.print(prop.key, indent + 4)}`;
+      prStr += `${this.print(prop.value, indent + 4)}`;
+    }
+
+    return prStr
+  }
+
+  /**
+   * Prints a RecordPattern node
+   * @param {import("../parser/ast.js").RecordPattern} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printRecordPattern(node, indent) {
+    return `${prIndent(indent)}${node.properties.map(p => p.name).join(", ")}`;
   }
 
   /**
@@ -183,6 +237,32 @@ class ASTPrinter {
     prStr += `${this.print(node.lhv, indent + 2)}\n`;
     prStr += `${this.print(node.expression, indent + 2)}`;
     return prStr;
+  }
+
+  /**
+   * Prints a VectorLiteral node
+   * @param {import("../parser/ast.js").VectorLiteral} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printVectorLiteral(node, indent) {
+    let prStr = `${prIndent(indent)}VectorLiteral:`
+
+    for (let mem of node.members) {
+      prStr += `${this.print(mem, indent + 2)}`;
+    }
+
+    return prStr;
+  }
+
+  /**
+   * Prints a RecordPattern node
+   * @param {import("../parser/ast.js").VectorPattern} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printVectorPattern(node, indent) {
+    return `${prIndent(indent)}${node.members.map (p => p.name).join(", ")}`;
   }
 }
 
