@@ -292,8 +292,9 @@ const readRecordPattern = (reader, srcloc) => {
  */
 const readMemberExpression = (reader, left) => {
   const tok = reader.next();
+  const prec = getPrec(tok);
   reader.expect(TokenTypes.Dot, tok.type);
-  const property = readExpr(reader);
+  const property = readExpr(reader, prec);
   return {
     type: "MemberExpression",
     object: left,
