@@ -102,13 +102,4 @@ export class RuntimeException extends Exception {
     super(msg);
     this[Symbol.for(":dict")] = { message: msg };
   }
-
-  /**
-   * Static constructor
-   * @param {string} msg
-   * @returns {RuntimeException}
-   */
-  static new(msg) {
-    return new RuntimeException(msg);
-  }
 }
