@@ -75,6 +75,8 @@ export class Emitter {
         return this.emitVectorLiteral(node, ns);
       case ASTTypes.VectorPattern:
         return this.emitVectorPattern(node, ns);
+      case ASTTypes.LambdaExpression:
+        return this.emitLambdaExpression(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
