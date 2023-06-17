@@ -1,3 +1,4 @@
+import { Desugarer } from "./Desugarer.js";
 /**
  * @typedef {import("../parser/ast.js").AST} AST
  */
@@ -6,4 +7,4 @@
  * @param {AST} ast
  * @returns {AST}
  */
-export const desugar = (ast) => ast;
+export const desugar = (ast) => Desugarer.new().visit(ast);
