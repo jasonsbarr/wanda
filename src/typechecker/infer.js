@@ -99,6 +99,8 @@ const inferCallExpression = (node, env) => {
     return Type.undefinedType;
   }
 
+  // handle partially applied functions
+
   if (env.checkingOn) {
     func.params.forEach((p, i, a) => {
       const argType = infer(node.args[i], env);
