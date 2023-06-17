@@ -98,3 +98,12 @@ export const isVector = (type) => {
 export const isObject = (type) => {
   return type.kind === TypeTypes.Object;
 };
+
+/**
+ * Checks if current type is undefined
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isUndefined = (type) => {
+  return type.kind === TypeTypes.Undefined;
+}

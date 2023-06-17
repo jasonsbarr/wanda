@@ -14,6 +14,7 @@ export const TypeTypes = {
   Vector: "Vector",
   Property: "Property",
   Object: "Object",
+  Undefined: "Undefined"
 };
 /**
  * @typedef Any
@@ -74,7 +75,11 @@ export const TypeTypes = {
  * @prop {Property[]} properties
  */
 /**
- * @typedef {Number|String|Boolean|Keyword|Nil} PrimitiveTypes
+ * @typedef Undefined
+ * @prop {TypeTypes.Undefined} kind
+ */
+/**
+ * @typedef {Number|String|Boolean|Keyword|Nil|Undefined} PrimitiveTypes
  */
 /**
  * @typedef {Any|PrimitiveTypes|FunctionType|TypeAlias|List|Vector|Object} Type
