@@ -364,9 +364,10 @@ export const AST = {
    * @param {AST[]} body
    * @param {boolean} variadic
    * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
+   * @param {SrcLoc}
    * @returns {FunctionDeclaration}
    */
-  FunctionDeclaration(name, params, body, variadic, retType) {
+  FunctionDeclaration(name, params, body, variadic, retType, srcloc) {
     return {
       kind: ASTTypes.FunctionDeclaration,
       name,
@@ -374,6 +375,7 @@ export const AST = {
       body,
       variadic,
       retType,
+      srcloc,
     };
   },
 
@@ -383,15 +385,17 @@ export const AST = {
    * @param {AST[]} body
    * @param {boolean} variadic
    * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
+   * @param {SrcLoc} srcloc
    * @returns {LambdaExpression}
    */
-  LambdaExpression(params, body, variadic, retType) {
+  LambdaExpression(params, body, variadic, retType, srcloc) {
     return {
       kind: ASTTypes.LambdaExpression,
       params,
       body,
       variadic,
       retType,
+      srcloc,
     };
   },
 };

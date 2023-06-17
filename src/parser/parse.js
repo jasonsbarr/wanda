@@ -262,6 +262,7 @@ const parseParams = (forms) => {
  */
 const parseFunctionDeclaration = (form) => {
   const [_, name, params, maybeArrow, maybeRetType, ...maybeBody] = form;
+  const srcloc = form.srcloc;
   const parsedName = parseExpr(name);
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
     params,
@@ -275,7 +276,8 @@ const parseFunctionDeclaration = (form) => {
     parsedParams,
     parsedBody,
     variadic,
-    retType
+    retType,
+    srcloc
   );
 };
 
@@ -286,6 +288,7 @@ const parseFunctionDeclaration = (form) => {
  */
 const parseLambdaExpression = (form) => {
   const [_, params, maybeArrow, maybeRetType, ...maybeBody] = form;
+  const srcloc = form.srcloc;
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
     params,
     maybeArrow,
@@ -293,7 +296,13 @@ const parseLambdaExpression = (form) => {
     maybeBody
   );
 
-  return AST.LambdaExpression(parsedParams, parsedBody, variadic, retType);
+  return AST.LambdaExpression(
+    parsedParams,
+    parsedBody,
+    variadic,
+    retType,
+    srcloc
+  );
 };
 
 const parseFunction = (params, maybeArrow, maybeRetType, maybeBody) => {
