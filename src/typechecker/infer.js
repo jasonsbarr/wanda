@@ -96,6 +96,7 @@ const inferCallExpression = (node, env) => {
   if (Type.isAny(func)) {
     return Type.any;
   } else if (Type.isUndefined(func) || Type.isUndefined(func.ret)) {
+    // this should only happen during first typechecker pass
     return Type.undefinedType;
   }
 
