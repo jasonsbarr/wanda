@@ -63,14 +63,14 @@ const parseVariableDeclaration = (decl) => {
   if (lhv instanceof Cons) {
     // has type annotation
     const realLhv = lhv.get(0);
-    // convert to array and get rid of ":" when passing into parseTypeAnnotation
-    typeAnnotation = [...lhv.cdr].slice(1);
+    // skip over : and get type annotation
+    typeAnnotation = lhv.cdr.cdr;
 
-    if (typeAnnotation[0]?.constructor?.name === "Cons") {
-      // is function type annotation
-      typeAnnotation = flattenFunctionTypeAnnotation(typeAnnotation);
+    if (typeAnnotation.cdr === null) {
+      // is a simple annotation, otherwise it's a Cons type annotation
+      typeAnnotation = typeAnnotation.car;
     }
-
+    // parse type annotation
     typeAnnotation = parseTypeAnnotation(typeAnnotation);
     parsedLhv = parseExpr(realLhv);
   } else {
