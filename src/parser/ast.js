@@ -24,6 +24,7 @@ export const ASTTypes = {
   RecordLiteral: "RecordLiteral",
   RecordPattern: "RecordPattern",
   MemberExpression: "MemberExpression",
+  Param: "Param",
   FunctionDeclaration: "FunctionDeclaration",
   LambdaExpression: "LambdaExpression",
 };
@@ -90,6 +91,7 @@ export const ASTTypes = {
  */
 /**
  * @typedef Param
+ * @prop {ASTTypes.Param} kind
  * @prop {Symbol} name
  * @prop {import("./parseTypeAnnotation.js").TypeAnnotation|null} typeAnnotation
  */
@@ -97,7 +99,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} FunctionDeclaration
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} LambdaExpression
+ * @typedef {ASTNode & {kind: ASTTypes.LambdaExpression; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} LambdaExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV

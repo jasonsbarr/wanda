@@ -246,7 +246,7 @@ const parseParams = (forms) => {
         i += 2;
       }
 
-      params.push({ name, typeAnnotation });
+      params.push({ kind: ASTTypes.Param, name, typeAnnotation });
     } else if (form.type === TokenTypes.Amp) {
       continue;
     }

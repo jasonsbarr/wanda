@@ -63,6 +63,8 @@ export class Visitor {
         return this.visitRecordPattern(node);
       case ASTTypes.MemberExpression:
         return this.visitMemberExpression(node);
+      case ASTTypes.Param:
+        return this.visitParam(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -104,12 +106,46 @@ export class Visitor {
   }
 
   /**
+   * FunctionDeclaration node visitor
+   * @param {import("../parser/ast.js").FunctionDeclaration} node
+   * @returns {import("../parser/ast.js").FunctionDeclaration}
+   */
+  visitFunctionDeclaration(node) {
+    const params = node.params.map(this.visit);
+    /** @type {AST[]} */
+    let body = [];
+
+    for (let expr of node.body) {
+      body.push(this.visit(expr));
+    }
+
+    return { ...node, params, body };
+  }
+
+  /**
    * KeywordLiteral node visitor
    * @param {import("../parser/ast").KeywordLiteral} node
    * @returns {import("../parser/ast").KeywordLiteral}
    */
   visitKeywordLiteral(node) {
     return node;
+  }
+
+  /**
+   * LambdaExpression node visitor
+   * @param {import("../parser/ast.js").LambdaExpression} node
+   * @returns {import("../parser/ast.js").LambdaExpression}
+   */
+  visitLambdaExpression(node) {
+    const params = node.params.map(this.visit);
+    /** @type {AST[]} */
+    let body = [];
+
+    for (let expr of node.body) {
+      body.push(this.visit(expr));
+    }
+
+    return { ...node, params, body };
   }
 
   /**
@@ -138,6 +174,15 @@ export class Visitor {
    * @returns {import("../parser/ast").NumberLiteral}
    */
   visitNumberLiteral(node) {
+    return node;
+  }
+
+  /**
+   * Param node visitor
+   * @param {import("../parser/ast.js").Param} node
+   * @returns {import("../parser/ast.js").Param}
+   */
+  visitParam(node) {
     return node;
   }
 
