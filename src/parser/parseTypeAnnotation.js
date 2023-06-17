@@ -127,6 +127,7 @@ export const parseTypeAnnotation = (annotation) => {
     // flatten Cons to array
     annotation = [...annotation];
 
+    // if it has an arrow, it's a function annotation
     const hasArrow = annotation.reduce((hasArrow, item) => {
       if (item.type === TokenTypes.Symbol && item.value === "->") {
         return true;
