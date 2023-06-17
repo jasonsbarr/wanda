@@ -247,6 +247,7 @@ const parseParams = (forms) => {
 
           annot = flattenFunctionTypeAnnotation(annot);
           typeAnnotation = parseTypeAnnotation(annot);
+          i += 2;
         } else if (forms[i + 3]?.constructor?.name === "Cons") {
           // is a generic type annotation
           const annot = cons(forms[i + 2], forms[i + 3]);
