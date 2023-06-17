@@ -40,6 +40,7 @@ export class Emitter {
    * @returns {string}
    */
   emit(node = this.program, ns = this.ns) {
+    console.log(node)
     switch (node.kind) {
       case ASTTypes.Program:
         return this.emitProgram(node, ns);
@@ -153,9 +154,9 @@ export class Emitter {
       funcNs.set(p.name, makeSymbol(p.name));
 
       if (node.variadic && i === node.params.length - 1) {
-        params.push(`...${this.emit(p, funcNs)}`);
+        params.push(`...${this.emit(p.name, funcNs)}`);
       } else {
-        params.push(this.emit(p, funcNs));
+        params.push(this.emit(p.name, funcNs));
       }
       i++;
     }
