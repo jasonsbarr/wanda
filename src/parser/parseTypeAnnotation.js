@@ -123,44 +123,48 @@ export const parseTypeAnnotation = (annotation) => {
   let annot;
 
   if (annotation instanceof Cons) {
+    // is function or generic annotation
+    // flatten Cons to array
     annotation = [...annotation];
-  }
 
-  if (Array.isArray(annotation)) {
     const hasArrow = annotation.reduce((hasArrow, item) => {
-      if (item?.type === TokenTypes.Symbol && item.value === "->") {
-        // is arrow
+      if (item.type === TokenTypes.Symbol && item.value === "->") {
         return true;
       }
       return hasArrow;
-    }, false);
+    }, false)
+
     if (hasArrow) {
-      annot = annotation.filter((item) => item.value !== "->");
-    } else {
-      annot = annotation[0];
+      // is function annotation
+      // filter out arrow
+      annotation = annotation.filter((item) => item.value !== "->");
+
+      // get return type
+      const retType = parseTypeAnnotation(annotation.pop());
+      // get param types and if it's variadic
+      let params = [];
+      let variadic = false;
+
+      for (let item of annotation) {
+        if (item.type === TokenTypes.Amp) {
+          variadic = true;
+          continue;
+        } else {
+          params.push(parseTypeAnnotation(item));
+        }
+      }
+
+      return { kind: TATypes.Function, params, retType, variadic };
     }
-  } else {
-    annot = annotation;
   }
 
-  if (Array.isArray(annot)) {
-    // is function annotation
-    const retType = parseTypeAnnotation(annot.pop());
-
-    /** @type {TypeAnnotation[]} */
-    const params = [];
-    let variadic = false;
-
-    for (let item of annot) {
-      if (item.type === TokenTypes.Amp) {
-        variadic = true;
-        continue;
-      } else {
-        params.push(parseTypeAnnotation(item));
-      }
-    }
-
-    return { kind: TATypes.Function, params, retType, variadic };
+  if (Array.isArray(annotation)) {
+    // is generic annotation
+    // get container type
+    annot = annotation[0];
+  } else {
+    // is simple annotation
+    annot = annotation;
   }
 
   if (annot.type === "RecordLiteral") {
