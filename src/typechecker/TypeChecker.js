@@ -268,7 +268,13 @@ export class TypeChecker {
     if (env.checkingOn) {
       const nameType = env.getType(node.lhv.name);
       check(node.expression, nameType, env);
-      return { ...node, type: nameType };
+      return {
+        kind: node.kind,
+        lhv: node.lhv,
+        expression: this.checkNode(node.expression, env),
+        srcloc: node.srcloc,
+        type: nameType,
+      };
     }
 
     return {
