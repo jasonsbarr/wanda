@@ -23,6 +23,8 @@ export const ASTTypes = {
   RecordLiteral: "RecordLiteral",
   RecordPattern: "RecordPattern",
   MemberExpression: "MemberExpression",
+  FunctionDeclaration: "FunctionDeclaration",
+  LambdaExpression: "LambdaExpression",
 };
 
 /**
@@ -84,6 +86,12 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: Symbol}} MemberExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Symbol[]; body: AST[]; variadic: boolean}} FunctionDeclaration
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Symbol[]; body: AST[]; variadic: boolean}} LambdaExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -339,6 +347,39 @@ export const AST = {
       object,
       property,
       srcloc,
+    };
+  },
+  /**
+   * Constructs a FunctionDeclaration AST node
+   * @param {Symbol} name
+   * @param {Symbol[]} params
+   * @param {AST[]} body
+   * @param {boolean} variadic
+   * @returns {FunctionDeclaration}
+   */
+  FunctionDeclaration(name, params, body, variadic) {
+    return {
+      kind: ASTTypes.FunctionDeclaration,
+      name,
+      params,
+      body,
+      variadic,
+    };
+  },
+
+  /**
+   * Constructs a LambdaExpression AST node
+   * @param {Symbol[]} params
+   * @param {AST[]} body
+   * @param {boolean} variadic
+   * @returns {LambdaExpression}
+   */
+  LambdaExpression(params, body, variadic) {
+    return {
+      kind: ASTTypes.LambdaExpression,
+      params,
+      body,
+      variadic,
     };
   },
 };
