@@ -44,6 +44,10 @@ export const infer = (ast, env) => {
       return inferRecordLiteral(ast, env);
     case ASTTypes.MemberExpression:
       return inferMemberExpression(ast, env);
+    case ASTTypes.LambdaExpression:
+      return inferFunction(ast, env);
+    case ASTTypes.FunctionDeclaration:
+      return inferFunction(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -264,4 +268,48 @@ const inferMemberExpression = (node, env) => {
   }
 
   return type ?? Type.any;
+};
+
+/**
+ * Infers a type for a function
+ * @param {import("../parser/ast.js").LambdaExpression|import("../parser/ast.js").FunctionDeclaration} node
+ * @param {TypeEnvironment} env // will already be extended function environment
+ * @returns {import("./types").FunctionType}
+ */
+const inferFunction = (node, env) => {
+  const params = node.params.map((p) => {
+    if (p.typeAnnotation) {
+      env.checkingOn = true;
+    }
+    const type = p.typeAnnotation
+      ? fromTypeAnnotation(p.typeAnnotation, env)
+      : Type.any;
+    env.set(p.name, type);
+    return type;
+  });
+
+  if (node.retType) {
+    env.checkingOn = true;
+  }
+
+  const retType = node.retType
+    ? fromTypeAnnotation(node.retType, env)
+    : Type.any;
+  let inferredRetType;
+
+  for (let expr of node.body) {
+    // type of last expression "wins"
+    inferredRetType = infer(expr, env);
+  }
+
+  if (env.checkingOn && !isSubtype(inferredRetType, retType)) {
+    throw new TypeException(
+      `Inferred return type ${Type.toString(
+        inferredRetType
+      )} is not a subtype of annotated return type ${Type.toString(retType)}`,
+      node.srcloc
+    );
+  }
+
+  return Type.functionType(params, retType, node.variadic);
 };
