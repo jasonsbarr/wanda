@@ -40,7 +40,6 @@ export class Emitter {
    * @returns {string}
    */
   emit(node = this.program, ns = this.ns) {
-    console.log(node)
     switch (node.kind) {
       case ASTTypes.Program:
         return this.emitProgram(node, ns);
@@ -151,7 +150,7 @@ export class Emitter {
     let i = 0;
 
     for (let p of node.params) {
-      funcNs.set(p.name, makeSymbol(p.name));
+      funcNs.set(p.name.name, makeSymbol(p.name));
 
       if (node.variadic && i === node.params.length - 1) {
         params.push(`...${this.emit(p.name, funcNs)}`);
@@ -161,7 +160,7 @@ export class Emitter {
       i++;
     }
 
-    let code = `(${params.join(", ")}) => {`
+    let code = `(${params.join(", ")}) => {\n`
 
     let j = 0;
     for (let expr of node.body) {
@@ -173,7 +172,7 @@ export class Emitter {
       j++;
     }
 
-    code += "}"
+    code += "\n}"
 
     return code;
   }
@@ -297,6 +296,9 @@ export class Emitter {
   emitSymbol(node, ns) {
     const name = node.name;
     const emittedName = ns.get(name);
+    console.log(ns);
+    console.log(name);
+    console.log(emittedName);
 
     if (!emittedName) {
       throw new ReferenceException(
