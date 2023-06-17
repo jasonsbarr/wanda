@@ -296,9 +296,6 @@ export class Emitter {
   emitSymbol(node, ns) {
     const name = node.name;
     const emittedName = ns.get(name);
-    console.log(ns);
-    console.log(name);
-    console.log(emittedName);
 
     if (!emittedName) {
       throw new ReferenceException(
