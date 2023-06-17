@@ -71,12 +71,13 @@ export const TATypes = {
  * @typedef FunctionAnn
  * @prop {TypeAnnotation[]} params
  * @prop {TypeAnnotation} retType
+ * @prop {boolean} variadic
  */
 /**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn} TypeAnnotation
+ * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -145,9 +146,21 @@ export const parseTypeAnnotation = (annotation) => {
   if (Array.isArray(annot)) {
     // is function annotation
     const retType = parseTypeAnnotation(annot.pop());
-    const params = annot.map(parseTypeAnnotation);
 
-    return { kind: TATypes.Function, params, retType };
+    /** @type {TypeAnnotation[]} */
+    const params = [];
+    let variadic = false;
+
+    for (let item of annot) {
+      if (item.type === TokenTypes.Amp) {
+        variadic = true;
+        continue;
+      } else {
+        params.push(parseTypeAnnotation(item));
+      }
+    }
+
+    return { kind: TATypes.Function, params, retType, variadic };
   }
 
   if (annot.type === "RecordLiteral") {

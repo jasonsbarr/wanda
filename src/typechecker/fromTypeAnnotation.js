@@ -54,6 +54,13 @@ export const fromTypeAnnotation = (
       }));
       return Type.object(propTypes);
     }
+    case TATypes.Function: {
+      const paramTypes = typeAnnotation.params.map((p) =>
+        fromTypeAnnotation(p, typeEnv)
+      );
+      const retType = fromTypeAnnotation(typeAnnotation.retType, typeEnv);
+      return Type.functionType(paramTypes, retType);
+    }
     default:
       throw new Exception(
         `Type not found for type annotation ${JSON.parse(
