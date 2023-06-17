@@ -90,7 +90,7 @@ export class Visitor {
    */
   visitCallExpression(node) {
     const func = this.visit(node.func);
-    const args = node.args.map(this.visit);
+    const args = node.args.map(this.visit.bind(this));
     return { ...node, func, args };
   }
 
@@ -115,7 +115,7 @@ export class Visitor {
    * @returns {import("../parser/ast.js").FunctionDeclaration}
    */
   visitFunctionDeclaration(node) {
-    const params = node.params.map(this.visit);
+    const params = node.params.map(this.visit.bind(this));
     /** @type {AST[]} */
     let body = [];
 
@@ -141,7 +141,7 @@ export class Visitor {
    * @returns {import("../parser/ast.js").LambdaExpression}
    */
   visitLambdaExpression(node) {
-    const params = node.params.map(this.visit);
+    const params = node.params.map(this.visit.bind(this));
     /** @type {AST[]} */
     let body = [];
 
