@@ -122,6 +122,14 @@ export class TypeChecker {
   }
 
   /**
+   * Type checks a function declaration
+   * @param {import("../parser/ast.js").FunctionDeclaration} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkFunctionDeclaration(node, env) {}
+
+  /**
    * Type checks a keyword literal
    * @param {import("../parser/ast").KeywordLiteral} node
    * @param {TypeEnvironment} env
@@ -129,6 +137,16 @@ export class TypeChecker {
    */
   checkKeyword(node, env) {
     return { ...node, type: infer(node, env) };
+  }
+
+  /**
+   * Type checks a lambda expression
+   * @param {import("../parser/ast.js").LambdaExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkLambdaExpression(node, env) {
+    return {...node, type: infer(node, env.extend("Lambda"))};
   }
 
   checkMemberExpression(node, env) {
