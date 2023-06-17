@@ -115,7 +115,10 @@ const inferCallExpression = (node, env) => {
 
       if (func.variadic && i === a.length - 1) {
         if (!p.vectorType) {
-          throw new TypeException(`Rest parameter type must be vector; ${Type.toString(p)} given`, arg.srcloc)
+          throw new TypeException(
+            `Rest parameter type must be vector; ${Type.toString(p)} given`,
+            arg.srcloc
+          );
         }
         p = p.vectorType;
 
