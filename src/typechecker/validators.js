@@ -106,4 +106,4 @@ export const isObject = (type) => {
  */
 export const isUndefined = (type) => {
   return type.kind === TypeTypes.Undefined;
-}
+};

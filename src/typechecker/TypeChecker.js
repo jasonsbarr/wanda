@@ -10,6 +10,9 @@ import { propType } from "./propType.js";
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
  */
+
+let isSecondPass = false;
+
 /**
  * @class TypeChecker
  * @desc Type checker for Wanda programming language (gradual types)
@@ -36,12 +39,24 @@ export class TypeChecker {
   }
 
   /**
+   * Execute 2-pass type checking of entire program
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  check(env = this.env) {
+    // first pass is to populate environments so valid forward references will resolve
+    const firstPassProgram = this.checkNode(this.program, env);
+    isSecondPass = true;
+    return this.checkNode(firstPassProgram, env);
+  }
+
+  /**
    * Type checks an AST node
    * @param {AST} node
    * @param {TypeEnvironment} env
    * @returns {TypedAST}
    */
-  check(node = this.program, env = this.env) {
+  checkNode(node, env) {
     switch (node.kind) {
       case ASTTypes.Program:
         return this.checkProgram(node, env);
@@ -96,7 +111,13 @@ export class TypeChecker {
    */
   checkCallExpression(node, env) {
     // infer handles checking for argument types
-    return { ...node, type: infer(node, env) };
+    let type = infer(node, env);
+
+    if (Type.isUndefined(type) && isSecondPass) {
+      type = Type.any;
+    }
+
+    return { ...node, type };
   }
 
   /**
@@ -106,10 +127,17 @@ export class TypeChecker {
    * @return {TypedAST}
    */
   checkDoExpression(node, env) {
+    if (!node.env) {
+      // during the first pass this will create the child env
+      node.env = env.extend("DoExpression");
+    }
+
+    const doEnv = node.env;
+
     /** @type {TypedAST[]} */
     let body = [];
     for (let expr of node.body) {
-      const node = this.check(expr, env);
+      const node = this.checkNode(expr, doEnv);
       body.push(node);
     }
 
@@ -117,7 +145,7 @@ export class TypeChecker {
       kind: node.kind,
       body,
       srcloc: node.srcloc,
-      type: infer(node, env),
+      type: infer(node, doEnv),
     };
   }
 
@@ -127,7 +155,17 @@ export class TypeChecker {
    * @param {TypeEnvironment} env
    * @returns {TypedAST}
    */
-  checkFunctionDeclaration(node, env) {}
+  checkFunctionDeclaration(node, env) {
+    if (node.env) {
+      node.env = env.extend(node.name.name);
+    }
+
+    const funcEnv = node.env;
+    const type = infer(node, funcEnv);
+
+    env.set(node.name.name, type);
+    return { ...node, type };
+  }
 
   /**
    * Type checks a keyword literal
@@ -146,7 +184,14 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkLambdaExpression(node, env) {
-    return {...node, type: infer(node, env.extend("Lambda"))};
+    if (node.env) {
+      node.env = env.extend("Lambda");
+    }
+
+    const funcEnv = node.env;
+    const type = infer(node, funcEnv);
+
+    return { ...node, type };
   }
 
   checkMemberExpression(node, env) {
@@ -186,11 +231,11 @@ export class TypeChecker {
     let i = 0;
     for (let expr of node.body) {
       if (i === node.body.length - 1) {
-        const node = this.check(expr, env);
+        const node = this.checkNode(expr, env);
         type = node.type;
         body.push(node);
       } else {
-        const node = this.check(expr, env);
+        const node = this.checkNode(expr, env);
         body.push(node);
       }
     }
@@ -225,7 +270,7 @@ export class TypeChecker {
     return {
       kind: node.kind,
       lhv: node.lhv,
-      expression: this.check(node.expression, env),
+      expression: this.checkNode(node.expression, env),
       srcloc: node.srcloc,
       type: infer(node, env),
     };
@@ -248,7 +293,20 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkSymbol(node, env) {
-    return { ...node, type: infer(node, env) };
+    try {
+      let type = infer(node, env);
+
+      if (Type.isUndefined(type)) {
+        type = Type.any;
+        env.set(node.name, type);
+      }
+
+      return { ...node, type };
+    } catch (e) {
+      if (!isSecondPass) {
+        env.set(node.name, Type.undefinedType);
+      }
+    }
   }
 
   /**
@@ -343,7 +401,7 @@ export class TypeChecker {
     return {
       kind: node.kind,
       lhv: node.lhv,
-      expression: this.check(node.expression, env),
+      expression: this.checkNode(node.expression, env),
       srcloc: node.srcloc,
       type,
     };

@@ -79,4 +79,4 @@ export const object = (properties) => ({ kind: TypeTypes.Object, properties });
 /**
  * Undefined type constructor
  */
-export const undefinedType = ({ kind: TypeTypes.Undefined });
+export const undefinedType = { kind: TypeTypes.Undefined };

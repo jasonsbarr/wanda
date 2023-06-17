@@ -14,7 +14,7 @@ export const TypeTypes = {
   Vector: "Vector",
   Property: "Property",
   Object: "Object",
-  Undefined: "Undefined"
+  Undefined: "Undefined",
 };
 /**
  * @typedef Any

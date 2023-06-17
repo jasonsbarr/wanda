@@ -74,11 +74,12 @@ const inferSymbol = (node, env) => {
     throw new TypeException(`Type not found for name ${name}`, node.srcloc);
   }
 
-  const baseType = namedType && Type.isTypeAlias(namedType)
-    ? getAliasBase(namedType.name)
-    : namedType
-    ? namedType
-    : Type.any;
+  const baseType =
+    namedType && Type.isTypeAlias(namedType)
+      ? getAliasBase(namedType.name)
+      : namedType
+      ? namedType
+      : Type.any;
 
   return baseType;
 };
@@ -94,6 +95,8 @@ const inferCallExpression = (node, env) => {
 
   if (Type.isAny(func)) {
     return Type.any;
+  } else if (Type.isUndefined(func) || Type.isUndefined(func.ret)) {
+    return Type.undefinedType;
   }
 
   if (
