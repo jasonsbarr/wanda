@@ -88,6 +88,10 @@ export class TypeChecker {
         return this.checkRecordLiteral(node, env);
       case ASTTypes.VectorLiteral:
         return this.checkVectorLiteral(node, env);
+      case ASTTypes.FunctionDeclaration:
+        return this.checkFunctionDeclaration(node, env);
+      case ASTTypes.LambdaExpression:
+        return this.checkLambdaExpression(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
@@ -156,7 +160,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkFunctionDeclaration(node, env) {
-    if (node.env) {
+    if (!node.env) {
       node.env = env.extend(node.name.name);
     }
 
@@ -184,7 +188,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkLambdaExpression(node, env) {
-    if (node.env) {
+    if (!node.env) {
       node.env = env.extend("Lambda");
     }
 
