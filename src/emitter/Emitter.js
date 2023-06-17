@@ -137,6 +137,45 @@ export class Emitter {
   }
 
   /**
+   * Generates code from a LambdaExpression AST node
+   * @param {import("../parser/ast.js").LambdaExpression} node
+   * @param {Namespace} ns
+   */
+  emitLambdaExpression(node, ns) {
+    const funcNs = ns.extend("Lambda");
+    /** @type {string[]} */
+    let params = [];
+    let i = 0;
+
+    for (let p of node.params) {
+      funcNs.set(p.name, makeSymbol(p.name));
+
+      if (node.variadic && i === node.params.length - 1) {
+        params.push(`...${this.emit(p, funcNs)}`);
+      } else {
+        params.push(this.emit(p, funcNs));
+      }
+      i++;
+    }
+
+    let code = `(${params.join(", ")}) => {`
+
+    let j = 0;
+    for (let expr of node.body) {
+      if (j === node.body.length - 1) {
+        code += `return ${this.emit(expr, funcNs)};`;
+      } else {
+        code += this.emit(expr, funcNs) + ";\n";
+      }
+      j++;
+    }
+
+    code += "}"
+
+    return code;
+  }
+
+  /**
    * Generates code from a MemberExpression AST node
    * @param {import("../parser/ast.js").MemberExpression} node
    * @param {Namespace} ns
