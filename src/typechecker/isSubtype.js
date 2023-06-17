@@ -43,5 +43,8 @@ export const isSubtype = (type1, type2) => {
     });
   }
 
+  // a type should only be undefined on the first pass through the checker
+  if (Type.isUndefined(type1) || Type.isUndefined(type2)) return true;
+
   return false;
 };
