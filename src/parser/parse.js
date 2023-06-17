@@ -279,6 +279,11 @@ const parseFunctionDeclaration = (form) => {
   );
 };
 
+/**
+ * Parses a lambda expression
+ * @param {List} form
+ * @returns {import("./ast.js").LambdaExpression}
+ */
 const parseLambdaExpression = (form) => {
   const [_, params, maybeArrow, maybeRetType, maybeCons, maybeBody] = form;
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
