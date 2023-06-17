@@ -88,7 +88,7 @@ const checkFunction = (ast, type, env) => {
     );
   }
 
-  const maybeType = env.get(ast.name.name);
+  const maybeType = env.get(ast.name?.name);
   const funcType = maybeType ? maybeType : infer(ast, env);
 
   type.params.forEach((p, i) => {
