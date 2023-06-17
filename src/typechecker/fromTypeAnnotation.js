@@ -59,7 +59,7 @@ export const fromTypeAnnotation = (
         fromTypeAnnotation(p, typeEnv)
       );
       const retType = fromTypeAnnotation(typeAnnotation.retType, typeEnv);
-      return Type.functionType(paramTypes, retType);
+      return Type.functionType(paramTypes, retType, typeAnnotation.variadic);
     }
     default:
       throw new Exception(
