@@ -88,10 +88,15 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: Symbol}} MemberExpression
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Symbol[]; body: AST[]; variadic: boolean}} FunctionDeclaration
+ * @typedef Param
+ * @prop {Symbol} name
+ * @prop {import("./parseTypeAnnotation.js").TypeAnnotation} typeAnnotation
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Symbol[]; body: AST[]; variadic: boolean}} LambdaExpression
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation}} FunctionDeclaration
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation}} LambdaExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -100,7 +105,7 @@ export const ASTTypes = {
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression} AST
  */
 export const AST = {
   /**
@@ -355,15 +360,17 @@ export const AST = {
    * @param {Symbol[]} params
    * @param {AST[]} body
    * @param {boolean} variadic
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation} retType
    * @returns {FunctionDeclaration}
    */
-  FunctionDeclaration(name, params, body, variadic) {
+  FunctionDeclaration(name, params, body, variadic, retType) {
     return {
       kind: ASTTypes.FunctionDeclaration,
       name,
       params,
       body,
       variadic,
+      retType,
     };
   },
 
@@ -372,14 +379,16 @@ export const AST = {
    * @param {Symbol[]} params
    * @param {AST[]} body
    * @param {boolean} variadic
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation} retType
    * @returns {LambdaExpression}
    */
-  LambdaExpression(params, body, variadic) {
+  LambdaExpression(params, body, variadic, retType) {
     return {
       kind: ASTTypes.LambdaExpression,
       params,
       body,
       variadic,
+      retType,
     };
   },
 };
