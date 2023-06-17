@@ -69,15 +69,16 @@ const inferNil = () => Type.nil;
 const inferSymbol = (node, env) => {
   const name = node.name;
   const namedType = env.get(name);
-  const baseType = Type.isTypeAlias(namedType)
-    ? getAliasBase(namedType.name)
-    : namedType;
 
-  if (!namedType) {
-    throw new Exception(
-      `Type not found in current environment for ${name} at ${node.srcloc.file} ${node.srcloc.col}:${node.srcloc.col}`
-    );
+  if (namedType === undefined && env.checkingOn) {
+    throw new TypeException(`Type not found for name ${name}`, node.srcloc);
   }
+
+  const baseType = namedType && Type.isTypeAlias(namedType)
+    ? getAliasBase(namedType.name)
+    : namedType
+    ? namedType
+    : Type.any;
 
   return baseType;
 };
