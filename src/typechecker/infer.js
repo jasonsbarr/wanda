@@ -99,17 +99,6 @@ const inferCallExpression = (node, env) => {
     return Type.undefinedType;
   }
 
-  if (
-    node.args.length !== func.params.length ||
-    (func.variadic && node.args.length >= func.params.length - 1)
-  ) {
-    throw new Exception(
-      `Expected${func.variadic ? " at least " : " "}arguments; ${
-        node.args.length
-      } given at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
-    );
-  }
-
   if (env.checkingOn) {
     func.params.forEach((p, i, a) => {
       const argType = infer(node.args[i], env);
