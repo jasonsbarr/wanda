@@ -261,7 +261,7 @@ const parseParams = (forms) => {
  * @returns {import("./ast.js").FunctionDeclaration}
  */
 const parseFunctionDeclaration = (form) => {
-  const [_, name, params, maybeArrow, maybeRetType, maybeBody] = form;
+  const [_, name, params, maybeArrow, maybeRetType, ...maybeBody] = form;
   const parsedName = parseExpr(name);
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
     params,
@@ -285,7 +285,7 @@ const parseFunctionDeclaration = (form) => {
  * @returns {import("./ast.js").LambdaExpression}
  */
 const parseLambdaExpression = (form) => {
-  const [_, params, maybeArrow, maybeRetType, maybeBody] = form;
+  const [_, params, maybeArrow, maybeRetType, ...maybeBody] = form;
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
     params,
     maybeArrow,
@@ -305,7 +305,7 @@ const parseFunction = (params, maybeArrow, maybeRetType, maybeBody) => {
     body = maybeBody;
   } else {
     retType = null;
-    body = maybeArrow;
+    body = [maybeArrow, ...maybeBody];
   }
 
   const variadic = [...params].reduce((isVar, param) => {
@@ -316,7 +316,8 @@ const parseFunction = (params, maybeArrow, maybeRetType, maybeBody) => {
     return isVar;
   }, false);
   const parsedParams = parseParams(params);
-  const parsedBody = parseExpr(body);
+  /** @type {AST[]} */
+  const parsedBody = body.map(parseExpr);
 
   return {
     parsedParams,
