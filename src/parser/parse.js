@@ -241,23 +241,9 @@ const parseParams = (forms) => {
         forms[i + 1]?.type === TokenTypes.Keyword &&
         forms[i + 1].value === ":"
       ) {
-        if (forms[i + 2]?.constructor?.name === "Cons") {
-          // is a function type annotation
-          let annot = forms[i + 2];
-
-          annot = flattenFunctionTypeAnnotation(annot);
-          typeAnnotation = parseTypeAnnotation(annot);
-          i += 2;
-        } else if (forms[i + 3]?.constructor?.name === "Cons") {
-          // is a generic type annotation
-          const annot = cons(forms[i + 2], forms[i + 3]);
-          typeAnnotation = parseTypeAnnotation(annot);
-          i += 3;
-        } else {
-          // is a simple type annotation
-          typeAnnotation = parseTypeAnnotation(forms[i + 2]);
-          i += 2;
-        }
+        // has type annotation
+        typeAnnotation = parseTypeAnnotation(forms[i + 2]);
+        i += 2;
       }
 
       params.push({ name, typeAnnotation });
@@ -269,30 +255,19 @@ const parseParams = (forms) => {
   return params;
 };
 
-const flattenFunctionTypeAnnotation = (annot) => {
-  // flatten the annotation into an array
-  annot = [...annot];
-  // annot[0] is the cons list of param types
-  const pTypes = [...annot[0]];
-  // concat param types and -> bodyType into a single array
-  annot = pTypes.concat(annot.slice(1));
-  return annot;
-};
-
 /**
  * Parses a function declaration
  * @param {List} form
  * @returns {import("./ast.js").FunctionDeclaration}
  */
 const parseFunctionDeclaration = (form) => {
-  const [_, name, params, maybeArrow, maybeRetType, maybeCons, maybeBody] =
+  const [_, name, params, maybeArrow, maybeRetType, maybeBody] =
     form;
   const parsedName = parseExpr(name);
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
     params,
     maybeArrow,
     maybeRetType,
-    maybeCons,
     maybeBody
   );
 
@@ -311,12 +286,11 @@ const parseFunctionDeclaration = (form) => {
  * @returns {import("./ast.js").LambdaExpression}
  */
 const parseLambdaExpression = (form) => {
-  const [_, params, maybeArrow, maybeRetType, maybeCons, maybeBody] = form;
+  const [_, params, maybeArrow, maybeRetType, maybeBody] = form;
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
     params,
     maybeArrow,
     maybeRetType,
-    maybeCons,
     maybeBody
   );
 
@@ -327,21 +301,14 @@ const parseFunction = (
   params,
   maybeArrow,
   maybeRetType,
-  maybeCons,
   maybeBody
 ) => {
   let retType, body;
 
   if (maybeArrow.type === TokenTypes.Symbol && maybeArrow.value === "->") {
-    if (maybeCons?.constructor?.name === "Cons") {
-      // is generic annotation
-      maybeRetType = cons(maybeRetType, maybeCons);
-      retType = parseTypeAnnotation(maybeRetType);
-      body = maybeBody;
-    } else {
-      retType = parseTypeAnnotation(maybeRetType);
-      body = maybeCons;
-    }
+    // has return type annotation
+    retType = parseTypeAnnotation(maybeRetType);
+    body = maybeBody;
   } else {
     retType = null;
     body = maybeArrow;
