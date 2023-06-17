@@ -90,13 +90,13 @@ export const ASTTypes = {
 /**
  * @typedef Param
  * @prop {Symbol} name
- * @prop {import("./parseTypeAnnotation.js").TypeAnnotation} typeAnnotation
+ * @prop {import("./parseTypeAnnotation.js").TypeAnnotation|null} typeAnnotation
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation}} FunctionDeclaration
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null}} FunctionDeclaration
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation}} LambdaExpression
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null}} LambdaExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -360,7 +360,7 @@ export const AST = {
    * @param {Symbol[]} params
    * @param {AST[]} body
    * @param {boolean} variadic
-   * @param {import("./parseTypeAnnotation.js").TypeAnnotation} retType
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
    * @returns {FunctionDeclaration}
    */
   FunctionDeclaration(name, params, body, variadic, retType) {
@@ -379,7 +379,7 @@ export const AST = {
    * @param {Symbol[]} params
    * @param {AST[]} body
    * @param {boolean} variadic
-   * @param {import("./parseTypeAnnotation.js").TypeAnnotation} retType
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
    * @returns {LambdaExpression}
    */
   LambdaExpression(params, body, variadic, retType) {

@@ -1,7 +1,7 @@
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
-import { Cons } from "../shared/cons.js";
+import { Cons, cons } from "../shared/cons.js";
 import { AST, ASTTypes } from "./ast.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
 import { parseTypeAnnotation } from "./parseTypeAnnotation.js";
@@ -216,6 +216,125 @@ const parseProperty = (form) => {
 };
 
 /**
+ * Parses function parameters
+ * @param {Token[]} forms
+ * @returns {import("./ast.js").Param}
+ */
+const parseParams = (forms) => {
+  forms = [...forms];
+  /** @type {import("./ast.js").Param[]} */
+  let params = [];
+  for (let i = 0; i < forms.length; i++) {
+    const form = forms[i];
+    if (form.type === TokenTypes.Symbol) {
+      const name = parseExpr(form);
+      let typeAnnotation = null;
+
+      if (
+        forms[i + 1]?.type === TokenTypes.Keyword &&
+        forms[i + 1].value === ":"
+      ) {
+        if (forms[i + 3]?.constructor?.name === "Cons") {
+          const annot = cons(forms[i + 2], forms[i + 3]);
+          typeAnnotation = parseTypeAnnotation(annot);
+          i += 3;
+        } else {
+          typeAnnotation = parseTypeAnnotation(forms[i + 2]);
+          i += 2;
+        }
+      }
+
+      params.push({ name, typeAnnotation });
+    } else if (form.type === TokenTypes.Amp) {
+      continue;
+    }
+  }
+
+  return params;
+};
+
+/**
+ * Parses a function declaration
+ * @param {List} form
+ * @returns {import("./ast.js").FunctionDeclaration}
+ */
+const parseFunctionDeclaration = (form) => {
+  const [_, name, params, maybeArrow, maybeRetType, maybeCons, maybeBody] =
+    form;
+  const parsedName = parseExpr(name);
+  const { parsedParams, parsedBody, variadic, retType } = parseFunction(
+    params,
+    maybeArrow,
+    maybeRetType,
+    maybeCons,
+    maybeBody
+  );
+
+  return AST.FunctionDeclaration(
+    parsedName,
+    parsedParams,
+    parsedBody,
+    variadic,
+    retType
+  );
+};
+
+const parseLambdaExpression = (form) => {
+  const [_, params, maybeArrow, maybeRetType, maybeCons, maybeBody] = form;
+  const { parsedParams, parsedBody, variadic, retType } = parseFunction(
+    params,
+    maybeArrow,
+    maybeRetType,
+    maybeCons,
+    maybeBody
+  );
+
+  return AST.LambdaExpression(parsedParams, parsedBody, variadic, retType);
+};
+
+const parseFunction = (
+  params,
+  maybeArrow,
+  maybeRetType,
+  maybeCons,
+  maybeBody
+) => {
+  let retType, body;
+
+  if (maybeArrow.type === TokenTypes.Symbol && maybeArrow.value === "->") {
+    if (maybeCons?.constructor?.name === "Cons") {
+      let ret = cons(maybeRetType, maybeCons);
+      retType = parseTypeAnnotation(ret);
+      body = maybeBody;
+    } else {
+      retType = parseTypeAnnotation(maybeRetType);
+      body = maybeCons;
+    }
+  } else {
+    retType = null;
+    body = maybeArrow;
+  }
+
+  const variadic = [...params].reduce((isVar, param) => {
+    if (isVar === true) return isVar;
+    if (param.type === TokenTypes.Amp) {
+      return true;
+    }
+
+    return false;
+  }, false);
+  const parsedParams = parseParams(params);
+  const parsedBody = parseExpr(body);
+
+  return {
+    parsedParams,
+    parsedBody,
+    variadic,
+    retType,
+  };
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -232,6 +351,10 @@ const parseList = (form) => {
       return parseDoExpression(form);
     case "type":
       return parseTypeAlias(form);
+    case "def":
+      return parseFunctionDeclaration(form);
+    case "fn":
+      return parseLambdaExpression(form);
     default:
       return parseCall(form);
   }
