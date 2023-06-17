@@ -11,10 +11,6 @@ export const makeWandaValue = (val) => {
   switch (typeof val) {
     case "undefined":
       return null;
-    case "function":
-      if (!hasMetaField(val, "wanda")) {
-        return makeFunction(val);
-      }
     case "object":
       if (val === null) {
         return null;
