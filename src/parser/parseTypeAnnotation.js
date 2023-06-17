@@ -16,6 +16,7 @@ export const TATypes = {
   List: "List",
   Vector: "Vector",
   Object: "Object",
+  Function: "Function",
 };
 /**
  * @typedef AnyAnnotation
@@ -146,7 +147,7 @@ export const parseTypeAnnotation = (annotation) => {
     const retType = parseTypeAnnotation(annot.pop());
     const params = annot.map(parseTypeAnnotation);
 
-    return { params, retType };
+    return { kind: TATypes.Function, params, retType };
   }
 
   if (annot.type === "RecordLiteral") {
