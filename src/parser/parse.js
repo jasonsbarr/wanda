@@ -347,12 +347,11 @@ const parseFunction = (
   }
 
   const variadic = [...params].reduce((isVar, param) => {
-    if (isVar === true) return isVar;
     if (param.type === TokenTypes.Amp) {
       return true;
     }
 
-    return false;
+    return isVar;
   }, false);
   const parsedParams = parseParams(params);
   const parsedBody = parseExpr(body);
