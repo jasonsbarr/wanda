@@ -333,8 +333,9 @@ const parseFunction = (
 
   if (maybeArrow.type === TokenTypes.Symbol && maybeArrow.value === "->") {
     if (maybeCons?.constructor?.name === "Cons") {
-      let ret = cons(maybeRetType, maybeCons);
-      retType = parseTypeAnnotation(ret);
+      // is generic annotation
+      maybeRetType = cons(maybeRetType, maybeCons);
+      retType = parseTypeAnnotation(maybeRetType);
       body = maybeBody;
     } else {
       retType = parseTypeAnnotation(maybeRetType);
