@@ -234,11 +234,20 @@ const parseParams = (forms) => {
         forms[i + 1]?.type === TokenTypes.Keyword &&
         forms[i + 1].value === ":"
       ) {
-        if (forms[i + 3]?.constructor?.name === "Cons") {
+        if (forms[i + 2]?.constructor?.name === "Cons") {
+          // is a function type annotation
+          let annot = forms[i + 2];
+
+          // flatten the annotation into an array
+          const args = [...annot[0]];
+          annot = args.concat([...annot]);
+        } else if (forms[i + 3]?.constructor?.name === "Cons") {
+          // is a generic type annotation
           const annot = cons(forms[i + 2], forms[i + 3]);
           typeAnnotation = parseTypeAnnotation(annot);
           i += 3;
         } else {
+          // is a simple type annotation
           typeAnnotation = parseTypeAnnotation(forms[i + 2]);
           i += 2;
         }
