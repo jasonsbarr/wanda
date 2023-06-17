@@ -67,6 +67,11 @@ export const TATypes = {
  * @prop {PropertyAnn[]} properties
  */
 /**
+ * @typedef FunctionAnn
+ * @prop {TypeAnnotation[]} params
+ * @prop {TypeAnnotation} retType
+ */
+/**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
@@ -120,9 +125,28 @@ export const parseTypeAnnotation = (annotation) => {
   }
 
   if (Array.isArray(annotation)) {
-    annot = annotation[0];
+    const hasArrow = annotation.reduce((hasArrow, item) => {
+      if (item?.type === TokenTypes.Symbol && item.value === "->") {
+        // is arrow
+        return true;
+      }
+      return hasArrow;
+    }, false);
+    if (hasArrow) {
+      annot = annotation.filter((item) => item.value !== "->");
+    } else {
+      annot = annotation[0];
+    }
   } else {
     annot = annotation;
+  }
+
+  if (Array.isArray(annot)) {
+    // is function annotation
+    const retType = parseTypeAnnotation(annot.pop());
+    const params = annot.map(parseTypeAnnotation);
+
+    return { params, retType };
   }
 
   if (annot.type === "RecordLiteral") {
