@@ -65,6 +65,10 @@ export class Visitor {
         return this.visitMemberExpression(node);
       case ASTTypes.Param:
         return this.visitParam(node);
+      case ASTTypes.FunctionDeclaration:
+        return this.visitFunctionDeclaration(node);
+      case ASTTypes.LambdaExpression:
+        return this.visitLambdaExpression(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
