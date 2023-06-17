@@ -1,5 +1,6 @@
 import { SrcLoc } from "../lexer/SrcLoc.js";
 import { Token } from "../lexer/Token.js";
+import { TypeEnvironment } from "../typechecker/TypeEnvironment.js";
 
 /**
  * @enum {string}
@@ -64,7 +65,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: LHV, expression: AST}} SetExpression
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.DoExpression; body: AST[]}} DoExpression
+ * @typedef {ASTNode & {kind: ASTTypes.DoExpression; body: AST[], env?: TypeEnvironment}} DoExpression
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.TypeAlias; name: string; type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
@@ -93,10 +94,10 @@ export const ASTTypes = {
  * @prop {import("./parseTypeAnnotation.js").TypeAnnotation|null} typeAnnotation
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null}} FunctionDeclaration
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} FunctionDeclaration
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null}} LambdaExpression
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} LambdaExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
