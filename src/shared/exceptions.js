@@ -14,6 +14,7 @@ export class Exception extends Error {
   constructor(msg, stack = []) {
     super(msg);
     this.wandaStack = stack;
+    this[Symbol.for(":dict")] = { message: msg };
   }
 
   /**
