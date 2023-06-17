@@ -133,7 +133,7 @@ export const parseTypeAnnotation = (annotation) => {
         return true;
       }
       return hasArrow;
-    }, false)
+    }, false);
 
     if (hasArrow) {
       // is function annotation

@@ -261,8 +261,7 @@ const parseParams = (forms) => {
  * @returns {import("./ast.js").FunctionDeclaration}
  */
 const parseFunctionDeclaration = (form) => {
-  const [_, name, params, maybeArrow, maybeRetType, maybeBody] =
-    form;
+  const [_, name, params, maybeArrow, maybeRetType, maybeBody] = form;
   const parsedName = parseExpr(name);
   const { parsedParams, parsedBody, variadic, retType } = parseFunction(
     params,
@@ -297,12 +296,7 @@ const parseLambdaExpression = (form) => {
   return AST.LambdaExpression(parsedParams, parsedBody, variadic, retType);
 };
 
-const parseFunction = (
-  params,
-  maybeArrow,
-  maybeRetType,
-  maybeBody
-) => {
+const parseFunction = (params, maybeArrow, maybeRetType, maybeBody) => {
   let retType, body;
 
   if (maybeArrow.type === TokenTypes.Symbol && maybeArrow.value === "->") {
