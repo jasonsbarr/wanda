@@ -64,7 +64,14 @@ const parseVariableDeclaration = (decl) => {
     // has type annotation
     const realLhv = lhv.get(0);
     // convert to array and get rid of ":" when passing into parseTypeAnnotation
-    typeAnnotation = parseTypeAnnotation([...lhv.cdr].slice(1));
+    typeAnnotation = [...lhv.cdr].slice(1);
+
+    if (typeAnnotation[0]?.constructor?.name === "Cons") {
+      // is function type annotation
+      typeAnnotation = flattenFunctionTypeAnnotation(typeAnnotation);
+    }
+
+    typeAnnotation = parseTypeAnnotation(typeAnnotation);
     parsedLhv = parseExpr(realLhv);
   } else {
     parsedLhv = parseExpr(lhv);
@@ -238,9 +245,8 @@ const parseParams = (forms) => {
           // is a function type annotation
           let annot = forms[i + 2];
 
-          // flatten the annotation into an array
-          const args = [...annot[0]];
-          annot = args.concat([...annot]);
+          annot = flattenFunctionTypeAnnotation(annot);
+          typeAnnotation = parseTypeAnnotation(annot);
         } else if (forms[i + 3]?.constructor?.name === "Cons") {
           // is a generic type annotation
           const annot = cons(forms[i + 2], forms[i + 3]);
@@ -260,6 +266,16 @@ const parseParams = (forms) => {
   }
 
   return params;
+};
+
+const flattenFunctionTypeAnnotation = (annot) => {
+  // flatten the annotation into an array
+  annot = [...annot];
+  // annot[0] is the cons list of param types
+  const pTypes = [...annot[0]];
+  // concat param types and -> bodyType into a single array
+  annot = pTypes.concat(annot.slice(1));
+  return annot;
 };
 
 /**
