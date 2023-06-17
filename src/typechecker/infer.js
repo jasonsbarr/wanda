@@ -107,23 +107,28 @@ const inferCallExpression = (node, env) => {
       const argType = infer(node.args[i], env);
       if (!isSubtype(argType, p)) {
         const node = node.args[i];
-        throw new Exception(
-          `${Type.toString(argType)} is not a subtype of ${Type.toString(
-            p
-          )} at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
+        throw new TypeException(
+          `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
+          node.srcloc
         );
       }
 
-      if (i === a.length - 1) {
+      if (func.variadic && i === a.length - 1) {
+        if (!p.vectorType) {
+          throw new TypeException(`Rest parameter type must be vector; ${Type.toString(p)} given`, arg.srcloc)
+        }
+        p = p.vectorType;
+
         for (let arg of node.args.slice(i)) {
           const argType = infer(arg, env);
 
           if (!isSubtype(argType, p)) {
             const node = node.args[i];
-            throw new Exception(
+            throw new TypeException(
               `${Type.toString(argType)} is not a subtype of ${Type.toString(
                 p
-              )} at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
+              )}`,
+              node.srcloc
             );
           }
         }
