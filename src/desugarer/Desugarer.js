@@ -10,7 +10,7 @@ import { Visitor } from "../visitor/Visitor.js";
 export class Desugarer extends Visitor {
   /**
    * Constructor
-   * @param {AST} program
+   * @param {import("../typechecker/TypeChecker.js").TypedAST} program
    */
   constructor(program) {
     super(program);
@@ -18,7 +18,7 @@ export class Desugarer extends Visitor {
 
   /**
    * Static constructor
-   * @param {AST} program
+   * @param {import("../typechecker/TypeChecker.js").TypedAST} program
    * @returns {Desugarer}
    */
   static new(program) {
@@ -27,11 +27,13 @@ export class Desugarer extends Visitor {
 
   /**
    * Desugars a FunctionDefinition node into a VariableDeclaration with lambda
-   * @param {import("../parser/ast.js").FunctionDeclaration} node
-   * @returns {import("../parser/ast.js").VariableDeclaration}
+   * @param {import("../parser/ast.js").FunctionDeclaration & {type: import("../typechecker/types.js").Type}} node
+   * @returns {import("../parser/ast.js").VariableDeclaration & {type: import("../typechecker/types.js").Type}}
    */
   visitFunctionDeclaration(node) {
     const variadic = node.variadic;
+    // since it's TypedAST it has a type property
+    const type = node.type;
     const lambda = AST.LambdaExpression(
       node.params,
       node.body,
@@ -50,6 +52,9 @@ export class Desugarer extends Visitor {
       variadic,
     };
 
-    return AST.VariableDeclaration(node.name, lambda, node.srcloc, funcType);
+    const varDecl = AST.VariableDeclaration(node.name, lambda, node.srcloc, funcType);
+
+    varDecl.type = type;
+    return varDecl
   }
 }
