@@ -4,7 +4,7 @@ import { Visitor } from "../visitor/Visitor.js";
 
 /**
  * @class
- * @desc Desugars the AST into core forms
+ * @desc Desugars the typed AST into core forms
  * @extends Visitor
  */
 export class Desugarer extends Visitor {
