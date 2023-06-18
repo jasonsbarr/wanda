@@ -53,9 +53,14 @@ export class Desugarer extends Visitor {
       variadic,
     };
 
-    const varDecl = AST.VariableDeclaration(node.name, lambda, node.srcloc, funcType);
+    const varDecl = AST.VariableDeclaration(
+      node.name,
+      lambda,
+      node.srcloc,
+      funcType
+    );
 
     varDecl.type = type;
-    return varDecl
+    return varDecl;
   }
 }
