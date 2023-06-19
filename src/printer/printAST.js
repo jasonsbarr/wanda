@@ -73,6 +73,10 @@ class ASTPrinter {
         return this.printVectorPattern(node, indent);
       case ASTTypes.MemberExpression:
         return this.printMemberExpression(node, indent);
+      case ASTTypes.FunctionDeclaration:
+        return this.printFunctionDeclaration(node, indent);
+      case ASTTypes.LambdaExpression:
+        return this.printLambdaExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
@@ -130,13 +134,13 @@ class ASTPrinter {
   printFunctionDeclaration(node, indent) {
     let prStr = `${prIndent(indent)}FunctionDeclaration:\n`;
     prStr += `${prIndent(indent + 2)}Name: ${node.name.name}\n`;
-    prStr += `${prIndent(indent + 2)}Params:`;
+    prStr += `${prIndent(indent + 2)}Params:\n`;
 
     for (let param of node.params) {
-      prStr += this.print(param, indent + 4) + "\n";
+      prStr += this.print(param.name, indent + 4) + "\n";
     }
 
-    prStr += `${prIndent(indent + 2)}Body:`;
+    prStr += `${prIndent(indent + 2)}Body:\n`;
 
     for (let expr of node.body) {
       prStr += this.print(expr, indent + 4) + "\n";
@@ -153,13 +157,13 @@ class ASTPrinter {
    */
   printLambdaExpression(node, indent) {
     let prStr = `${prIndent(indent)}FunctionDeclaration:\n`;
-    prStr += `${prIndent(indent + 2)}Params:`;
+    prStr += `${prIndent(indent + 2)}Params:\n`;
 
     for (let param of node.params) {
-      prStr += this.print(param, indent + 4) + "\n";
+      prStr += this.print(param.name, indent + 4) + "\n";
     }
 
-    prStr += `${prIndent(indent + 2)}Body:`;
+    prStr += `${prIndent(indent + 2)}Body:\n`;
 
     for (let expr of node.body) {
       prStr += this.print(expr, indent + 4) + "\n";
