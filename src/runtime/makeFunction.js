@@ -14,14 +14,6 @@ export const makeFunction = (func) => {
   });
   addMetaField(fn, "wanda", true);
   addMetaField(fn, "arity", func.length);
-  addMetaField(fn, "name", func.name);
-
-  Object.defineProperty(fn, "name", {
-    enumerable: false,
-    writable: false,
-    configurable: false,
-    value: func.name,
-  });
 
   return fn;
 };
