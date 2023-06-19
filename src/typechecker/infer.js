@@ -100,6 +100,13 @@ const inferCallExpression = (node, env) => {
     return Type.undefinedType;
   }
 
+  if (!func.variadic && node.args.length > func.params.length) {
+    throw new TypeException(
+      `Too many arguments for function: ${node.args.length} given; ${func.params.length} expected`,
+      node.srcloc
+    );
+  }
+
   // handle partially applied functions
   if (
     node.args.length <
