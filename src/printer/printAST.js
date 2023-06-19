@@ -122,6 +122,53 @@ class ASTPrinter {
   }
 
   /**
+   * Prints a FunctionDeclaration node
+   * @param {import("../parser/ast.js").FunctionDeclaration} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printFunctionDeclaration(node, indent) {
+    let prStr = `${prIndent(indent)}FunctionDeclaration:\n`;
+    prStr += `${prIndent(indent + 2)}Name: ${node.name.name}\n`;
+    prStr += `${prIndent(indent + 2)}Params:`;
+
+    for (let param of node.params) {
+      prStr += this.print(param, indent + 4) + "\n";
+    }
+
+    prStr += `${prIndent(indent + 2)}Body:`;
+
+    for (let expr of node.body) {
+      prStr += this.print(expr, indent + 4) + "\n";
+    }
+
+    return prStr;
+  }
+
+  /**
+   * Prints a LambdaExpression node
+   * @param {import("../parser/ast.js").LambdaExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printLambdaExpression(node, indent) {
+    let prStr = `${prIndent(indent)}FunctionDeclaration:\n`;
+    prStr += `${prIndent(indent + 2)}Params:`;
+
+    for (let param of node.params) {
+      prStr += this.print(param, indent + 4) + "\n";
+    }
+
+    prStr += `${prIndent(indent + 2)}Body:`;
+
+    for (let expr of node.body) {
+      prStr += this.print(expr, indent + 4) + "\n";
+    }
+
+    return prStr;
+  }
+
+  /**
    * Prints a MemberExpression node
    * @param {import("../parser/ast.js").MemberExpression} node
    * @param {number} indent
