@@ -160,7 +160,7 @@ export class Emitter {
       i++;
     }
 
-    let code = `(${params.join(", ")}) => {\n`;
+    let code = `rt.makeFunction((${params.join(", ")}) => {\n`;
 
     let j = 0;
     for (let expr of node.body) {
@@ -172,7 +172,7 @@ export class Emitter {
       j++;
     }
 
-    code += "\n}";
+    code += "\n})";
 
     return code;
   }
