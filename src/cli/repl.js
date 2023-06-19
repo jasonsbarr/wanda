@@ -36,9 +36,11 @@ export const repl = (mode = "repl") => {
           process.exit(0);
         case ":print-ast":
           mode = "printAST";
+          input = "";
           break;
         case ":print-desugared":
           mode = "printDesugared";
+          input = "";
           break;
         // If it's code, compile and run it
         default:
