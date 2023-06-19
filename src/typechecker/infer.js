@@ -131,17 +131,12 @@ const inferCallExpression = (node, env) => {
 };
 
 const checkArgTypes = (node, params, env, func) => {
-  params.forEach((p, i, a) => {
-    const argType = infer(node.args[i], env);
-    if (!isSubtype(argType, p)) {
-      const n = node.args[i];
-      throw new TypeException(
-        `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
-        n.srcloc
-      );
-    }
+  node.args.forEach((arg, i) => {
+    const argType = infer(arg, env);
 
-    if (func.variadic && i === a.length - 1) {
+    if (func.variadic && i >= params.length - 1) {
+      // is part of rest args
+      let p = params[params.length - 1];
       if (!p.vectorType) {
         throw new TypeException(
           `Rest parameter type must be vector; ${Type.toString(p)} given`,
@@ -149,17 +144,19 @@ const checkArgTypes = (node, params, env, func) => {
         );
       }
       p = p.vectorType;
-
-      for (let arg of node.args.slice(i)) {
-        const argType = infer(arg, env);
-
-        if (!isSubtype(argType, p)) {
-          const node = node.args[i];
-          throw new TypeException(
-            `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
-            node.srcloc
-          );
-        }
+      if (!isSubtype(argType, p)) {
+        throw new TypeException(
+          `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
+          arg.srcloc
+        );
+      }
+    } else {
+      const p = params[i];
+      if (!isSubtype(argType, p)) {
+        throw new TypeException(
+          `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
+          arg.srcloc
+        );
       }
     }
   });
