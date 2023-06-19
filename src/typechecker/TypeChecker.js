@@ -167,6 +167,10 @@ export class TypeChecker {
     const funcEnv = node.env;
     const type = infer(node, funcEnv);
 
+    if (funcEnv.checkingOn) {
+      env.checkingOn = funcEnv.checkingOn;
+    }
+
     env.set(node.name.name, type);
     return { ...node, type };
   }
@@ -194,6 +198,10 @@ export class TypeChecker {
 
     const funcEnv = node.env;
     const type = infer(node, funcEnv);
+
+    if (funcEnv.checkingOn) {
+      env.checkingOn = funcEnv.checkingOn;
+    }
 
     return { ...node, type };
   }

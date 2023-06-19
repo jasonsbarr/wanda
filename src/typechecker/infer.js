@@ -109,7 +109,7 @@ const inferCallExpression = (node, env) => {
     const params = func.params.slice(0, node.args.length);
 
     if (env.checkingOn) {
-      checkArgTypes(node, params, env);
+      checkArgTypes(node, params, env, func);
     }
 
     const newParams = func.params.slice(node.args.length);
@@ -117,20 +117,20 @@ const inferCallExpression = (node, env) => {
   }
 
   if (env.checkingOn) {
-    checkArgTypes(node, func.params, env);
+    checkArgTypes(node, func.params, env, func);
   }
 
   return func.ret;
 };
 
-const checkArgTypes = (node, params, env) => {
+const checkArgTypes = (node, params, env, func) => {
   params.forEach((p, i, a) => {
     const argType = infer(node.args[i], env);
     if (!isSubtype(argType, p)) {
-      const node = node.args[i];
+      const n = node.args[i];
       throw new TypeException(
         `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
-        node.srcloc
+        n.srcloc
       );
     }
 
