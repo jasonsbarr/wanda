@@ -156,7 +156,7 @@ class ASTPrinter {
    * @returns {string}
    */
   printLambdaExpression(node, indent) {
-    let prStr = `${prIndent(indent)}FunctionDeclaration:\n`;
+    let prStr = `${prIndent(indent)}LambdaExpression:\n`;
     prStr += `${prIndent(indent + 2)}Params:\n`;
 
     for (let param of node.params) {
