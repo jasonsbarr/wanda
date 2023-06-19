@@ -62,6 +62,8 @@ export const repl = (mode = "repl") => {
       }
     } catch (e) {
       console.error(e.stack);
+      input = "";
+      indent = 0;
     }
   }
 };
