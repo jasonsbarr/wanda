@@ -3,6 +3,7 @@ import * as Validators from "./validators.js";
 import * as Constructors from "./constructors.js";
 import { typeToString } from "./typeToString.js";
 import { union } from "./union.js";
+import { unionMap as map } from "./unionMap.js";
 
 export const Type = {
   Type: TypeTypes,
@@ -10,4 +11,5 @@ export const Type = {
   ...Validators,
   toString: typeToString,
   union,
+  map,
 };
