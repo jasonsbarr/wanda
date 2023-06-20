@@ -120,8 +120,6 @@ const parseObjectAnnotation = (annot) => {
  * @returns {TypeAnnotation}
  */
 export const parseTypeAnnotation = (annotation) => {
-  let annot;
-
   if (annotation instanceof Cons) {
     // is function or generic annotation
     // flatten Cons to array
@@ -159,6 +157,7 @@ export const parseTypeAnnotation = (annotation) => {
     }
   }
 
+  let annot;
   if (Array.isArray(annotation)) {
     // is generic annotation
     // get container type
