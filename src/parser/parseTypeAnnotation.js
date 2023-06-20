@@ -171,6 +171,10 @@ export const parseTypeAnnotation = (annotation) => {
     return parseObjectAnnotation(annot);
   }
 
+  if (annot.type === TokenTypes.Nil) {
+    return { kind: TATypes.NilLiteral };
+  }
+
   if (annot.type === TokenTypes.Symbol) {
     switch (annot.value) {
       case "any":
@@ -183,8 +187,6 @@ export const parseTypeAnnotation = (annotation) => {
         return { kind: TATypes.BooleanLiteral };
       case "keyword":
         return { kind: TATypes.KeywordLiteral };
-      case "nil":
-        return { kind: TATypes.NilLiteral };
       case "list":
         // annotation is array with listType as 2nd member
         return parseListAnnotation(annotation[1]);
