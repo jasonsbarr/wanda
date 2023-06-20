@@ -60,7 +60,7 @@ export const isSubtype = (type1, type2) => {
 
   if (Type.isSingleton(type1)) {
     if (Type.isSingleton(type2)) return type1.value === type2.value;
-    else return isSubtype(type1.base, b);
+    else return isSubtype(type1.base, type2);
   }
 
   // never is bottom type, so is subtype of every type
