@@ -125,6 +125,16 @@ export class TypeChecker {
   }
 
   /**
+   * Type checks a constant declaration
+   * @param {import("../parser/ast.js").ConstantDeclaration} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkConstantDeclaration(node, env) {
+    return this.checkVariableDeclaration(node, env, true);
+  }
+
+  /**
    * Type checks a do (block) expression
    * @param {import("../parser/ast.js").DoExpression} node
    * @param {TypeEnvironment} env
@@ -275,8 +285,16 @@ export class TypeChecker {
       );
     }
 
+    const nameType = env.get(node.lhv.name);
+
+    if (nameType.constant) {
+      throw new TypeException(
+        `Cannot assign to constant value ${node.lhv.name}`,
+        node.srcloc
+      );
+    }
+
     if (env.checkingOn) {
-      const nameType = env.getType(node.lhv.name);
       check(node.expression, nameType, env);
       return {
         kind: node.kind,
@@ -345,9 +363,10 @@ export class TypeChecker {
    * Type checks a variable declaration
    * @param {import("../parser/ast.js").VariableDeclaration} node
    * @param {TypeEnvironment} env
+   * @param {boolean} [constant=false]
    * @returns {TypedAST}
    */
-  checkVariableDeclaration(node, env) {
+  checkVariableDeclaration(node, env, constant = false) {
     let type;
 
     if (node.typeAnnotation) {
@@ -355,7 +374,7 @@ export class TypeChecker {
       check(node.expression, type, env);
       env.checkingOn = true;
     } else {
-      type = infer(node, env);
+      type = infer(node, env, constant);
     }
 
     if (node.lhv.kind === ASTTypes.Symbol) {
