@@ -126,13 +126,15 @@ const inferSymbol = (node, env, constant) => {
  * @returns {import("./types").Type}
  */
 const inferCallExpression = (node, env, constant) => {
-  const func = infer(node.func, env, constant);
+  let func = infer(node.func, env, constant);
 
   if (Type.isAny(func)) {
     return Type.any;
   } else if (Type.isUndefined(func) || Type.isUndefined(func.ret)) {
     // this should only happen during first typechecker pass
     return Type.undefinedType;
+  } else if (Type.isTypeAlias(func)) {
+    func = getAliasBase(func.name, env);
   }
 
   if (!func.variadic && node.args.length > func.params.length) {
@@ -301,7 +303,11 @@ const inferRecordLiteral = (node, env, constant) => {
  */
 const inferMemberExpression = (node, env, constant) => {
   const prop = node.property;
-  const object = infer(node.object, env, constant);
+  let object = infer(node.object, env, constant);
+
+  if (Type.isTypeAlias(object)) {
+    object = getAliasBase(object.name, env);
+  }
 
   if (!Type.isObject(object)) {
     if (env.checkingOn) {
