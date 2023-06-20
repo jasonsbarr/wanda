@@ -97,9 +97,10 @@ const inferNil = () => Type.nil;
  * Infers a type from a Symbol/Identifier
  * @param {import("../parser/ast").Symbol} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferSymbol = (node, env) => {
+const inferSymbol = (node, env, constant) => {
   const name = node.name;
   const namedType = env.get(name);
 
@@ -121,10 +122,11 @@ const inferSymbol = (node, env) => {
  * Infers a type from a CallExpression node
  * @param {import("../parser/ast").CallExpression} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferCallExpression = (node, env) => {
-  const func = infer(node.func, env);
+const inferCallExpression = (node, env, constant) => {
+  const func = infer(node.func, env, constant);
 
   if (Type.isAny(func)) {
     return Type.any;
@@ -149,7 +151,7 @@ const inferCallExpression = (node, env) => {
     const params = func.params.slice(0, node.args.length);
 
     if (env.checkingOn) {
-      checkArgTypes(node, params, env, func);
+      checkArgTypes(node, params, env, func, constant);
     }
 
     const newParams = func.params.slice(node.args.length);
@@ -157,15 +159,15 @@ const inferCallExpression = (node, env) => {
   }
 
   if (env.checkingOn) {
-    checkArgTypes(node, func.params, env, func);
+    checkArgTypes(node, func.params, env, func, constant);
   }
 
   return func.ret;
 };
 
-const checkArgTypes = (node, params, env, func) => {
+const checkArgTypes = (node, params, env, func, constant) => {
   node.args.forEach((arg, i) => {
-    const argType = infer(arg, env);
+    const argType = infer(arg, env, constant);
 
     if (func.variadic && i >= params.length - 1) {
       // is part of rest args
@@ -199,34 +201,37 @@ const checkArgTypes = (node, params, env, func) => {
  * Infers a type from a VariableDeclaration node and sets it in the current env
  * @param {import("../parser/ast.js").VariableDeclaration} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferVariableDeclaration = (node, env) => {
-  return infer(node.expression, env);
+const inferVariableDeclaration = (node, env, constant) => {
+  return infer(node.expression, env, constant);
 };
 
 /**
  * Infers a type from a SetExpression node
  * @param {import("../parser/ast").SetExpression} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferSetExpression = (node, env) => {
-  return infer(node.expression, env);
+const inferSetExpression = (node, env, constant) => {
+  return infer(node.expression, env, constant);
 };
 
 /**
  * Infers a type from a DoExpression node
  * @param {import("../parser/ast").DoExpression} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferDoExpression = (node, env) => {
+const inferDoExpression = (node, env, constant) => {
   let doType = Type.any;
   const doEnv = env.extend("doExpression");
 
   for (let expr of node.body) {
-    doType = infer(expr, doEnv);
+    doType = infer(expr, doEnv, constant);
   }
 
   return doType;
@@ -236,9 +241,10 @@ const inferDoExpression = (node, env) => {
  * Infers a type from a TypeAlias node
  * @param {import("../parser/ast.js").TypeAlias} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferTypeAlias = (node, env) => {
+const inferTypeAlias = (node, env, constant) => {
   return fromTypeAnnotation(node.type, env);
 };
 
@@ -246,15 +252,16 @@ const inferTypeAlias = (node, env) => {
  * Infer the type of a VectorLiteral node
  * @param {import("../parser/ast.js").VectorLiteral} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Vector}
  */
-const inferVectorLiteral = (node, env) => {
+const inferVectorLiteral = (node, env, constant) => {
   if (node.members.length === 0) {
     // change this to never when we add union types
     return Type.vector(Type.any);
   }
 
-  const types = node.members.map((m) => infer(m, env));
+  const types = node.members.map((m) => infer(m, env, constant));
   const unified = unifyAll(...types);
 
   if (unified === null && env.checkingOn) {
@@ -266,33 +273,35 @@ const inferVectorLiteral = (node, env) => {
     return Type.any;
   }
 
-  return Type.vector(unified);
+  return Type.vector(unified, constant);
 };
 
 /**
  * Infer the type of a RecordLiteral node
  * @param {import("../parser/ast.js").RecordLiteral} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Object}
  */
-const inferRecordLiteral = (node, env) => {
+const inferRecordLiteral = (node, env, constant) => {
   const properties = node.properties.map((prop) => ({
     kind: Type.Type.Property,
     name: prop.key.name,
-    type: infer(prop.value, env),
+    type: infer(prop.value, env, constant),
   }));
-  return Type.object(properties);
+  return Type.object(properties, constant);
 };
 
 /**
  * Infer the type of a MemberExpression node
  * @param {import("../parser/ast.js").MemberExpression} node
  * @param {TypeEnvironment} env
+ * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferMemberExpression = (node, env) => {
+const inferMemberExpression = (node, env, constant) => {
   const prop = node.property;
-  const object = infer(node.object, env);
+  const object = infer(node.object, env, constant);
 
   if (!Type.isObject(object)) {
     if (env.checkingOn) {
@@ -323,6 +332,7 @@ const inferMemberExpression = (node, env) => {
  * Infers a type for a function
  * @param {import("../parser/ast.js").LambdaExpression|import("../parser/ast.js").FunctionDeclaration} node
  * @param {TypeEnvironment} env // will already be extended function environment
+ * @param {boolean} constant
  * @returns {import("./types").FunctionType}
  */
 const inferFunction = (node, env) => {
@@ -348,7 +358,7 @@ const inferFunction = (node, env) => {
 
   for (let expr of node.body) {
     // type of last expression "wins"
-    inferredRetType = infer(expr, env);
+    inferredRetType = infer(expr, env, constant);
   }
 
   if (env.checkingOn && !isSubtype(inferredRetType, retType)) {
