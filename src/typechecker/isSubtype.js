@@ -63,5 +63,16 @@ export const isSubtype = (type1, type2) => {
     else return isSubtype(type1.base, b);
   }
 
+  // never is bottom type, so is subtype of every type
+  if (Type.isNever(type1)) return true;
+
+  if (Type.isUnion(type1)) {
+    return type1.types.every((t1) => isSubtype(t1, type2));
+  }
+
+  if (Type.isUnion(type2)) {
+    return type2.types.some((t2) => isSubtype(type1, t2));
+  }
+
   return false;
 };
