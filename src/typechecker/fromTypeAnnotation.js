@@ -29,6 +29,8 @@ export const fromTypeAnnotation = (
       return Type.keyword;
     case TATypes.NilLiteral:
       return Type.nil;
+    case TATypes.Never:
+      return Type.never;
     case TATypes.Symbol: {
       const name = typeAnnotation.name;
       const type = typeEnv.getType(name);
