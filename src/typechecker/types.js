@@ -58,11 +58,13 @@ export const TypeTypes = {
  * @typedef List
  * @prop {TypeTypes.List} kind
  * @prop {Type} listType
+ * @prop {boolean} constant
  */
 /**
  * @typedef Vector
  * @prop {TypeTypes.Vector} kind
  * @prop {Type} vectorType
+ * @prop {boolean} constant
  */
 /**
  * @typedef Property
@@ -74,6 +76,7 @@ export const TypeTypes = {
  * @typedef Object
  * @prop {TypeTypes.Object} kind
  * @prop {Property[]} properties
+ * @prop {boolean} constant
  */
 /**
  * @typedef Undefined
@@ -83,6 +86,7 @@ export const TypeTypes = {
  * @typedef Tuple
  * @prop {TypeTypes.Tuple} kind
  * @prop  {Type[]} types
+ * @prop {boolean} constant
  */
 /**
  * @typedef {Number|String|Boolean|Keyword|Nil|Undefined} PrimitiveTypes

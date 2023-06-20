@@ -55,26 +55,38 @@ export const typeAlias = (name, base) => ({
 /**
  * List type constructor
  * @param {import("./types").Type} listType
+ * @param {boolean} [constant=false]
  * @returns {import("./types").List}
  */
-export const list = (listType) => ({ kind: TypeTypes.List, listType });
+export const list = (listType, constant = false) => ({
+  kind: TypeTypes.List,
+  listType,
+  constant,
+});
 
 /**
  * Vector type constructor
  * @param {import("./types.js").Type} vectorType
+ * @param {boolean} [constant=false]
  * @returns {import("./types.js").Vector}
  */
-export const vector = (vectorType) => ({
+export const vector = (vectorType, constant = false) => ({
   kind: TypeTypes.Vector,
   vectorType,
+  constant,
 });
 
 /**
  * Object type constructor
  * @param {import("./types.js").Property[]} properties
+ * @param {boolean} [constant=false]
  * @returns {import("./types.js").Object}
  */
-export const object = (properties) => ({ kind: TypeTypes.Object, properties });
+export const object = (properties, constant = false) => ({
+  kind: TypeTypes.Object,
+  properties,
+  constant,
+});
 
 /**
  * Undefined type constructor
@@ -84,6 +96,11 @@ export const undefinedType = { kind: TypeTypes.Undefined };
 /**
  * Tuple type constructor
  * @param {import("./types.js").Type[]} types
+ * @param {boolean} [constant=false]
  * @returns {import("./types.js").Tuple}
  */
-export const tuple = (types) => ({ kind: TypeTypes.Tuple, types });
+export const tuple = (types, constant = false) => ({
+  kind: TypeTypes.Tuple,
+  types,
+  constant,
+});
