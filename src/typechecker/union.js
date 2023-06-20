@@ -1,6 +1,6 @@
 import { never } from "./constructors.js";
 import { isSubtype } from "./isSubtype.js";
-import { TypeTypes } from "./types";
+import { TypeTypes } from "./types.js";
 import { isUnion } from "./validators.js";
 
 /**
@@ -15,10 +15,9 @@ const collapseSubtypes = (ts) => {
    * equivalent arm.
    */
   return ts.filter((t1, i1) => {
-    return (
-      ts.every((t2, i2) => i1 === i2) ||
-      !isSubtype(t1, t2) ||
-      (isSubtype(t2, t1) && i1 < i2)
+    return ts.every(
+      (t2, i2) =>
+        i1 === i2 || !isSubtype(t1, t2) || (isSubtype(t2, t1) && i1 < i2)
     );
   });
 };
