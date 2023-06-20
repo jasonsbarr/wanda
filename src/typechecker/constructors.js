@@ -108,7 +108,7 @@ export const tuple = (types, constant = false) => ({
 /**
  * Singleton type constructor
  * @param {import("./types.js").PrimitiveType} base
- * @param {string} value
+ * @param {"Number"|"String"|"Boolean"|"Keyword"} value
  * @returns {import("./types.js").Singleton}
  */
 export const singleton = (base, value) => ({

@@ -12,52 +12,85 @@ import { propType } from "./propType.js";
  * Infers a type from an AST node
  * @param {AST} ast
  * @param {TypeEnvironment} env
+ * @param {boolean} [constant=false]
  * @returns {import("./types").Type}
  */
-export const infer = (ast, env) => {
+export const infer = (ast, env, constant = false) => {
   switch (ast.kind) {
     case ASTTypes.NumberLiteral:
-      return inferNumber();
+      return inferNumber(ast, constant);
     case ASTTypes.StringLiteral:
-      return inferString();
+      return inferString(ast, constant);
     case ASTTypes.BooleanLiteral:
-      return inferBoolean();
+      return inferBoolean(ast, constant);
     case ASTTypes.KeywordLiteral:
-      return inferKeyword();
+      return inferKeyword(ast, constant);
     case ASTTypes.NilLiteral:
       return inferNil();
     case ASTTypes.Symbol:
-      return inferSymbol(ast, env);
+      return inferSymbol(ast, env, constant);
     case ASTTypes.CallExpression:
-      return inferCallExpression(ast, env);
+      return inferCallExpression(ast, env, constant);
     case ASTTypes.VariableDeclaration:
-      return inferVariableDeclaration(ast, env);
+      return inferVariableDeclaration(ast, env, constant);
     case ASTTypes.SetExpression:
-      return inferSetExpression(ast, env);
+      return inferSetExpression(ast, env, constant);
     case ASTTypes.DoExpression:
-      return inferDoExpression(ast, env);
+      return inferDoExpression(ast, env, constant);
     case ASTTypes.TypeAlias:
-      return inferTypeAlias(ast, env);
+      return inferTypeAlias(ast, env, constant);
     case ASTTypes.VectorLiteral:
-      return inferVectorLiteral(ast, env);
+      return inferVectorLiteral(ast, env, constant);
     case ASTTypes.RecordLiteral:
-      return inferRecordLiteral(ast, env);
+      return inferRecordLiteral(ast, env, constant);
     case ASTTypes.MemberExpression:
-      return inferMemberExpression(ast, env);
+      return inferMemberExpression(ast, env, constant);
     case ASTTypes.LambdaExpression:
-      return inferFunction(ast, env);
+      return inferFunction(ast, env, constant);
     case ASTTypes.FunctionDeclaration:
-      return inferFunction(ast, env);
+      return inferFunction(ast, env, constant);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
 };
 
 // Infer types from literal nodes
-const inferNumber = () => Type.number;
-const inferString = () => Type.string;
-const inferBoolean = () => Type.boolean;
-const inferKeyword = () => Type.keyword;
+/**
+ * Infer a number type
+ * @param {import("../parser/ast.js").NumberLiteral} ast
+ * @param {boolean} constant
+ * @returns {import("./types").Number|import("./types").Singleton}
+ */
+const inferNumber = (ast, constant) =>
+  constant ? Type.singleton("Number", ast.value) : Type.number;
+
+/**
+ * Infer a string type
+ * @param {import("../parser/ast.js").StringLiteral} ast
+ * @param {boolean} constant
+ * @returns {import("./types").String|import("../parser/parseTypeAnnotation.js").SingletonAnn}
+ */
+const inferString = (ast, constant) =>
+  constant ? Type.singleton("String", ast.value) : Type.string;
+
+/**
+ * Infer a boolean type
+ * @param {import("../parser/ast.js").BooleanLiteral} ast
+ * @param {boolean} constant
+ * @returns {import("./types").Boolean|import("./types").Singleton}
+ */
+const inferBoolean = (ast, constant) =>
+  constant ? Type.singleton("Boolean", ast.value) : Type.boolean;
+
+/**
+ * Infer a keyword type
+ * @param {import("../parser/ast.js").KeywordLiteral} ast
+ * @param {boolean} constant
+ * @returns {import("./types").Keyword|import("./types").Singleton}
+ */
+const inferKeyword = (ast, constant) =>
+  constant ? Type.singleton("Keyword", ast.value) : Type.keyword;
+
 const inferNil = () => Type.nil;
 
 /**
