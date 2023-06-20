@@ -49,9 +49,13 @@ export const isSubtype = (type1, type2) => {
   if (Type.isFunctionType(type1) && Type.isFunctionType(type2)) {
     return (
       type1.params.length === type2.params.length &&
-      a.params.every((a, i) => isSubtype(b.params[i], a)) &&
-      isSubtype(a.ret, b.ret)
+      type1.params.every((a, i) => isSubtype(type2.params[i], a)) &&
+      isSubtype(type1.ret, type2.ret)
     );
+  }
+
+  if (Type.isTuple(type1) && Type.isTuple(type2)) {
+    return type1.types.every((a, i) => isSubtype(a, type2.types[i]));
   }
 
   return false;
