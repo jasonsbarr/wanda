@@ -42,6 +42,8 @@ export const typeToString = (type) => {
       return type.value;
     case TypeTypes.Never:
       return "never";
+    case TypeTypes.Union:
+      return `(${type.types.map(typeToString).join(" | ")})`;
     default:
       throw new Exception(`String conversion not implemented for ${type.kind}`);
   }
