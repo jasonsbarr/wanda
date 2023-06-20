@@ -61,6 +61,16 @@ export const fromTypeAnnotation = (
       const retType = fromTypeAnnotation(typeAnnotation.retType, typeEnv);
       return Type.functionType(paramTypes, retType, typeAnnotation.variadic);
     }
+    case TATypes.Tuple: {
+      /** @type {import("./types.js").Type[]} */
+      let types = [];
+
+      for (let mem of typeAnnotation.types) {
+        types.push(fromTypeAnnotation(mem, typeEnv));
+      }
+
+      return Type.tuple(types);
+    }
     default:
       throw new Exception(
         `Type not found for type annotation ${JSON.parse(
