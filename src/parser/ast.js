@@ -27,6 +27,7 @@ export const ASTTypes = {
   Param: "Param",
   FunctionDeclaration: "FunctionDeclaration",
   LambdaExpression: "LambdaExpression",
+  ConstantDeclaration: "ConstantDeclaration",
 };
 
 /**
@@ -60,7 +61,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.CallExpression; func: AST, args: AST[]}} CallExpression
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.VariableDeclaration; lhv: AST, expression: AST, typeAnnotation?: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
+ * @typedef {ASTNode & {kind: ASTTypes.VariableDeclaration; lhv: AST, expression: AST, typeAnnotation: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: LHV, expression: AST}} SetExpression
@@ -100,6 +101,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.LambdaExpression; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} LambdaExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.ConstantDeclaration; lhv: LHV; expression: AST; typeAnnotation: null | import("./parseTypeAnnotation.js").TypeAnnotation}} ConstantDeclaration
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -213,7 +217,7 @@ export const AST = {
   },
   /**
    * Constructs a VariableDeclaration AST node
-   * @param {AST} lhv
+   * @param {LHV} lhv
    * @param {AST} expression
    * @param {SrcLoc} srcloc
    * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} typeAnnotation
@@ -230,7 +234,7 @@ export const AST = {
   },
   /**
    * Constructs a SetExpression AST node
-   * @param {AST} lhv
+   * @param {Symbol} lhv
    * @param {AST} expression
    * @param {SrcLoc} srcloc
    * @returns {SetExpression}
@@ -396,6 +400,23 @@ export const AST = {
       variadic,
       retType,
       srcloc,
+    };
+  },
+  /**
+   * Constructs a ConstantDeclaration AST node
+   * @param {LHV} lhv
+   * @param {AST} expression
+   * @param {SrcLoc} srcloc
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} typeAnnotation
+   * @returns {ConstantDeclaration}
+   */
+  ConstantDeclaration(lhv, expression, srcloc, typeAnnotation = null) {
+    return {
+      kind: ASTTypes.ConstantDeclaration,
+      lhv,
+      expression,
+      srcloc,
+      typeAnnotation,
     };
   },
 };
