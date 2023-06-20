@@ -1,4 +1,4 @@
-import { AST } from "../parser/ast.js";
+import { AST, ASTTypes } from "../parser/ast.js";
 import { TATypes } from "../parser/parseTypeAnnotation.js";
 import { Visitor } from "../visitor/Visitor.js";
 
@@ -23,6 +23,15 @@ export class Desugarer extends Visitor {
    */
   static new(program) {
     return new Desugarer(program);
+  }
+
+  /**
+   * Desugars a ConstantDeclaration node into a VariableDeclaration
+   * @param {import("../parser/ast.js").ConstantDeclaration && {type: import("../typechecker/types.js").Type}} node
+   * @returns {import("../parser/ast.js").ConstantDeclaration && {type: import("../typechecker/types.js").Type}} node
+   */
+  visitConstantDeclaration(node) {
+    return { ...node, kind: ASTTypes.VariableDeclaration };
   }
 
   /**
