@@ -97,6 +97,10 @@ export const fromTypeAnnotation = (
 
       return Type.singleton(base, value);
     }
+    case TATypes.Union:
+      return Type.union(
+        ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
+      );
     default:
       throw new Exception(
         `Type not found for type annotation ${JSON.parse(
