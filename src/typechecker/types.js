@@ -17,6 +17,8 @@ export const TypeTypes = {
   Undefined: "Undefined",
   Tuple: "Tuple",
   Singleton: "Singleton",
+  Never: "Never",
+  Union: "Union",
 };
 /**
  * @typedef Any
@@ -97,8 +99,17 @@ export const TypeTypes = {
  * @prop {true} constant
  */
 /**
+ * @typedef Never
+ * @prop {TypeTypes.Never} kind
+ */
+/**
+ * @typedef Union
+ * @prop {TypeTypes.Union} kind
+ * @prop {Type[]} types
+ */
+/**
  * @typedef {Number|String|Boolean|Keyword|Nil|Undefined} PrimitiveType
  */
 /**
- * @typedef {Any|PrimitiveType|FunctionType|TypeAlias|List|Vector|Object|Tuple|Singleton} Type
+ * @typedef {Any|PrimitiveType|FunctionType|TypeAlias|List|Vector|Object|Tuple|Singleton|Never|Union} Type
  */
