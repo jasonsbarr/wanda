@@ -46,5 +46,13 @@ export const isSubtype = (type1, type2) => {
   // a type should only be undefined on the first pass through the checker
   if (Type.isUndefined(type1) || Type.isUndefined(type2)) return true;
 
+  if (Type.isFunctionType(type1) && Type.isFunctionType(type2)) {
+    return (
+      type1.params.length === type2.params.length &&
+      a.params.every((a, i) => isSubtype(b.params[i], a)) &&
+      isSubtype(a.ret, b.ret)
+    );
+  }
+
   return false;
 };
