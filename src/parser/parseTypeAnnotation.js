@@ -17,6 +17,7 @@ export const TATypes = {
   Vector: "Vector",
   Object: "Object",
   Function: "Function",
+  Tuple: "Tuple",
 };
 /**
  * @typedef AnyAnnotation
@@ -74,10 +75,14 @@ export const TATypes = {
  * @prop {boolean} variadic
  */
 /**
+ * @typedef TupleAnn
+ * @prop {TypeAnnotation[]} types
+ */
+/**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn} TypeAnnotation
+ * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn|TupleAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -99,7 +104,7 @@ const parseVectorAnnotation = (type) => {
 
 /**
  * Parse the ObjectType for an object type annotation
- * @param {import("./ast.js").RecordLiteral}
+ * @param {import("../reader/read.js").RecordLiteral}
  * @returns {ObjectAnn}
  */
 const parseObjectAnnotation = (annot) => {
@@ -112,6 +117,22 @@ const parseObjectAnnotation = (annot) => {
   }
 
   return { kind: TATypes.Object, properties };
+};
+
+/**
+ * Parse the TupleType for a tuple type annotation
+ * @param {import("../reader/read.js").VectorLiteral} annot
+ * @returns {TupleAnn}
+ */
+const parseTupleAnnotation = (annot) => {
+  /** @type {TypeAnnotation[]} */
+  let types = [];
+
+  for (let mem of annot.members) {
+    types.push(parseTypeAnnotation(mem));
+  }
+
+  return { kind: TATypes.Tuple, types };
 };
 
 /**
@@ -169,6 +190,10 @@ export const parseTypeAnnotation = (annotation) => {
 
   if (annot.type === "RecordLiteral") {
     return parseObjectAnnotation(annot);
+  }
+
+  if (annot.type === "VectorLiteral") {
+    return parseTupleAnnotation(annot);
   }
 
   if (annot.type === TokenTypes.Nil) {
