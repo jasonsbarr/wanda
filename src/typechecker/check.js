@@ -157,7 +157,8 @@ const checkUnion = (ast, type, env) => {
       // do nothing
     }
   }
-  // Nothing matched, so construct error message
+  // Nothing matched, so construct error message based on the whole union
+  // See https://jaked.org/blog/2021-10-14-Reconstructing-TypeScript-part-4 for why this is necessary
   const inferredType = infer(ast, env);
 
   if (!isSubtype(inferredType, type)) {
