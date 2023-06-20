@@ -84,7 +84,13 @@ export const fromTypeAnnotation = (
           ? "Boolean"
           : TokenTypes.Keyword
           ? "Keyword"
-          : fail(`Invalid token type ${tType} when parsing type annotation`);
+          : fail(
+              `Invalid token type ${tType} when parsing type annotation ${JSON.stringify(
+                typeAnnotation,
+                null,
+                2
+              )}`
+            );
       const value = typeAnnotation.token.value;
 
       return Type.singleton(base, value);
