@@ -327,5 +327,11 @@ const inferFunction = (node, env) => {
     );
   }
 
-  return Type.functionType(params, retType, node.variadic);
+  return Type.functionType(
+    params,
+    Type.isAny(retType) || Type.isUndefined(retType)
+      ? inferredRetType
+      : retType,
+    node.variadic
+  );
 };
