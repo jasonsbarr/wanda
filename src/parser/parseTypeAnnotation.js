@@ -290,13 +290,11 @@ export const parseTypePrimitive = (annotation) => {
  * @returns
  */
 export const parseTypeAnnotation = (annotation) => {
-  if (annotation instanceof Cons) {
-    annotation = [...annotation];
-  }
+  const annot = annotation instanceof Cons ? [...annotation] : null;
 
   const isCompound =
-    Array.isArray(annotation) &&
-    annotation.reduce((isCompound, item) => {
+    Array.isArray(annot) &&
+    annot.reduce((isCompound, item) => {
       if (
         (item.type === TokenTypes.Symbol && item.value === "|") ||
         item.type === TokenTypes.Amp
@@ -308,18 +306,18 @@ export const parseTypeAnnotation = (annotation) => {
 
   if (isCompound) {
     /** @type {TypeAnnotation} */
-    const first = parseTypeAnnotation(annotation[0]);
+    const first = parseTypeAnnotation(annot[0]);
     /** @type {Token} */
-    let sep = annotation[1];
+    let sep = annot[1];
     const kind =
       sep.type === TokenTypes.Amp ? TATypes.Intersection : TATypes.Union;
     const types = [first];
 
     let i = 2;
     while (sep) {
-      types.push(parseTypeAnnotation(annotation[i]));
+      types.push(parseTypeAnnotation(annot[i]));
       i++;
-      sep = annotation[i];
+      sep = annot[i];
     }
 
     return { kind, types };
