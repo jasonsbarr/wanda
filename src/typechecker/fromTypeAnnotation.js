@@ -77,13 +77,13 @@ export const fromTypeAnnotation = (
       const tType = typeAnnotation.token.type;
       const base =
         tType === TokenTypes.Number
-          ? Type.number
+          ? "Number"
           : tType === TokenTypes.String
-          ? Type.string
+          ? "String"
           : tType === TokenTypes.Boolean
-          ? Type.boolean
+          ? "Boolean"
           : TokenTypes.Keyword
-          ? Type.keyword
+          ? "Keyword"
           : fail(`Invalid token type ${tType} when parsing type annotation`);
       const value = typeAnnotation.token.value;
 

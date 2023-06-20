@@ -92,7 +92,7 @@ export const TypeTypes = {
 /**
  * @typedef Singleton
  * @prop {TypeTypes.Singleton} kind
- * @prop {PrimitiveType} base
+ * @prop {"Number"|"String"|"Boolean"|"Keyword"} base
  * @prop {string} value
  * @prop {true} constant
  */
