@@ -30,6 +30,10 @@ export const check = (ast, type, env) => {
     return checkTuple(ast, type, env);
   }
 
+  if (Type.isUnion(type)) {
+    return checkUnion(ast, type, env);
+  }
+
   const inferredType = infer(ast, env);
 
   if (!isSubtype(inferredType, type)) {
@@ -135,5 +139,33 @@ const checkTuple = (ast, type, env) => {
   for (let t of type.types) {
     check(ast.members[i], t, env);
     i++;
+  }
+};
+
+/**
+ * Checks a node against the various arms of a union
+ * @param {AST} ast
+ * @param {import("./types").Union} type
+ * @param {TypeEnvironment} env
+ */
+const checkUnion = (ast, type, env) => {
+  for (let t of type.types) {
+    try {
+      check(ast, t, env);
+      return;
+    } catch (_) {
+      // do nothing
+    }
+  }
+  // Nothing matched, so construct error message
+  const inferredType = infer(ast, env);
+
+  if (!isSubtype(inferredType, type)) {
+    throw new TypeException(
+      `Type ${Type.toString(
+        inferredType
+      )} is not a valid subtype of ${Type.toString(type)}`,
+      ast.srcloc
+    );
   }
 };
