@@ -383,6 +383,15 @@ const inferFunction = (node, env) => {
       )} is not a subtype of annotated return type ${Type.toString(retType)}`,
       node.srcloc
     );
+  } else if (env.checkingOn && Type.isNever(retType)) {
+    if (!Type.isNever(inferredRetType)) {
+      throw new TypeException(
+        `Function with return type never cannot return inferred type of ${Type.toString(
+          inferredRetType
+        )}`,
+        node.srcloc
+      );
+    }
   }
 
   return Type.functionType(

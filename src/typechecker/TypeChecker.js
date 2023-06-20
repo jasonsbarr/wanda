@@ -379,6 +379,13 @@ export class TypeChecker {
       type = infer(node, env, constant);
     }
 
+    if (env.checkingOn && Type.isNever(type)) {
+      throw new TypeException(
+        `Type never cannot be assigned a value`,
+        node.srcloc
+      );
+    }
+
     if (node.lhv.kind === ASTTypes.Symbol) {
       env.set(node.lhv.name, type);
     } else if (node.lhv.kind === ASTTypes.VectorPattern) {
