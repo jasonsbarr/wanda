@@ -263,10 +263,21 @@ export class Lexer {
         );
       } else if (isAmp(ch)) {
         const { pos, line, col, file } = this.input;
-        this.input.next(); // skip over punc
-        tokens.push(
-          Token.new(TokenTypes.Amp, ch, SrcLoc.new(pos, line, col, file))
-        );
+        if (isAmp(this.input.lookahead(1))) {
+          // skip over both ampersands
+          this.input.next();
+          this.input.next();
+          tokens.push(
+            Token.new(TokenTypes.AmpAmp),
+            "&&",
+            SrcLoc.new(pos, line, col, file)
+          );
+        } else {
+          this.input.next(); // skip over punc
+          tokens.push(
+            Token.new(TokenTypes.Amp, ch, SrcLoc.new(pos, line, col, file))
+          );
+        }
       } else {
         const { pos, line, col, file } = this.input;
         throw new SyntaxException(ch, SrcLoc.new(pos, line, col, file));
