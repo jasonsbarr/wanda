@@ -49,6 +49,8 @@ export const infer = (ast, env, constant = false) => {
       return inferFunction(ast, env, constant);
     case ASTTypes.FunctionDeclaration:
       return inferFunction(ast, env, constant);
+    case ASTTypes.ConstantDeclaration:
+      return inferVariableDeclaration(ast, env, true);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
