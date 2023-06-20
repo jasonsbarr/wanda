@@ -361,21 +361,31 @@ export class TypeChecker {
     if (node.lhv.kind === ASTTypes.Symbol) {
       env.set(node.lhv.name, type);
     } else if (node.lhv.kind === ASTTypes.VectorPattern) {
-      if (!Type.isVector(type) && !Type.isList(type)) {
+      if (!Type.isVector(type) && !Type.isList(type) && !Type.isTuple(type)) {
         throw new TypeException(
-          `Vector pattern destructuring must take a vector or list type`,
+          `Vector pattern destructuring must take a vector, list, or tuple type`,
           node.srcloc
         );
       } else {
         let i = 0;
         for (let mem of node.lhv.members) {
-          if (node.lhv.rest && i === node.lhv.members.length - 1) {
-            env.set(mem.name, type);
+          if (Type.isVector(type) || Type.isList(type)) {
+            if (node.lhv.rest && i === node.lhv.members.length - 1) {
+              env.set(mem.name, type);
+            } else {
+              env.set(
+                mem.name,
+                type.vectorType ? type.vectorType : type.listType
+              );
+            }
           } else {
-            env.set(
-              mem.name,
-              type.vectorType ? type.vectorType : type.listType
-            );
+            // is tuple type
+            if (node.lhv.rest && i === node.lhv.members.length - 1) {
+              // is rest variable
+              env.set(mem.name, type.types.slice(i));
+            } else {
+              env.set(mem.name, type.types[i]);
+            }
           }
           i++;
         }
