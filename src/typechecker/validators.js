@@ -125,3 +125,21 @@ export const isTuple = (type) => {
 export const isSingleton = (type) => {
   return type.kind === TypeTypes.Singleton;
 };
+
+/**
+ * Checks if current type is a never
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isNever = (type) => {
+  return type.kind === TypeTypes.Never;
+};
+
+/**
+ * Checks if current type is a union
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isUnion = (type) => {
+  return type.kind === TypeTypes.Union;
+};
