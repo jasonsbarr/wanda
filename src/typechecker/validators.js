@@ -116,3 +116,12 @@ export const isUndefined = (type) => {
 export const isTuple = (type) => {
   return type.kind === TypeTypes.Tuple;
 };
+
+/**
+ * Checks if current type is a singleton
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isSingleton = (type) => {
+  return type.kind === TypeTypes.Singleton;
+};
