@@ -1,3 +1,4 @@
+import objectHash from "object-hash";
 import { curryN } from "ramda";
 import { makeWandaValue } from "./conversion.js";
 import { addMetaField } from "./object.js";
@@ -13,8 +14,11 @@ export const makeFunction = (func, { contract = "" } = {}) => {
 
     return val;
   });
+  const hash = objectHash(fn);
+
   addMetaField(fn, "wanda", true);
   addMetaField(fn, "arity", func.length);
+  addMetaField(fn, "name", hash);
 
   if (contract !== "") {
     Object.defineProperty(fn, "contract", {
@@ -24,6 +28,13 @@ export const makeFunction = (func, { contract = "" } = {}) => {
       value: parseContract(contract),
     });
   }
+
+  Object.defineProperty(fn, "name", {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: hash,
+  });
 
   return fn;
 };
