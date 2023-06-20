@@ -1,6 +1,6 @@
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
-import { TypeTypes } from "./types";
+import { TypeTypes } from "./types.js";
 
 /**
  * Gets the base type of a type alias
