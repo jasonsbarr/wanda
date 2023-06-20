@@ -1,9 +1,8 @@
-/**
- * @typedef {import("../parser/ast.js").AST} AST
- */
+import { Desugarer } from "./Desugarer.js";
+
 /**
  * Desugars the AST into an AST that contains only core forms
- * @param {AST} ast
- * @returns {AST}
+ * @param {import("../typechecker/TypeChecker.js").TypedAST} ast
+ * @returns {import("../typechecker/TypeChecker.js").TypedAST}
  */
-export const desugar = (ast) => ast;
+export const desugar = (ast) => Desugarer.new().visit(ast);

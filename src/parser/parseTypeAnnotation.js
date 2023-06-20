@@ -16,6 +16,7 @@ export const TATypes = {
   List: "List",
   Vector: "Vector",
   Object: "Object",
+  Function: "Function",
 };
 /**
  * @typedef AnyAnnotation
@@ -67,10 +68,16 @@ export const TATypes = {
  * @prop {PropertyAnn[]} properties
  */
 /**
+ * @typedef FunctionAnn
+ * @prop {TypeAnnotation[]} params
+ * @prop {TypeAnnotation} retType
+ * @prop {boolean} variadic
+ */
+/**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn} TypeAnnotation
+ * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -113,20 +120,59 @@ const parseObjectAnnotation = (annot) => {
  * @returns {TypeAnnotation}
  */
 export const parseTypeAnnotation = (annotation) => {
-  let annot;
-
   if (annotation instanceof Cons) {
+    // is function or generic annotation
+    // flatten Cons to array
     annotation = [...annotation];
+
+    // if it has an arrow, it's a function annotation
+    const hasArrow = annotation.reduce((hasArrow, item) => {
+      if (item.type === TokenTypes.Symbol && item.value === "->") {
+        return true;
+      }
+      return hasArrow;
+    }, false);
+
+    if (hasArrow) {
+      // is function annotation
+      // filter out arrow
+      annotation = annotation.filter((item) => item.value !== "->");
+
+      // get return type
+      const retType = parseTypeAnnotation(annotation.pop());
+      // get param types and if it's variadic
+      let params = [];
+      let variadic = false;
+
+      for (let item of annotation) {
+        if (item.type === TokenTypes.Amp) {
+          variadic = true;
+          continue;
+        } else {
+          params.push(parseTypeAnnotation(item));
+        }
+      }
+
+      return { kind: TATypes.Function, params, retType, variadic };
+    }
   }
 
+  let annot;
   if (Array.isArray(annotation)) {
+    // is generic annotation
+    // get container type
     annot = annotation[0];
   } else {
+    // is simple annotation
     annot = annotation;
   }
 
   if (annot.type === "RecordLiteral") {
     return parseObjectAnnotation(annot);
+  }
+
+  if (annot.type === TokenTypes.Nil) {
+    return { kind: TATypes.NilLiteral };
   }
 
   if (annot.type === TokenTypes.Symbol) {
@@ -141,8 +187,6 @@ export const parseTypeAnnotation = (annotation) => {
         return { kind: TATypes.BooleanLiteral };
       case "keyword":
         return { kind: TATypes.KeywordLiteral };
-      case "nil":
-        return { kind: TATypes.NilLiteral };
       case "list":
         // annotation is array with listType as 2nd member
         return parseListAnnotation(annotation[1]);

@@ -75,3 +75,8 @@ export const vector = (vectorType) => ({
  * @returns {import("./types.js").Object}
  */
 export const object = (properties) => ({ kind: TypeTypes.Object, properties });
+
+/**
+ * Undefined type constructor
+ */
+export const undefinedType = { kind: TypeTypes.Undefined };

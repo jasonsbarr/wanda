@@ -44,6 +44,10 @@ export const infer = (ast, env) => {
       return inferRecordLiteral(ast, env);
     case ASTTypes.MemberExpression:
       return inferMemberExpression(ast, env);
+    case ASTTypes.LambdaExpression:
+      return inferFunction(ast, env);
+    case ASTTypes.FunctionDeclaration:
+      return inferFunction(ast, env);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -65,15 +69,17 @@ const inferNil = () => Type.nil;
 const inferSymbol = (node, env) => {
   const name = node.name;
   const namedType = env.get(name);
-  const baseType = Type.isTypeAlias(namedType)
-    ? getAliasBase(namedType.name)
-    : namedType;
 
-  if (!namedType) {
-    throw new Exception(
-      `Type not found in current environment for ${name} at ${node.srcloc.file} ${node.srcloc.col}:${node.srcloc.col}`
-    );
+  if (namedType === undefined && env.checkingOn) {
+    throw new TypeException(`Type not found for name ${name}`, node.srcloc);
   }
+
+  const baseType =
+    namedType && Type.isTypeAlias(namedType)
+      ? getAliasBase(namedType.name)
+      : namedType
+      ? namedType
+      : Type.any;
 
   return baseType;
 };
@@ -89,49 +95,71 @@ const inferCallExpression = (node, env) => {
 
   if (Type.isAny(func)) {
     return Type.any;
+  } else if (Type.isUndefined(func) || Type.isUndefined(func.ret)) {
+    // this should only happen during first typechecker pass
+    return Type.undefinedType;
   }
 
-  if (
-    node.args.length !== func.params.length ||
-    (func.variadic && node.args.length >= func.params.length - 1)
-  ) {
-    throw new Exception(
-      `Expected${func.variadic ? " at least " : " "}arguments; ${
-        node.args.length
-      } given at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
+  if (!func.variadic && node.args.length > func.params.length) {
+    throw new TypeException(
+      `Too many arguments for function: ${node.args.length} given; ${func.params.length} expected`,
+      node.srcloc
     );
   }
 
+  // handle partially applied functions
+  if (
+    node.args.length <
+    (func.variadic ? func.params.length - 1 : func.params.length)
+  ) {
+    // is partially applied
+    const params = func.params.slice(0, node.args.length);
+
+    if (env.checkingOn) {
+      checkArgTypes(node, params, env, func);
+    }
+
+    const newParams = func.params.slice(node.args.length);
+    return Type.functionType(newParams, func.ret, func.variadic);
+  }
+
   if (env.checkingOn) {
-    func.params.forEach((p, i, a) => {
-      const argType = infer(node.args[i], env);
-      if (!isSubtype(argType, p)) {
-        const node = node.args[i];
-        throw new Exception(
-          `${Type.toString(argType)} is not a subtype of ${Type.toString(
-            p
-          )} at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
-        );
-      }
-
-      if (i === a.length - 1) {
-        for (let arg of node.args.slice(i)) {
-          const argType = infer(arg, env);
-
-          if (!isSubtype(argType, p)) {
-            const node = node.args[i];
-            throw new Exception(
-              `${Type.toString(argType)} is not a subtype of ${Type.toString(
-                p
-              )} at ${node.srcloc.file} ${node.srcloc.line}:${node.srcloc.col}`
-            );
-          }
-        }
-      }
-    });
+    checkArgTypes(node, func.params, env, func);
   }
 
   return func.ret;
+};
+
+const checkArgTypes = (node, params, env, func) => {
+  node.args.forEach((arg, i) => {
+    const argType = infer(arg, env);
+
+    if (func.variadic && i >= params.length - 1) {
+      // is part of rest args
+      let p = params[params.length - 1];
+      if (!p.vectorType) {
+        throw new TypeException(
+          `Rest parameter type must be vector; ${Type.toString(p)} given`,
+          arg.srcloc
+        );
+      }
+      p = p.vectorType;
+      if (!isSubtype(argType, p)) {
+        throw new TypeException(
+          `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
+          arg.srcloc
+        );
+      }
+    } else {
+      const p = params[i];
+      if (!isSubtype(argType, p)) {
+        throw new TypeException(
+          `${Type.toString(argType)} is not a subtype of ${Type.toString(p)}`,
+          arg.srcloc
+        );
+      }
+    }
+  });
 };
 
 /**
@@ -256,4 +284,54 @@ const inferMemberExpression = (node, env) => {
   }
 
   return type ?? Type.any;
+};
+
+/**
+ * Infers a type for a function
+ * @param {import("../parser/ast.js").LambdaExpression|import("../parser/ast.js").FunctionDeclaration} node
+ * @param {TypeEnvironment} env // will already be extended function environment
+ * @returns {import("./types").FunctionType}
+ */
+const inferFunction = (node, env) => {
+  const params = node.params.map((p) => {
+    if (p.typeAnnotation) {
+      env.checkingOn = true;
+    }
+    const type = p.typeAnnotation
+      ? fromTypeAnnotation(p.typeAnnotation, env)
+      : Type.any;
+    env.set(p.name, type);
+    return type;
+  });
+
+  if (node.retType) {
+    env.checkingOn = true;
+  }
+
+  const retType = node.retType
+    ? fromTypeAnnotation(node.retType, env)
+    : Type.any;
+  let inferredRetType;
+
+  for (let expr of node.body) {
+    // type of last expression "wins"
+    inferredRetType = infer(expr, env);
+  }
+
+  if (env.checkingOn && !isSubtype(inferredRetType, retType)) {
+    throw new TypeException(
+      `Inferred return type ${Type.toString(
+        inferredRetType
+      )} is not a subtype of annotated return type ${Type.toString(retType)}`,
+      node.srcloc
+    );
+  }
+
+  return Type.functionType(
+    params,
+    Type.isAny(retType) || Type.isUndefined(retType)
+      ? inferredRetType
+      : retType,
+    node.variadic
+  );
 };

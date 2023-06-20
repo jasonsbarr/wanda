@@ -22,6 +22,8 @@ export const printString = (value, withQuotes) => {
       return String(value);
     case "undefined":
       return "nil";
+    case "function":
+      return `Function: ${value.name || "lambda"}`;
     case "object":
       if (value === null) {
         return "nil";

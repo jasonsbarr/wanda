@@ -1,5 +1,6 @@
 import { SrcLoc } from "../lexer/SrcLoc.js";
 import { Token } from "../lexer/Token.js";
+import { TypeEnvironment } from "../typechecker/TypeEnvironment.js";
 
 /**
  * @enum {string}
@@ -23,6 +24,9 @@ export const ASTTypes = {
   RecordLiteral: "RecordLiteral",
   RecordPattern: "RecordPattern",
   MemberExpression: "MemberExpression",
+  Param: "Param",
+  FunctionDeclaration: "FunctionDeclaration",
+  LambdaExpression: "LambdaExpression",
 };
 
 /**
@@ -62,7 +66,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: LHV, expression: AST}} SetExpression
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.DoExpression; body: AST[]}} DoExpression
+ * @typedef {ASTNode & {kind: ASTTypes.DoExpression; body: AST[], env?: TypeEnvironment}} DoExpression
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.TypeAlias; name: string; type: import("./parseTypeAnnotation.js").TypeAnnotation}} TypeAlias
@@ -86,13 +90,25 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.MemberExpression; object: AST; property: Symbol}} MemberExpression
  */
 /**
+ * @typedef Param
+ * @prop {ASTTypes.Param} kind
+ * @prop {Symbol} name
+ * @prop {import("./parseTypeAnnotation.js").TypeAnnotation|null} typeAnnotation
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.FunctionDeclaration; name: Symbol; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} FunctionDeclaration
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.LambdaExpression; params: Param[]; body: AST[]; variadic: boolean; retType: import("./parseTypeAnnotation.js").TypeAnnotation|null; env?: TypeEnvironment}} LambdaExpression
+ */
+/**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression} AST
  */
 export const AST = {
   /**
@@ -338,6 +354,47 @@ export const AST = {
       kind: ASTTypes.MemberExpression,
       object,
       property,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a FunctionDeclaration AST node
+   * @param {Symbol} name
+   * @param {Symbol[]} params
+   * @param {AST[]} body
+   * @param {boolean} variadic
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
+   * @param {SrcLoc}
+   * @returns {FunctionDeclaration}
+   */
+  FunctionDeclaration(name, params, body, variadic, retType, srcloc) {
+    return {
+      kind: ASTTypes.FunctionDeclaration,
+      name,
+      params,
+      body,
+      variadic,
+      retType,
+      srcloc,
+    };
+  },
+
+  /**
+   * Constructs a LambdaExpression AST node
+   * @param {Symbol[]} params
+   * @param {AST[]} body
+   * @param {boolean} variadic
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
+   * @param {SrcLoc} srcloc
+   * @returns {LambdaExpression}
+   */
+  LambdaExpression(params, body, variadic, retType, srcloc) {
+    return {
+      kind: ASTTypes.LambdaExpression,
+      params,
+      body,
+      variadic,
+      retType,
       srcloc,
     };
   },

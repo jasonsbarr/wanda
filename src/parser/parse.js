@@ -1,7 +1,7 @@
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
-import { Cons } from "../shared/cons.js";
+import { Cons, cons } from "../shared/cons.js";
 import { AST, ASTTypes } from "./ast.js";
 import { SrcLoc } from "../lexer/SrcLoc.js";
 import { parseTypeAnnotation } from "./parseTypeAnnotation.js";
@@ -63,8 +63,15 @@ const parseVariableDeclaration = (decl) => {
   if (lhv instanceof Cons) {
     // has type annotation
     const realLhv = lhv.get(0);
-    // convert to array and get rid of ":" when passing into parseTypeAnnotation
-    typeAnnotation = parseTypeAnnotation([...lhv.cdr].slice(1));
+    // skip over : and get type annotation
+    typeAnnotation = lhv.cdr.cdr;
+
+    if (typeAnnotation.cdr === null) {
+      // is a simple annotation, otherwise it's a Cons type annotation
+      typeAnnotation = typeAnnotation.car;
+    }
+    // parse type annotation
+    typeAnnotation = parseTypeAnnotation(typeAnnotation);
     parsedLhv = parseExpr(realLhv);
   } else {
     parsedLhv = parseExpr(lhv);
@@ -216,6 +223,120 @@ const parseProperty = (form) => {
 };
 
 /**
+ * Parses function parameters
+ * @param {Token[]} forms
+ * @returns {import("./ast.js").Param}
+ */
+const parseParams = (forms) => {
+  forms = [...forms];
+  /** @type {import("./ast.js").Param[]} */
+  let params = [];
+  for (let i = 0; i < forms.length; i++) {
+    const form = forms[i];
+    if (form.type === TokenTypes.Symbol) {
+      const name = parseExpr(form);
+      let typeAnnotation = null;
+
+      if (
+        forms[i + 1]?.type === TokenTypes.Keyword &&
+        forms[i + 1].value === ":"
+      ) {
+        // has type annotation
+        typeAnnotation = parseTypeAnnotation(forms[i + 2]);
+        i += 2;
+      }
+
+      params.push({ kind: ASTTypes.Param, name, typeAnnotation });
+    } else if (form.type === TokenTypes.Amp) {
+      continue;
+    }
+  }
+
+  return params;
+};
+
+/**
+ * Parses a function declaration
+ * @param {List} form
+ * @returns {import("./ast.js").FunctionDeclaration}
+ */
+const parseFunctionDeclaration = (form) => {
+  const [_, name, params, maybeArrow, maybeRetType, ...maybeBody] = form;
+  const srcloc = form.srcloc;
+  const parsedName = parseExpr(name);
+  const { parsedParams, parsedBody, variadic, retType } = parseFunction(
+    params,
+    maybeArrow,
+    maybeRetType,
+    maybeBody
+  );
+
+  return AST.FunctionDeclaration(
+    parsedName,
+    parsedParams,
+    parsedBody,
+    variadic,
+    retType,
+    srcloc
+  );
+};
+
+/**
+ * Parses a lambda expression
+ * @param {List} form
+ * @returns {import("./ast.js").LambdaExpression}
+ */
+const parseLambdaExpression = (form) => {
+  const [_, params, maybeArrow, maybeRetType, ...maybeBody] = form;
+  const srcloc = form.srcloc;
+  const { parsedParams, parsedBody, variadic, retType } = parseFunction(
+    params,
+    maybeArrow,
+    maybeRetType,
+    maybeBody
+  );
+
+  return AST.LambdaExpression(
+    parsedParams,
+    parsedBody,
+    variadic,
+    retType,
+    srcloc
+  );
+};
+
+const parseFunction = (params, maybeArrow, maybeRetType, maybeBody) => {
+  let retType, body;
+
+  if (maybeArrow.type === TokenTypes.Symbol && maybeArrow.value === "->") {
+    // has return type annotation
+    retType = parseTypeAnnotation(maybeRetType);
+    body = maybeBody;
+  } else {
+    retType = null;
+    body = [maybeArrow, ...maybeBody];
+  }
+
+  const variadic = [...params].reduce((isVar, param) => {
+    if (param.type === TokenTypes.Amp) {
+      return true;
+    }
+
+    return isVar;
+  }, false);
+  const parsedParams = parseParams(params);
+  /** @type {AST[]} */
+  const parsedBody = body.map(parseExpr);
+
+  return {
+    parsedParams,
+    parsedBody,
+    variadic,
+    retType,
+  };
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -232,6 +353,10 @@ const parseList = (form) => {
       return parseDoExpression(form);
     case "type":
       return parseTypeAlias(form);
+    case "def":
+      return parseFunctionDeclaration(form);
+    case "fn":
+      return parseLambdaExpression(form);
     default:
       return parseCall(form);
   }

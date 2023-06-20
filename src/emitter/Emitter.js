@@ -75,6 +75,8 @@ export class Emitter {
         return this.emitVectorLiteral(node, ns);
       case ASTTypes.VectorPattern:
         return this.emitVectorPattern(node, ns);
+      case ASTTypes.LambdaExpression:
+        return this.emitLambdaExpression(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -134,6 +136,45 @@ export class Emitter {
    */
   emitKeyword(node, ns) {
     return `Symbol.for("${node.value}")`;
+  }
+
+  /**
+   * Generates code from a LambdaExpression AST node
+   * @param {import("../parser/ast.js").LambdaExpression} node
+   * @param {Namespace} ns
+   */
+  emitLambdaExpression(node, ns) {
+    const funcNs = ns.extend("Lambda");
+    /** @type {string[]} */
+    let params = [];
+    let i = 0;
+
+    for (let p of node.params) {
+      funcNs.set(p.name.name, makeSymbol(p.name));
+
+      if (node.variadic && i === node.params.length - 1) {
+        params.push(`...${this.emit(p.name, funcNs)}`);
+      } else {
+        params.push(this.emit(p.name, funcNs));
+      }
+      i++;
+    }
+
+    let code = `rt.makeFunction((${params.join(", ")}) => {\n`;
+
+    let j = 0;
+    for (let expr of node.body) {
+      if (j === node.body.length - 1) {
+        code += `return ${this.emit(expr, funcNs)};`;
+      } else {
+        code += this.emit(expr, funcNs) + ";\n";
+      }
+      j++;
+    }
+
+    code += "\n})";
+
+    return code;
   }
 
   /**
