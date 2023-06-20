@@ -25,6 +25,10 @@ export const check = (ast, type, env) => {
     return checkFunction(ast, type, env);
   }
 
+  if (ast.kind === ASTTypes.VectorLiteral && Type.isTuple(type)) {
+    return checkTuple(ast, type, env);
+  }
+
   const inferredType = infer(ast, env);
 
   if (!isSubtype(inferredType, type)) {
@@ -108,5 +112,19 @@ const checkFunction = (ast, type, env) => {
       )}`,
       ast.srcloc
     );
+  }
+};
+
+/**
+ * Checks a tuple type against a VectorLiteral node
+ * @param {import("../parser/ast.js").VectorLiteral} ast
+ * @param {import("./types").Tuple} type
+ * @param {TypeEnvironment} env
+ */
+const checkTuple = (ast, type, env) => {
+  let i = 0;
+  for (let t of type.types) {
+    check(ast.members[i], t, env);
+    i++;
   }
 };
