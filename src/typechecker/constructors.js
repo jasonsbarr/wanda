@@ -117,3 +117,5 @@ export const singleton = (base, value) => ({
   value,
   constant: true,
 });
+
+export const never = { kind: TypeTypes.Never };
