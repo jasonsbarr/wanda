@@ -297,7 +297,7 @@ export const parseTypeAnnotation = (annotation) => {
     annot.reduce((isCompound, item) => {
       if (
         (item.type === TokenTypes.Symbol && item.value === "|") ||
-        item.type === TokenTypes.Amp
+        item.type === TokenTypes.AmpAmp
       ) {
         return true;
       }
@@ -305,12 +305,13 @@ export const parseTypeAnnotation = (annotation) => {
     }, false);
 
   if (isCompound) {
+    console.log(annot);
     /** @type {TypeAnnotation} */
     const first = parseTypeAnnotation(annot[0]);
     /** @type {Token} */
     let sep = annot[1];
     const kind =
-      sep.type === TokenTypes.Amp ? TATypes.Intersection : TATypes.Union;
+      sep.type === TokenTypes.AmpAmp ? TATypes.Intersection : TATypes.Union;
     const types = [first];
 
     let i = 2;
