@@ -169,6 +169,7 @@ export class TypeChecker {
 
     if (funcEnv.checkingOn) {
       env.checkingOn = funcEnv.checkingOn;
+      check(node, type, funcEnv);
     }
 
     env.set(node.name.name, type);
@@ -201,6 +202,7 @@ export class TypeChecker {
 
     if (funcEnv.checkingOn) {
       env.checkingOn = funcEnv.checkingOn;
+      check(node, type, funcEnv);
     }
 
     return { ...node, type };
