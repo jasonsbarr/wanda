@@ -2,6 +2,8 @@ import { TATypes } from "../parser/parseTypeAnnotation.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { Exception } from "../shared/exceptions.js";
+import { TokenTypes } from "../lexer/TokenTypes.js";
+import { fail } from "../shared/fail.js";
 
 /**
  * Constructs a concrete type from a type annotation node
@@ -70,6 +72,22 @@ export const fromTypeAnnotation = (
       }
 
       return Type.tuple(types);
+    }
+    case TATypes.Singleton: {
+      const tType = typeAnnotation.token.type;
+      const base =
+        tType === TokenTypes.Number
+          ? Type.number
+          : tType === TokenTypes.String
+          ? Type.string
+          : tType === TokenTypes.Boolean
+          ? Type.boolean
+          : TokenTypes.Keyword
+          ? Type.keyword
+          : fail(`Invalid token type ${tType} when parsing type annotation`);
+      const value = typeAnnotation.token.value;
+
+      return Type.singleton(base, value);
     }
     default:
       throw new Exception(
