@@ -80,3 +80,10 @@ export const object = (properties) => ({ kind: TypeTypes.Object, properties });
  * Undefined type constructor
  */
 export const undefinedType = { kind: TypeTypes.Undefined };
+
+/**
+ * Tuple type constructor
+ * @param {import("./types.js").Type[]} types
+ * @returns {import("./types.js").Tuple}
+ */
+export const tuple = (types) => ({ kind: TypeTypes.Tuple, types });

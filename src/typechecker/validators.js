@@ -107,3 +107,12 @@ export const isObject = (type) => {
 export const isUndefined = (type) => {
   return type.kind === TypeTypes.Undefined;
 };
+
+/**
+ * Checks if current type is a tuple
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isTuple = (type) => {
+  return type.kind === TypeTypes.Tuple;
+};
