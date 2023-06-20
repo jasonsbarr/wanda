@@ -305,7 +305,6 @@ export const parseTypeAnnotation = (annotation) => {
     }, false);
 
   if (isCompound) {
-    console.log(annot);
     /** @type {TypeAnnotation} */
     const first = parseTypeAnnotation(annot[0]);
     /** @type {Token} */
