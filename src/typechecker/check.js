@@ -1,4 +1,5 @@
 import { AST, ASTTypes } from "../parser/ast.js";
+import { isPrimitive } from "../parser/utils.js";
 import { TypeException } from "../shared/exceptions.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
@@ -14,7 +15,7 @@ import { propType } from "./propType.js";
  */
 export const check = (ast, type, env) => {
   if (ast.kind === ASTTypes.RecordLiteral && Type.isObject(type)) {
-    return checkObject(ast, type, env);
+    return checkRecordLiteral(ast, type, env);
   }
 
   if (
@@ -47,7 +48,7 @@ export const check = (ast, type, env) => {
  * @param {import("./types").Object} type
  * @param {TypeEnvironment} env
  */
-const checkObject = (ast, type, env) => {
+const checkRecordLiteral = (ast, type, env) => {
   const astProps = ast.properties.map((prop) => ({
     name: prop.key.name,
     expr: prop.value,
@@ -74,7 +75,15 @@ const checkObject = (ast, type, env) => {
       );
     }
 
-    check(expr, pType, env);
+    if (
+      Type.isSingleton(pType) &&
+      isPrimitive(expr) &&
+      pType.value === expr.value
+    ) {
+      // continue
+    } else {
+      check(expr, pType, env);
+    }
   });
 };
 
