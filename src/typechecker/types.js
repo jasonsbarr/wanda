@@ -15,6 +15,7 @@ export const TypeTypes = {
   Property: "Property",
   Object: "Object",
   Undefined: "Undefined",
+  Tuple: "Tuple",
 };
 /**
  * @typedef Any
@@ -79,8 +80,13 @@ export const TypeTypes = {
  * @prop {TypeTypes.Undefined} kind
  */
 /**
+ * @typedef Tuple
+ * @prop {TypeTypes.Tuple} kind
+ * @prop  {Type[]} types
+ */
+/**
  * @typedef {Number|String|Boolean|Keyword|Nil|Undefined} PrimitiveTypes
  */
 /**
- * @typedef {Any|PrimitiveTypes|FunctionType|TypeAlias|List|Vector|Object} Type
+ * @typedef {Any|PrimitiveTypes|FunctionType|TypeAlias|List|Vector|Object|Tuple} Type
  */
