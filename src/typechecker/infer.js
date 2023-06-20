@@ -263,8 +263,7 @@ const inferTypeAlias = (node, env, constant) => {
  */
 const inferVectorLiteral = (node, env, constant) => {
   if (node.members.length === 0) {
-    // change this to never when we add union types
-    return Type.vector(Type.any);
+    return Type.vector(Type.never);
   }
 
   const types = node.members.map((m) => infer(m, env, constant));
