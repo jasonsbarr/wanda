@@ -1,3 +1,4 @@
+import { Token } from "../lexer/Token.js";
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { Cons } from "../shared/cons.js";
 import { Exception } from "../shared/exceptions.js";
@@ -18,6 +19,7 @@ export const TATypes = {
   Object: "Object",
   Function: "Function",
   Tuple: "Tuple",
+  Singleton: "Singleton",
 };
 /**
  * @typedef AnyAnnotation
@@ -79,10 +81,14 @@ export const TATypes = {
  * @prop {TypeAnnotation[]} types
  */
 /**
+ * @typedef SingletonAnn
+ * @prop {Token} token
+ */
+/**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn|TupleAnn} TypeAnnotation
+ * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn|TupleAnn|SingletonAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -134,6 +140,16 @@ const parseTupleAnnotation = (annot) => {
 
   return { kind: TATypes.Tuple, types };
 };
+
+/**
+ * Parses a singleton type annotation
+ * @param {Token} annot
+ * @returns {SingletonAnn}
+ */
+const parseSingletonAnnotation = (annot) => ({
+  kind: TATypes.Singleton,
+  token: annot,
+});
 
 /**
  * Parses type annotation from the token stream
@@ -198,6 +214,15 @@ export const parseTypeAnnotation = (annotation) => {
 
   if (annot.type === TokenTypes.Nil) {
     return { kind: TATypes.NilLiteral };
+  }
+
+  if (
+    annot.type === TokenTypes.Number ||
+    annot.type === TokenTypes.String ||
+    annot.type === TokenTypes.Boolean ||
+    annot.type === TokenTypes.String
+  ) {
+    return parseSingletonAnnotation(annot);
   }
 
   if (annot.type === TokenTypes.Symbol) {
