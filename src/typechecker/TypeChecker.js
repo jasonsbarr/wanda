@@ -356,7 +356,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkTypeAlias(node, env) {
-    const type = fromTypeAnnotation(node.type, env);
+    const type = isSecondPass ? node.type : fromTypeAnnotation(node.type, env);
     env.setType(node.name, type);
     return { ...node, type };
   }
