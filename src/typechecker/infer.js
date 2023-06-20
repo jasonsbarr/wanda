@@ -139,34 +139,36 @@ const inferCallExpression = (node, env, constant) => {
     func = getAliasBase(func.name, env);
   }
 
-  if (!func.variadic && node.args.length > func.params.length) {
-    throw new TypeException(
-      `Too many arguments for function: ${node.args.length} given; ${func.params.length} expected`,
-      node.srcloc
-    );
-  }
-
-  // handle partially applied functions
-  if (
-    node.args.length <
-    (func.variadic ? func.params.length - 1 : func.params.length)
-  ) {
-    // is partially applied
-    const params = func.params.slice(0, node.args.length);
-
-    if (env.checkingOn) {
-      checkArgTypes(node, params, env, func, constant);
+  return Type.map(func, (func) => {
+    if (!func.variadic && node.args.length > func.params.length) {
+      throw new TypeException(
+        `Too many arguments for function: ${node.args.length} given; ${func.params.length} expected`,
+        node.srcloc
+      );
     }
 
-    const newParams = func.params.slice(node.args.length);
-    return Type.functionType(newParams, func.ret, func.variadic);
-  }
+    // handle partially applied functions
+    if (
+      node.args.length <
+      (func.variadic ? func.params.length - 1 : func.params.length)
+    ) {
+      // is partially applied
+      const params = func.params.slice(0, node.args.length);
 
-  if (env.checkingOn) {
-    checkArgTypes(node, func.params, env, func, constant);
-  }
+      if (env.checkingOn) {
+        checkArgTypes(node, params, env, func, constant);
+      }
 
-  return func.ret;
+      const newParams = func.params.slice(node.args.length);
+      return Type.functionType(newParams, func.ret, func.variadic);
+    }
+
+    if (env.checkingOn) {
+      checkArgTypes(node, func.params, env, func, constant);
+    }
+
+    return func.ret;
+  });
 };
 
 const checkArgTypes = (node, params, env, func, constant) => {
@@ -311,29 +313,33 @@ const inferMemberExpression = (node, env, constant) => {
     object = getAliasBase(object.name, env);
   }
 
-  if (!Type.isObject(object)) {
-    if (env.checkingOn) {
+  return Type.map(object, (object) => {
+    if (!Type.isObject(object)) {
+      if (env.checkingOn) {
+        throw new TypeException(
+          `Member expression expects object type; ${Type.toString(
+            object
+          )} given`,
+          node.srcloc
+        );
+      } else {
+        return Type.any;
+      }
+    }
+
+    const type = propType(object, prop.name);
+
+    if (!type && env.checkingOn) {
       throw new TypeException(
-        `Member expression expects object type; ${Type.toString(object)} given`,
+        `Property ${prop.name} not found on object of type ${Type.toString(
+          object
+        )}`,
         node.srcloc
       );
-    } else {
-      return Type.any;
     }
-  }
 
-  const type = propType(object, prop.name);
-
-  if (!type && env.checkingOn) {
-    throw new TypeException(
-      `Property ${prop.name} not found on object of type ${Type.toString(
-        object
-      )}`,
-      node.srcloc
-    );
-  }
-
-  return type ?? Type.any;
+    return type ?? Type.any;
+  });
 };
 
 /**
