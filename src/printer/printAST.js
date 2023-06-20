@@ -107,6 +107,19 @@ class ASTPrinter {
   }
 
   /**
+   * Prints ConstantDeclaration node
+   * @param {import("../parser/ast.js").ConstantDeclaration} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printConstantDeclaration(node, indent) {
+    let prStr = `${prIndent(indent)}ConstantDeclaration:\n`;
+    prStr += `${this.print(node.lhv, indent + 2)}\n`;
+    prStr += `${this.print(node.expression, indent + 2)}`;
+    return prStr;
+  }
+
+  /**
    * Prints a DoExpression node
    * @param {import("../parser/ast.js").DoExpression} node
    * @param {number} indent
