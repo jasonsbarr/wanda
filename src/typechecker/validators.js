@@ -143,3 +143,21 @@ export const isNever = (type) => {
 export const isUnion = (type) => {
   return type.kind === TypeTypes.Union;
 };
+
+/**
+ * Checks if current type is unknown
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isUnknown = (type) => {
+  return type.kind === TypeTypes.Unknown;
+};
+
+/**
+ * Checks if current type is an intersection
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isIntersection = (type) => {
+  return type.kind === TypeTypes.Intersection;
+};
