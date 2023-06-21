@@ -51,6 +51,7 @@ export class Desugarer extends Visitor {
       node.srcloc
     );
     lambda.type = type;
+    lambda.name = node.name.name;
     const paramTypes = node.params.map(
       (p) => p.typeAnnotation ?? { kind: TATypes.AnyLiteral }
     );

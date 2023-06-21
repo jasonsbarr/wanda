@@ -172,7 +172,8 @@ export class Emitter {
       j++;
     }
 
-    code += "\n})";
+    code += "\n}";
+    code += `${node.name ? `, { name: "${node.name}" }` : ""})`;
 
     return code;
   }
