@@ -1,11 +1,6 @@
 import { hasDict, addMetaField, makeObject } from "./object.js";
 import { makeKeyword } from "./utils.js";
 
-addMetaField(Number.prototype, "type", "number");
-addMetaField(String.prototype, "type", "string");
-addMetaField(Boolean.prototype, "type", "boolean");
-addMetaField(Array.prototype, "type", "vector");
-
 /**
  * Converts a JS value into a Wanda value
  * @param {any} val
