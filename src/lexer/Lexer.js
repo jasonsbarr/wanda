@@ -268,9 +268,7 @@ export class Lexer {
           this.input.next();
           this.input.next();
           tokens.push(
-            Token.new(TokenTypes.AmpAmp),
-            "&&",
-            SrcLoc.new(pos, line, col, file)
+            Token.new(TokenTypes.AmpAmp, "&&", SrcLoc.new(pos, line, col, file))
           );
         } else {
           this.input.next(); // skip over punc
