@@ -29,6 +29,7 @@ import { makeNumber } from "./number.js";
  * @prop {Function} makeNumber
  * @prop {Function} failRuntime
  * @prop {Function} fail
+ * @prop {Function} makeNumber
  * @prop {Function} isNil
  */
 /**
