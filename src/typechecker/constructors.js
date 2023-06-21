@@ -119,3 +119,8 @@ export const singleton = (base, value) => ({
 });
 
 export const never = { kind: TypeTypes.Never };
+
+/**
+ * Unknown type constructor
+ */
+export const unknown = { kind: TypeTypes.Unknown };
