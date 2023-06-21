@@ -103,6 +103,11 @@ export const fromTypeAnnotation = (
       );
     case TATypes.Unknown:
       return Type.unknown;
+    case TATypes.Intersection: {
+      return Type.intersection(
+        ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
+      );
+    }
     default:
       throw new Exception(
         `Type not found for type annotation ${JSON.parse(
