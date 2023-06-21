@@ -1,7 +1,7 @@
 import { never, unknown } from "./constructors.js";
-import { isSubtype } from "./isSubtype";
+import { isSubtype } from "./isSubtype.js";
 import { propType } from "./propType.js";
-import { TypeTypes } from "./types";
+import { TypeTypes } from "./types.js";
 import { distributeUnion, union } from "./union.js";
 import {
   isIntersection,
