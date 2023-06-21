@@ -14,6 +14,10 @@ import { propType } from "./propType.js";
  * @param {TypeEnvironment} env
  */
 export const check = (ast, type, env) => {
+  if (Type.isIntersection(type)) {
+    return type.types.forEach((t) => check(ast, t, env));
+  }
+
   if (ast.kind === ASTTypes.RecordLiteral && Type.isObject(type)) {
     return checkRecordLiteral(ast, type, env);
   }
