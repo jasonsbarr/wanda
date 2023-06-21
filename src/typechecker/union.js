@@ -44,3 +44,33 @@ export const union = (...types) => {
   if (types.length === 1) return types[0];
   return { kind: TypeTypes.Union, types };
 };
+
+/**
+ * Distribute intersections over unions
+ * @param {import("./types.js").Type} ts
+ * @returns {import("./types.js").Type}
+ */
+export const distributeUnion = (ts) => {
+  /** @type {import("./types.js").Type[]} */
+  let accum = [];
+
+  const dist = (ts, i) => {
+    if (i === ts.length) {
+      accum.push(ts);
+    } else {
+      const ti = ts[i];
+
+      if (isUnion(ti)) {
+        for (let t of ti.types) {
+          const ts2 = ts.slice(0, i).concat(t, ts.slice(i + 1));
+          dist(ts2, i + 1);
+        }
+      } else {
+        dist(ts, i + 1);
+      }
+    }
+  };
+
+  dist(ts, 0);
+  return accum;
+};
