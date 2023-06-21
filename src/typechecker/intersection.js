@@ -1,4 +1,8 @@
+import { never, unknown } from "./constructors.js";
+import { isSubtype } from "./isSubtype";
 import { propType } from "./propType.js";
+import { TypeTypes } from "./types";
+import { distributeUnion, union } from "./union.js";
 import {
   isIntersection,
   isNever,
@@ -43,4 +47,41 @@ const overlaps = (x, y) => {
   }
 
   return x.type === y.type;
+};
+
+/**
+ * Flattens nested intersections
+ * @param {import("./types").Type[]} ts
+ * @returns {import("./types").Type}
+ */
+const collapseSupertypes = (ts) => {
+  return ts.filter((t1, i1) =>
+    ts.every(
+      (t2, i2) =>
+        i1 === i2 || !isSubtype(t2, t1) || (isSubtype(t1, t2) && i1 < i2)
+    )
+  );
+};
+
+const flatten = (ts) =>
+  [].concat(...ts.map((t) => (isIntersection(t) ? t.types : t)));
+
+const intersectionNoUnion = (ts) => {
+  if (ts.some((t1, i1) => ts.some((t2, i2) => i1 < i2 && !overlaps(t1, t2)))) {
+    return never;
+  }
+
+  ts = collapseSupertypes(ts);
+
+  if (ts.length === 0) return unknown;
+  if (ts.length === 1) return ts[0];
+
+  return { type: TypeTypes.Intersection, types: ts };
+};
+
+export const intersection = (...ts) => {
+  ts = flatten(ts);
+  ts = distributeUnion(ts).map((ts) => intersectionNoUnion(ts));
+
+  return union(...ts);
 };
