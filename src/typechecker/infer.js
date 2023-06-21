@@ -350,7 +350,7 @@ const inferMemberExpression = (node, env, constant) => {
  * @param {boolean} constant
  * @returns {import("./types").FunctionType}
  */
-const inferFunction = (node, env) => {
+const inferFunction = (node, env, constant) => {
   const params = node.params.map((p) => {
     if (p.typeAnnotation) {
       env.checkingOn = true;
