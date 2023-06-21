@@ -101,6 +101,8 @@ export const fromTypeAnnotation = (
       return Type.union(
         ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
       );
+    case TATypes.Unknown:
+      return Type.unknown;
     default:
       throw new Exception(
         `Type not found for type annotation ${JSON.parse(
