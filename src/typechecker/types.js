@@ -19,6 +19,8 @@ export const TypeTypes = {
   Singleton: "Singleton",
   Never: "Never",
   Union: "Union",
+  Unknown: "Unknown",
+  Intersection: "Intersection",
 };
 /**
  * @typedef Any
@@ -108,8 +110,17 @@ export const TypeTypes = {
  * @prop {Type[]} types
  */
 /**
+ * @typedef Unknown
+ * @prop {TypeTypes.Unknown} kind
+ */
+/**
+ * @typedef Intersection
+ * @prop {TypeTypes.Intersection} kind
+ * @prop {Type[]} types
+ */
+/**
  * @typedef {Number|String|Boolean|Keyword|Nil|Undefined} PrimitiveType
  */
 /**
- * @typedef {Any|PrimitiveType|FunctionType|TypeAlias|List|Vector|Object|Tuple|Singleton|Never|Union} Type
+ * @typedef {Any|PrimitiveType|FunctionType|TypeAlias|List|Vector|Object|Tuple|Singleton|Never|Union|Unknown|Intersection} Type
  */
