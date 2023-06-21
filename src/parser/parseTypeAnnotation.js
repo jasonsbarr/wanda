@@ -23,6 +23,7 @@ export const TATypes = {
   Intersection: "Intersection",
   Union: "Union",
   Never: "Never",
+  Unknown: "Unknown",
 };
 /**
  * @typedef AnyAnnotation
@@ -103,6 +104,10 @@ export const TATypes = {
 /**
  * @typedef NeverAnn
  * @prop {TATypes.Never} kind
+ */
+/**
+ * @typedef UnknownAnn
+ * @prop {TATypes.Unknown} kind
  */
 /**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
@@ -268,6 +273,8 @@ export const parseTypePrimitive = (annotation) => {
         return { kind: TATypes.KeywordLiteral };
       case "never":
         return { kind: TATypes.Never };
+      case "unknown":
+        return { kind: TATypes.Unknown };
       case "list":
         // annotation is array with listType as 2nd member
         return parseListAnnotation(annotation[1]);
