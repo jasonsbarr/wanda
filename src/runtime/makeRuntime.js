@@ -1,4 +1,5 @@
 import { fail } from "../shared/fail.js";
+import { isNullish as isNil } from "../shared/utils.js";
 import { makeFunction } from "./makeFunction.js";
 import * as utils from "./utils.js";
 import * as obj from "./object.js";
@@ -44,5 +45,6 @@ export const makeRuntime = () => {
     makeJSValue,
     fail,
     makeNumber,
+    isNil,
   };
 };
