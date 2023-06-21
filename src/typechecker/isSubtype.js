@@ -8,6 +8,12 @@ import { propType } from "./propType.js";
  * @returns {boolean}
  */
 export const isSubtype = (type1, type2) => {
+  // never is bottom type, so is subtype of every type
+  if (Type.isNever(type1)) return true;
+
+  // unknown is top type, so every type is its subtype
+  if (Type.isUnknown(type2)) return true;
+
   if (Type.isAny(type1) || Type.isAny(type2)) return true;
   if (Type.isNumber(type1) && Type.isNumber(type2)) return true;
   if (Type.isString(type1) && Type.isString(type2)) return true;
@@ -63,15 +69,20 @@ export const isSubtype = (type1, type2) => {
     else return isSubtype(type1.base, type2);
   }
 
-  // never is bottom type, so is subtype of every type
-  if (Type.isNever(type1)) return true;
-
   if (Type.isUnion(type1)) {
     return type1.types.every((t1) => isSubtype(t1, type2));
   }
 
   if (Type.isUnion(type2)) {
     return type2.types.some((t2) => isSubtype(type1, t2));
+  }
+
+  if (Type.isIntersection(type1)) {
+    return type1.types.some((a) => isSubtype(a, type2));
+  }
+
+  if (Type.isIntersection(type2)) {
+    return type2.types.every((b) => isSubtype(type1, b));
   }
 
   return false;
