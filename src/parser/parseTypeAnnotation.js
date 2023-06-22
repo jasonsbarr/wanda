@@ -303,7 +303,7 @@ export const parseTypeAnnotation = (annotation) => {
     Array.isArray(annot) &&
     annot.reduce((isCompound, item) => {
       if (
-        (item.type === TokenTypes.Symbol && item.value === "|") ||
+        (item.type === TokenTypes.Symbol && item.value === "||") ||
         item.type === TokenTypes.AmpAmp
       ) {
         return true;
