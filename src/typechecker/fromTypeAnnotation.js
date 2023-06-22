@@ -31,6 +31,8 @@ export const fromTypeAnnotation = (
       return Type.nil;
     case TATypes.Never:
       return Type.never;
+    case TATypes.Unknown:
+      return Type.unknown;
     case TATypes.Symbol: {
       const name = typeAnnotation.name;
       const type = typeEnv.getType(name);
@@ -101,8 +103,6 @@ export const fromTypeAnnotation = (
       return Type.union(
         ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
       );
-    case TATypes.Unknown:
-      return Type.unknown;
     case TATypes.Intersection: {
       return Type.intersection(
         ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
