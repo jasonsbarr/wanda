@@ -108,6 +108,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkAsExpression(node, env) {
+    env.checkingOn = true;
     const type = infer(node, env);
     return { ...node.expression, type };
   }

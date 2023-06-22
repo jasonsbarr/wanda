@@ -416,15 +416,17 @@ const inferAsExpression = (node, env, constant) => {
   const type = fromTypeAnnotation(node.type);
   const exprType = infer(node.expression, env, constant);
 
-  if (!isSubtype(exprType, type)) {
-    throw new TypeException(
-      `${Type.toString(
-        exprType
-      )} is not a valid subtype of the given type ${Type.toString(
-        type
-      )} in :as expression`,
-      node.srcloc
-    );
+  if (env.checkingOn) {
+    if (!isSubtype(exprType, type)) {
+      throw new TypeException(
+        `${Type.toString(
+          exprType
+        )} is not a valid subtype of the given type ${Type.toString(
+          type
+        )} in :as expression`,
+        node.srcloc
+      );
+    }
   }
 
   return type;
