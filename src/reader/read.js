@@ -42,7 +42,15 @@ import { SrcLoc } from "../lexer/SrcLoc.js";
  */
 
 /**
- * @typedef {VectorLiteral|RecordLiteral|RecordPattern|MemberExpression} ComplexForm
+ * @typedef AsExpression
+ * @prop {"AsExpression"} type
+ * @prop {Form} expression
+ * @prop {import("../parser/parseTypeAnnotation.js").TypeAnnotation} typeAnnotation
+ * @prop {SrcLoc} srcloc
+ */
+
+/**
+ * @typedef {VectorLiteral|RecordLiteral|RecordPattern|MemberExpression|AsExpression} ComplexForm
  */
 
 /**
@@ -50,7 +58,8 @@ import { SrcLoc } from "../lexer/SrcLoc.js";
  */
 
 const PREC = {
-  [TokenTypes.Dot]: 90,
+  ".": 90,
+  ":as": 50,
 };
 
 /**
@@ -307,6 +316,40 @@ const readMemberExpression = (reader, left) => {
 };
 
 /**
+ * Reads an as expression
+ * @param {Reader} reader
+ * @param {Form} left
+ * @returns {AsExpression}
+ */
+const readAsExpression = (reader, left) => {
+  const tok = reader.peek();
+  reader.expect(":as", tok.value);
+  const prec = getPrec(tok);
+  const typeAnnotation = readExpr(reader, prec);
+
+  return { type: "AsExpression", expression: left, typeAnnotation };
+};
+
+/**
+ * Reads a binary expression
+ * @param {Reader} reader
+ * @param {Form} left
+ * @returns {Form}
+ */
+const readBinary = (reader, left) => {
+  const tok = reader.peek();
+
+  switch (tok.value) {
+    case ".":
+      return readMemberExpression(reader, left);
+    case ":as":
+      return readAsExpression(reader, left);
+    default:
+      throw new SyntaxException(tok.value, tok.srcloc);
+  }
+};
+
+/**
  * Reads a form from the token stream
  * @param {Reader} reader
  * @returns {Form}
@@ -335,7 +378,7 @@ const readForm = (reader) => {
   }
 };
 
-const getPrec = (token) => PREC[token?.type] ?? 0;
+const getPrec = (token) => PREC[token?.value] ?? 0;
 
 /**
  * Reads expressions, including reader macros
@@ -348,7 +391,7 @@ const readExpr = (reader, bp = 0) => {
   let prec = getPrec(tok);
 
   while (bp < prec) {
-    left = readMemberExpression(reader, left);
+    left = readBinary(reader, left);
     tok = reader.peek();
     prec = getPrec(tok);
   }
