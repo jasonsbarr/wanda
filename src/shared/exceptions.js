@@ -1,5 +1,5 @@
 import { SrcLoc } from "../lexer/SrcLoc.js";
-import { addMetaField } from "../runtime/object.js";
+import { addMetaField, getMetaField } from "../runtime/object.js";
 
 /**
  * @typedef Frame
@@ -9,7 +9,6 @@ import { addMetaField } from "../runtime/object.js";
 /**
  * Base error class for Wanda
  * @prop {string} msg
- * @prop {Frame[]} stack
  */
 export class Exception extends Error {
   /**
@@ -19,15 +18,9 @@ export class Exception extends Error {
    */
   constructor(msg, stack = []) {
     super(msg);
-    this.wandaStack = stack;
-
-    Object.defineProperty(this, "wandaStack", {
-      enumerable: false,
-      configurable: false,
-      writable: false,
-    });
 
     addMetaField(this, "dict", { message: msg });
+    addMetaField(this, "stack", stack);
   }
 
   /**
@@ -43,7 +36,8 @@ export class Exception extends Error {
    * @returns {string}
    */
   dumpStack() {
-    let stack = this.wandaStack;
+    /** @type {Frame[]} */
+    let stack = getMetaField(this, "stack");
 
     let dump = `${this.constructor.name}: ${this.message}`;
 
