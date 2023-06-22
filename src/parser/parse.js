@@ -205,6 +205,11 @@ const parseComplexForm = (form) => {
       const property = parseExpr(form.property);
       return AST.MemberExpression(object, property, form.srcloc);
     }
+    case "AsExpression": {
+      const expression = parseExpr(form.expression);
+      const type = parseTypeAnnotation(form.typeAnnotation);
+      return AST.AsExpression(expression, type, form.srcloc);
+    }
     default:
       // this should never happen
       throw new SyntaxException(form.type, form.srcloc);
