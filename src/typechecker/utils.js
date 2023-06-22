@@ -31,7 +31,6 @@ export const isTruthy = (type) => {
       if (type.value === "false") {
         return false;
       }
-      return true;
     default:
       if (type.kind !== TypeTypes.Boolean) {
         return true;
@@ -52,7 +51,6 @@ export const isFalsy = (type) => {
       if (type.value === "false") {
         return true;
       }
-      return false;
     default:
       if (type.kind !== TypeTypes.Boolean) {
         return false;
