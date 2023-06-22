@@ -100,6 +100,17 @@ export class TypeChecker {
   }
 
   /**
+   * Type checks an :as expression
+   * @param {import("../parser/ast.js").AsExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkAsExpression(node, env) {
+    const type = infer(node, env);
+    return { ...node.expression, type };
+  }
+
+  /**
    * Type checks a boolean literal
    * @param {import("../parser/ast").BooleanLiteral} node
    * @param {TypeEnvironment} env
