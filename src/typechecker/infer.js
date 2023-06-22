@@ -51,6 +51,8 @@ export const infer = (ast, env, constant = false) => {
       return inferFunction(ast, env, constant);
     case ASTTypes.ConstantDeclaration:
       return inferVariableDeclaration(ast, env, true);
+    case ASTTypes.AsExpression:
+      return inferAsExpression(ast, env, constant);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -401,4 +403,29 @@ const inferFunction = (node, env, constant) => {
       : retType,
     node.variadic
   );
+};
+
+/**
+ * Infers a type from an expression and checks it against a given type
+ * @param {import("../parser/ast.js").AsExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferAsExpression = (node, env, constant) => {
+  const type = fromTypeAnnotation(node.type);
+  const exprType = infer(node.expression, env, constant);
+
+  if (!isSubtype(exprType, type)) {
+    throw new TypeException(
+      `${Type.toString(
+        exprType
+      )} is not a valid subtype of the given type ${Type.toString(
+        type
+      )} in :as expression`,
+      node.srcloc
+    );
+  }
+
+  return type;
 };
