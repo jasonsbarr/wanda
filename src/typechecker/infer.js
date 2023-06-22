@@ -273,15 +273,6 @@ const inferVectorLiteral = (node, env, constant) => {
   const types = node.members.map((m) => infer(m, env, constant));
   const unified = unifyAll(...types);
 
-  if (unified === null && env.checkingOn) {
-    throw new TypeException(
-      `Incompatible types in Vector literal`,
-      node.srcloc
-    );
-  } else if (unified === null) {
-    return Type.any;
-  }
-
   return Type.vector(unified, constant);
 };
 
