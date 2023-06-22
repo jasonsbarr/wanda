@@ -1,4 +1,5 @@
 import { SrcLoc } from "../lexer/SrcLoc.js";
+import { addMetaField } from "../runtime/object.js";
 
 /**
  * Base error class for Wanda
@@ -14,7 +15,8 @@ export class Exception extends Error {
   constructor(msg, stack = []) {
     super(msg);
     this.wandaStack = stack;
-    this[Symbol.for(":dict")] = { message: msg };
+
+    addMetaField(this, "dict", { message: msg });
   }
 
   /**
@@ -101,6 +103,5 @@ export class RuntimeException extends Exception {
    */
   constructor(msg) {
     super(msg);
-    this[Symbol.for(":dict")] = { message: msg };
   }
 }
