@@ -16,6 +16,12 @@ export class Exception extends Error {
     super(msg);
     this.wandaStack = stack;
 
+    Object.defineProperty(this, "wandaStack", {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+    });
+
     addMetaField(this, "dict", { message: msg });
   }
 
