@@ -25,14 +25,6 @@ export const getAliasBase = (name, env) => {
  */
 export const isTruthy = (type) => {
   switch (type.kind) {
-    case TypeTypes.Object:
-    case TypeTypes.Vector:
-    case TypeTypes.Tuple:
-    case TypeTypes.String:
-    case TypeTypes.Number:
-    case TypeTypes.Keyword:
-    case TypeTypes.FunctionType:
-      return true;
     case TypeTypes.Nil:
       return false;
     case TypeTypes.Singleton:
@@ -40,6 +32,10 @@ export const isTruthy = (type) => {
         return false;
       }
       return true;
+    default:
+      if (type.kind !== TypeTypes.Boolean) {
+        return true;
+      }
   }
 };
 
@@ -50,14 +46,6 @@ export const isTruthy = (type) => {
  */
 export const isFalsy = (type) => {
   switch (type.kind) {
-    case TypeTypes.Object:
-    case TypeTypes.Vector:
-    case TypeTypes.Tuple:
-    case TypeTypes.String:
-    case TypeTypes.Number:
-    case TypeTypes.Keyword:
-    case TypeTypes.FunctionType:
-      return false;
     case TypeTypes.Nil:
       return true;
     case TypeTypes.Singleton:
@@ -65,5 +53,9 @@ export const isFalsy = (type) => {
         return true;
       }
       return false;
+    default:
+      if (type.kind !== TypeTypes.Boolean) {
+        return false;
+      }
   }
 };
