@@ -38,7 +38,7 @@ export class Exception extends Error {
    * @returns {string}
    */
   dumpStack() {
-    let stack = [...this.wandaStack].reverse();
+    let stack = this.wandaStack;
 
     let dump = "";
 
