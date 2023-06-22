@@ -83,6 +83,16 @@ class ASTPrinter {
   }
 
   /**
+   * Prints the expression of an AsExpression node
+   * @param {import("../parser/ast.js").AsExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printAsExpression(node, indent) {
+    return this.print(node.expression, indent);
+  }
+
+  /**
    * Prints a CallExpression node
    * @param {import("../parser/ast.js").CallExpression} node
    * @param {number} indent
