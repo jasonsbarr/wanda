@@ -27,6 +27,7 @@ export const ASTTypes = {
   Param: "Param",
   FunctionDeclaration: "FunctionDeclaration",
   LambdaExpression: "LambdaExpression",
+  AsExpression: "AsExpression",
   ConstantDeclaration: "ConstantDeclaration",
 };
 
@@ -104,6 +105,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.ConstantDeclaration; lhv: LHV; expression: AST; typeAnnotation: null | import("./parseTypeAnnotation.js").TypeAnnotation}} ConstantDeclaration
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.AsExpression; expression: AST; type: import("./parseTypeAnnotation.js").TypeAnnotation;}} AsExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -399,6 +403,20 @@ export const AST = {
       body,
       variadic,
       retType,
+      srcloc,
+    };
+  },
+  /**
+   *
+   * @param {AST} expression
+   * @param {import("./parseTypeAnnotation.js").TypeAnnotation} type
+   * @param {SrcLoc} srcloc
+   */
+  AsExpression(expression, type, srcloc) {
+    return {
+      kind: ASTTypes.AsExpression,
+      expression,
+      type,
       srcloc,
     };
   },
