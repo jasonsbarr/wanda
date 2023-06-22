@@ -325,9 +325,17 @@ const readAsExpression = (reader, left) => {
   const tok = reader.peek();
   reader.expect(":as", tok.value);
   const prec = getPrec(tok);
+
+  // skip :as keyword
+  reader.skip();
   const typeAnnotation = readExpr(reader, prec);
 
-  return { type: "AsExpression", expression: left, typeAnnotation };
+  return {
+    type: "AsExpression",
+    expression: left,
+    typeAnnotation,
+    srcloc: left.srcloc,
+  };
 };
 
 /**
