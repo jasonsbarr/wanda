@@ -94,6 +94,8 @@ export class TypeChecker {
         return this.checkLambdaExpression(node, env);
       case ASTTypes.ConstantDeclaration:
         return this.checkConstantDeclaration(node, env);
+      case ASTTypes.AsExpression:
+        return this.checkAsExpression(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }

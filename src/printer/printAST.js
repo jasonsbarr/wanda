@@ -77,6 +77,10 @@ class ASTPrinter {
         return this.printFunctionDeclaration(node, indent);
       case ASTTypes.LambdaExpression:
         return this.printLambdaExpression(node, indent);
+      case ASTTypes.ConstantDeclaration:
+        return this.printConstantDeclaration(node, indent);
+      case ASTTypes.AsExpression:
+        return this.printAsExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
