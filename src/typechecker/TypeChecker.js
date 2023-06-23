@@ -307,6 +307,7 @@ export class TypeChecker {
       if (node.expression.kind === ASTTypes.Symbol) {
         const symType = env.get(node.expression.name);
         if (!Type.isSingleton(symType) || symType.value !== nameType.value) {
+          // this will probably also trigger for primitive constants
           throw new TypeException(
             `Cannot assign different value to variable of singleton type ${Type.toString(
               nameType
