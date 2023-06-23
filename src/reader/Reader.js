@@ -41,8 +41,8 @@ export class Reader {
 
   /**
    * Checks expected token type against actual token type
-   * @param {TokenTypes} expected
-   * @param {TokenTypes} actual
+   * @param {TokenTypes|string} expected
+   * @param {TokenTypes|string} actual
    */
   expect(expected, actual) {
     if (expected !== actual) {
