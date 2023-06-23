@@ -472,7 +472,7 @@ export class TypeChecker {
 
     return {
       ...node,
-      expression: { ...node.expression, type: infer(node.expression) },
+      expression: this.checkNode(node.expression, env),
       type,
     };
   }
