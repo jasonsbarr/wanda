@@ -19,7 +19,7 @@ export const check = (ast, type, env) => {
   }
 
   if (ast.kind === ASTTypes.RecordLiteral && Type.isObject(type)) {
-    return checkRecordLiteral(ast, type, env);
+    return checkObject(ast, type, env);
   }
 
   if (
@@ -56,7 +56,7 @@ export const check = (ast, type, env) => {
  * @param {import("./types").Object} type
  * @param {TypeEnvironment} env
  */
-const checkRecordLiteral = (ast, type, env) => {
+const checkObject = (ast, type, env) => {
   const astProps = ast.properties.map((prop) => ({
     name: prop.key.name,
     expr: prop.value,
