@@ -38,6 +38,11 @@ export const check = (ast, type, env) => {
     return checkUnion(ast, type, env);
   }
 
+  if (Type.isSingleton(type) && isPrimitive(ast) && ast.value === type.value) {
+    // primitive matches singleton type
+    return;
+  }
+
   const inferredType = infer(ast, env);
 
   if (!isSubtype(inferredType, type)) {
