@@ -6,6 +6,7 @@ import { infer } from "./infer.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 import { Type } from "./Type.js";
 import { propType } from "./propType.js";
+import { isPrimitive } from "../parser/utils.js";
 
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
@@ -308,7 +309,11 @@ export class TypeChecker {
         node.expression.kind === ASTTypes.Symbol
           ? env.get(node.expression.name)
           : infer(node.expression, env);
-      if (!Type.isSingleton(exprType) || exprType.value !== nameType.value) {
+      if (
+        (Type.isSingleton(exprType) && exprType.value !== nameType.value) ||
+        (isPrimitive(node.expression) &&
+          node.expression.value !== nameType.value)
+      ) {
         throw new TypeException(
           `Cannot assign different value to variable of singleton type ${Type.toString(
             nameType
