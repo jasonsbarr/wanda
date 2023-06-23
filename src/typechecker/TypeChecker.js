@@ -390,7 +390,7 @@ export class TypeChecker {
       check(node.expression, type, env);
       env.checkingOn = true;
     } else {
-      type = infer(node, env, constant);
+      type = infer(node.expression, env, constant);
     }
 
     if (env.checkingOn && Type.isNever(type)) {
@@ -471,10 +471,8 @@ export class TypeChecker {
     }
 
     return {
-      kind: node.kind,
-      lhv: node.lhv,
-      expression: this.checkNode(node.expression, env),
-      srcloc: node.srcloc,
+      ...node,
+      expression: { ...node.expression, type: infer(node.expression) },
       type,
     };
   }
