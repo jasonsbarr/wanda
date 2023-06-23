@@ -304,16 +304,17 @@ export class TypeChecker {
     const nameType = env.get(node.lhv.name);
 
     if (Type.isSingleton(nameType)) {
-      if (node.expression.kind === ASTTypes.Symbol) {
-        const symType = env.get(node.expression.name);
-        if (!Type.isSingleton(symType) || symType.value !== nameType.value) {
-          // this will probably also trigger for primitive constants
-          throw new TypeException(
-            `Cannot assign different value to variable of singleton type ${Type.toString(
-              nameType
-            )}`
-          );
-        }
+      const exprType =
+        node.expression.kind === ASTTypes.Symbol
+          ? env.get(node.expression.name)
+          : infer(node.expression, env);
+      if (!Type.isSingleton(exprType) || exprType.value !== nameType.value) {
+        throw new TypeException(
+          `Cannot assign different value to variable of singleton type ${Type.toString(
+            nameType
+          )}`,
+          node.expression.srcloc
+        );
       }
     }
 
