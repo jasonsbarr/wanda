@@ -88,11 +88,14 @@ const checkObject = (ast, type, env) => {
       );
     }
 
+    const pt = expr.kind === ASTTypes.Symbol && env.get(expr.name.name);
     if (
       Type.isSingleton(pType) &&
       isPrimitive(expr) &&
       pType.value === expr.value
     ) {
+      // continue
+    } else if (pt && Type.isSingleton(pt) && pt.value === pType.value) {
       // continue
     } else {
       check(expr, pType, env);
