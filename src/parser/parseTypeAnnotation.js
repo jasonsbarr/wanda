@@ -208,7 +208,7 @@ const parseFunctionAnnotation = (annotation) => {
  * @param {Cons|Token} annotation
  * @returns {TypeAnnotation}
  */
-export const parseTypePrimitive = (annotation) => {
+const parseTypePrimitive = (annotation) => {
   if (annotation instanceof Cons) {
     // is function or generic annotation
     // flatten Cons to array
