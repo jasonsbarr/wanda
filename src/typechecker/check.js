@@ -43,6 +43,14 @@ export const check = (ast, type, env) => {
     return;
   }
 
+  if (Type.isSingleton(type) && ast.kind === ASTTypes.Symbol) {
+    const nameType = env.get(ast.name);
+
+    if (Type.isSingleton(nameType) && nameType.value === type.value) {
+      return;
+    }
+  }
+
   const inferredType = infer(ast, env);
 
   if (!isSubtype(inferredType, type)) {
@@ -88,7 +96,7 @@ const checkObject = (ast, type, env) => {
       );
     }
 
-    const pt = expr.kind === ASTTypes.Symbol && env.get(expr.name.name);
+    const pt = expr.kind === ASTTypes.Symbol && env.get(expr.name);
     if (
       Type.isSingleton(pType) &&
       isPrimitive(expr) &&
