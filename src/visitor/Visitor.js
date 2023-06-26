@@ -71,9 +71,21 @@ export class Visitor {
         return this.visitLambdaExpression(node);
       case ASTTypes.ConstantDeclaration:
         return this.visitConstantDeclaration(node);
+      case ASTTypes.AsExpression:
+        return this.visitAsExpression(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
+  }
+
+  /**
+   * Visits an AsExpression node
+   * @param {import("../parser/ast.js").AsExpression} node
+   * @returns {import("../parser/ast.js").AsExpression}
+   */
+  visitAsExpression(node) {
+    const expression = this.visit(node.expression);
+    return { ...node, expression };
   }
 
   /**
