@@ -205,6 +205,11 @@ const parseComplexForm = (form) => {
       const property = parseExpr(form.property);
       return AST.MemberExpression(object, property, form.srcloc);
     }
+    case "AsExpression": {
+      const expression = parseExpr(form.expression);
+      const type = parseTypeAnnotation(form.typeAnnotation);
+      return AST.AsExpression(expression, type, form.srcloc);
+    }
     default:
       // this should never happen
       throw new SyntaxException(form.type, form.srcloc);
@@ -337,6 +342,38 @@ const parseFunction = (params, maybeArrow, maybeRetType, maybeBody) => {
 };
 
 /**
+ * Parses a function declaration
+ * @param {List} form
+ * @returns {import("./ast.js").ConstantDeclaration|import("./ast.js").FunctionDeclaration}
+ */
+const parseMaybeFunctionDeclaration = (form) => {
+  const length = [...form].length;
+
+  if (length === 3) {
+    // (def <name> <expression>) or
+    // (def (<name>: <type>) <expression>)
+    return parseConstantDeclaration(form);
+  }
+
+  return parseFunctionDeclaration(form);
+};
+
+/**
+ * Parses a constant declaration
+ * @param {List} form
+ * @returns {import("./ast.js").ConstantDeclaration}
+ */
+const parseConstantDeclaration = (form) => {
+  const varDecl = parseVariableDeclaration(form);
+  return AST.ConstantDeclaration(
+    varDecl.lhv,
+    varDecl.expression,
+    varDecl.srcloc,
+    varDecl.typeAnnotation
+  );
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -354,7 +391,7 @@ const parseList = (form) => {
     case "type":
       return parseTypeAlias(form);
     case "def":
-      return parseFunctionDeclaration(form);
+      return parseMaybeFunctionDeclaration(form);
     case "fn":
       return parseLambdaExpression(form);
     default:

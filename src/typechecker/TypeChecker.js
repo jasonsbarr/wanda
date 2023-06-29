@@ -6,6 +6,7 @@ import { infer } from "./infer.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 import { Type } from "./Type.js";
 import { propType } from "./propType.js";
+import { isPrimitive } from "../parser/utils.js";
 
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
@@ -92,9 +93,25 @@ export class TypeChecker {
         return this.checkFunctionDeclaration(node, env);
       case ASTTypes.LambdaExpression:
         return this.checkLambdaExpression(node, env);
+      case ASTTypes.ConstantDeclaration:
+        return this.checkConstantDeclaration(node, env);
+      case ASTTypes.AsExpression:
+        return this.checkAsExpression(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
+  }
+
+  /**
+   * Type checks an :as expression
+   * @param {import("../parser/ast.js").AsExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkAsExpression(node, env) {
+    env.checkingOn = true;
+    const type = infer(node, env);
+    return { ...node.expression, type };
   }
 
   /**
@@ -122,6 +139,16 @@ export class TypeChecker {
     }
 
     return { ...node, type };
+  }
+
+  /**
+   * Type checks a constant declaration
+   * @param {import("../parser/ast.js").ConstantDeclaration} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkConstantDeclaration(node, env) {
+    return this.checkVariableDeclaration(node, env, true);
   }
 
   /**
@@ -275,8 +302,35 @@ export class TypeChecker {
       );
     }
 
+    const nameType = env.get(node.lhv.name);
+
+    if (Type.isSingleton(nameType)) {
+      const exprType =
+        node.expression.kind === ASTTypes.Symbol
+          ? env.get(node.expression.name)
+          : infer(node.expression, env);
+      if (
+        (Type.isSingleton(exprType) && exprType.value !== nameType.value) ||
+        (isPrimitive(node.expression) &&
+          node.expression.value !== nameType.value)
+      ) {
+        throw new TypeException(
+          `Cannot assign different value to variable of singleton type ${Type.toString(
+            nameType
+          )}`,
+          node.expression.srcloc
+        );
+      }
+    }
+
+    if (nameType.constant) {
+      throw new TypeException(
+        `Cannot assign to constant value ${node.lhv.name}`,
+        node.srcloc
+      );
+    }
+
     if (env.checkingOn) {
-      const nameType = env.getType(node.lhv.name);
       check(node.expression, nameType, env);
       return {
         kind: node.kind,
@@ -336,7 +390,7 @@ export class TypeChecker {
    * @returns {TypedAST}
    */
   checkTypeAlias(node, env) {
-    const type = fromTypeAnnotation(node.type, env);
+    const type = isSecondPass ? node.type : fromTypeAnnotation(node.type, env);
     env.setType(node.name, type);
     return { ...node, type };
   }
@@ -345,9 +399,10 @@ export class TypeChecker {
    * Type checks a variable declaration
    * @param {import("../parser/ast.js").VariableDeclaration} node
    * @param {TypeEnvironment} env
+   * @param {boolean} [constant=false]
    * @returns {TypedAST}
    */
-  checkVariableDeclaration(node, env) {
+  checkVariableDeclaration(node, env, constant = false) {
     let type;
 
     if (node.typeAnnotation) {
@@ -355,27 +410,44 @@ export class TypeChecker {
       check(node.expression, type, env);
       env.checkingOn = true;
     } else {
-      type = infer(node, env);
+      type = infer(node.expression, env, constant);
+    }
+
+    if (env.checkingOn && Type.isNever(type)) {
+      throw new TypeException(
+        `Type never cannot be assigned a value`,
+        node.srcloc
+      );
     }
 
     if (node.lhv.kind === ASTTypes.Symbol) {
       env.set(node.lhv.name, type);
     } else if (node.lhv.kind === ASTTypes.VectorPattern) {
-      if (!Type.isVector(type) && !Type.isList(type)) {
+      if (!Type.isVector(type) && !Type.isList(type) && !Type.isTuple(type)) {
         throw new TypeException(
-          `Vector pattern destructuring must take a vector or list type`,
+          `Vector pattern destructuring must take a vector, list, or tuple type`,
           node.srcloc
         );
       } else {
         let i = 0;
         for (let mem of node.lhv.members) {
-          if (node.lhv.rest && i === node.lhv.members.length - 1) {
-            env.set(mem.name, type);
+          if (Type.isVector(type) || Type.isList(type)) {
+            if (node.lhv.rest && i === node.lhv.members.length - 1) {
+              env.set(mem.name, type);
+            } else {
+              env.set(
+                mem.name,
+                type.vectorType ? type.vectorType : type.listType
+              );
+            }
           } else {
-            env.set(
-              mem.name,
-              type.vectorType ? type.vectorType : type.listType
-            );
+            // is tuple type
+            if (node.lhv.rest && i === node.lhv.members.length - 1) {
+              // is rest variable
+              env.set(mem.name, type.types.slice(i));
+            } else {
+              env.set(mem.name, type.types[i]);
+            }
           }
           i++;
         }
@@ -419,10 +491,8 @@ export class TypeChecker {
     }
 
     return {
-      kind: node.kind,
-      lhv: node.lhv,
+      ...node,
       expression: this.checkNode(node.expression, env),
-      srcloc: node.srcloc,
       type,
     };
   }

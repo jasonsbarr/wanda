@@ -34,6 +34,20 @@ export const typeToString = (type) => {
       return `{ ${type.properties
         .map((p) => `${p.name} : ${typeToString(p.type)}`)
         .join(", ")} }`;
+    case TypeTypes.Undefined:
+      return "undefined";
+    case TypeTypes.Tuple:
+      return `[${type.types.map(typeToString).join(", ")}]`;
+    case TypeTypes.Singleton:
+      return type.value;
+    case TypeTypes.Never:
+      return "never";
+    case TypeTypes.Union:
+      return `(${type.types.map(typeToString).join(" | ")})`;
+    case TypeTypes.Unknown:
+      return "unknown";
+    case TypeTypes.Intersection:
+      return `(${type.types.map(typeToString).join(" && ")})`;
     default:
       throw new Exception(`String conversion not implemented for ${type.kind}`);
   }

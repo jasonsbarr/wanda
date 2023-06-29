@@ -1,25 +1,31 @@
 import { SrcLoc } from "../lexer/SrcLoc.js";
+import { addMetaField, getMetaField } from "../runtime/object.js";
 
+/**
+ * @typedef Frame
+ * @prop {string} name Name of function being called
+ * @prop {SrcLoc?} srcloc
+ */
 /**
  * Base error class for Wanda
  * @prop {string} msg
- * @prop {string[]} stack
  */
 export class Exception extends Error {
   /**
    * Constructs the Exception class
    * @param {string} msg
-   * @param {string[]} [stack=[]]
+   * @param {Frame[]} [stack=[]]
    */
   constructor(msg, stack = []) {
     super(msg);
-    this.wandaStack = stack;
-    this[Symbol.for(":dict")] = { message: msg };
+
+    addMetaField(this, "dict", { message: msg });
+    addMetaField(this, "stack", stack);
   }
 
   /**
    * Adds call frame info to stack trace
-   * @param {string} frame
+   * @param {Frame} frame
    */
   appendStack(frame) {
     this.wandaStack.push(frame);
@@ -30,14 +36,17 @@ export class Exception extends Error {
    * @returns {string}
    */
   dumpStack() {
-    let stack = [...this.wandaStack].reverse();
+    /** @type {Frame[]} */
+    let stack = getMetaField(this, "stack");
 
-    let dump = "";
+    let dump = `${this.constructor.name}: ${this.message}`;
 
-    let i = 0;
     for (let frame of stack) {
-      dump += `${i !== 0 ? "  " : ""}${frame}\n`;
-      i++;
+      dump += `    at ${
+        frame.srcloc
+          ? `${frame.srcloc.file} (${frame.srcloc.line}:${frame.srcloc.col}) `
+          : ""
+      }${frame.name}\n`;
     }
 
     return dump;
@@ -101,6 +110,5 @@ export class RuntimeException extends Exception {
    */
   constructor(msg) {
     super(msg);
-    this[Symbol.for(":dict")] = { message: msg };
   }
 }

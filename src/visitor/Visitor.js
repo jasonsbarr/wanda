@@ -69,9 +69,23 @@ export class Visitor {
         return this.visitFunctionDeclaration(node);
       case ASTTypes.LambdaExpression:
         return this.visitLambdaExpression(node);
+      case ASTTypes.ConstantDeclaration:
+        return this.visitConstantDeclaration(node);
+      case ASTTypes.AsExpression:
+        return this.visitAsExpression(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
+  }
+
+  /**
+   * Visits an AsExpression node
+   * @param {import("../parser/ast.js").AsExpression} node
+   * @returns {import("../parser/ast.js").AsExpression}
+   */
+  visitAsExpression(node) {
+    const expression = this.visit(node.expression);
+    return { ...node, expression };
   }
 
   /**
@@ -92,6 +106,17 @@ export class Visitor {
     const func = this.visit(node.func);
     const args = node.args.map(this.visit.bind(this));
     return { ...node, func, args };
+  }
+
+  /**
+   * VariableDeclaration node visitor
+   * @param {import("../parser/ast").ConstantDeclaration} node
+   * @returns {import("../parser/ast").ConstantDeclaration}
+   */
+  visitConstantDeclaration(node) {
+    const lhv = this.visit(node.lhv);
+    const expression = this.visit(node.expression);
+    return { ...node, lhv, expression };
   }
 
   /**

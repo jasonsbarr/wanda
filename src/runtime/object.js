@@ -123,13 +123,12 @@ export const makeObject = (obj) => {
   addMetaField(newObj, "constructor", function (...args) {
     return new obj.constructor(...args);
   });
-
-  Object.defineProperty(newObj[makeKeyword("constructor")], "name", {
-    configurable: false,
-    enumerable: false,
-    writable: false,
-    value: obj.constructor?.name ?? "WandaObject",
-  });
+  addMetaField(newObj, "type", "object");
+  addMetaField(
+    newObj[makeKeyword("constructor")],
+    "name",
+    obj.constructor?.name ?? "WandaObject"
+  );
 
   // to allow destructuring
   for (let [k, v] of Object.entries(obj)) {

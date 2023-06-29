@@ -1,3 +1,4 @@
+import { Token } from "../lexer/Token.js";
 import { TokenTypes } from "../lexer/TokenTypes.js";
 import { Cons } from "../shared/cons.js";
 import { Exception } from "../shared/exceptions.js";
@@ -17,6 +18,12 @@ export const TATypes = {
   Vector: "Vector",
   Object: "Object",
   Function: "Function",
+  Tuple: "Tuple",
+  Singleton: "Singleton",
+  Intersection: "Intersection",
+  Union: "Union",
+  Never: "Never",
+  Unknown: "Unknown",
 };
 /**
  * @typedef AnyAnnotation
@@ -69,15 +76,44 @@ export const TATypes = {
  */
 /**
  * @typedef FunctionAnn
+ * @prop {TATypes.Function} kind
  * @prop {TypeAnnotation[]} params
  * @prop {TypeAnnotation} retType
  * @prop {boolean} variadic
  */
 /**
+ * @typedef TupleAnn
+ * @prop {TATypes.Tuple} kind
+ * @prop {TypeAnnotation[]} types
+ */
+/**
+ * @typedef SingletonAnn
+ * @prop {TATypes.Singleton} kind
+ * @prop {Token} token
+ */
+/**
+ * @typedef IntersectionAnn
+ * @prop {TATypes.Intersection} kind
+ * @prop {TypeAnnotation[]} types
+ */
+/**
+ * @typedef UnionAnn
+ * @prop {TATypes.Union} kind
+ * @prop {TypeAnnotation[]} types
+ */
+/**
+ * @typedef NeverAnn
+ * @prop {TATypes.Never} kind
+ */
+/**
+ * @typedef UnknownAnn
+ * @prop {TATypes.Unknown} kind
+ */
+/**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn} TypeAnnotation
+ * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn|TupleAnn|SingletonAnn|UnionAnn|IntersectionAnn|NeverAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -99,7 +135,7 @@ const parseVectorAnnotation = (type) => {
 
 /**
  * Parse the ObjectType for an object type annotation
- * @param {import("./ast.js").RecordLiteral}
+ * @param {import("../reader/read.js").RecordLiteral}
  * @returns {ObjectAnn}
  */
 const parseObjectAnnotation = (annot) => {
@@ -115,11 +151,64 @@ const parseObjectAnnotation = (annot) => {
 };
 
 /**
+ * Parse the TupleType for a tuple type annotation
+ * @param {import("../reader/read.js").VectorLiteral} annot
+ * @returns {TupleAnn}
+ */
+const parseTupleAnnotation = (annot) => {
+  /** @type {TypeAnnotation[]} */
+  let types = [];
+
+  for (let mem of annot.members) {
+    types.push(parseTypeAnnotation(mem));
+  }
+
+  return { kind: TATypes.Tuple, types };
+};
+
+/**
+ * Parses a singleton type annotation
+ * @param {Token} annot
+ * @returns {SingletonAnn}
+ */
+const parseSingletonAnnotation = (annot) => ({
+  kind: TATypes.Singleton,
+  token: annot,
+});
+
+/**
+ * Parses a function type annotation
+ * @param {Array} annotation
+ * @returns {FunctionAnn}
+ */
+const parseFunctionAnnotation = (annotation) => {
+  // filter out arrow
+  annotation = annotation.filter((item) => item.value !== "->");
+
+  // get return type
+  const retType = parseTypeAnnotation(annotation.pop());
+  // get param types and if it's variadic
+  let params = [];
+  let variadic = false;
+
+  for (let item of annotation) {
+    if (item.type === TokenTypes.Amp) {
+      variadic = true;
+      continue;
+    } else {
+      params.push(parseTypeAnnotation(item));
+    }
+  }
+
+  return { kind: TATypes.Function, params, retType, variadic };
+};
+
+/**
  * Parses type annotation from the token stream
- * @param {Cons} annotation
+ * @param {Cons|Token} annotation
  * @returns {TypeAnnotation}
  */
-export const parseTypeAnnotation = (annotation) => {
+const parseTypePrimitive = (annotation) => {
   if (annotation instanceof Cons) {
     // is function or generic annotation
     // flatten Cons to array
@@ -135,25 +224,7 @@ export const parseTypeAnnotation = (annotation) => {
 
     if (hasArrow) {
       // is function annotation
-      // filter out arrow
-      annotation = annotation.filter((item) => item.value !== "->");
-
-      // get return type
-      const retType = parseTypeAnnotation(annotation.pop());
-      // get param types and if it's variadic
-      let params = [];
-      let variadic = false;
-
-      for (let item of annotation) {
-        if (item.type === TokenTypes.Amp) {
-          variadic = true;
-          continue;
-        } else {
-          params.push(parseTypeAnnotation(item));
-        }
-      }
-
-      return { kind: TATypes.Function, params, retType, variadic };
+      return parseFunctionAnnotation(annotation);
     }
   }
 
@@ -171,8 +242,21 @@ export const parseTypeAnnotation = (annotation) => {
     return parseObjectAnnotation(annot);
   }
 
+  if (annot.type === "VectorLiteral") {
+    return parseTupleAnnotation(annot);
+  }
+
   if (annot.type === TokenTypes.Nil) {
     return { kind: TATypes.NilLiteral };
+  }
+
+  if (
+    annot.type === TokenTypes.Number ||
+    annot.type === TokenTypes.String ||
+    annot.type === TokenTypes.Boolean ||
+    annot.type === TokenTypes.String
+  ) {
+    return parseSingletonAnnotation(annot);
   }
 
   if (annot.type === TokenTypes.Symbol) {
@@ -187,6 +271,10 @@ export const parseTypeAnnotation = (annotation) => {
         return { kind: TATypes.BooleanLiteral };
       case "keyword":
         return { kind: TATypes.KeywordLiteral };
+      case "never":
+        return { kind: TATypes.Never };
+      case "unknown":
+        return { kind: TATypes.Unknown };
       case "list":
         // annotation is array with listType as 2nd member
         return parseListAnnotation(annotation[1]);
@@ -201,4 +289,46 @@ export const parseTypeAnnotation = (annotation) => {
   throw new Exception(
     `Unknown type annotation kind ${JSON.stringify(annot, null, 2)}`
   );
+};
+
+/**
+ *
+ * @param {Cons|Token} annotation
+ * @returns
+ */
+export const parseTypeAnnotation = (annotation) => {
+  const annot = annotation instanceof Cons ? [...annotation] : null;
+
+  const isCompound =
+    Array.isArray(annot) &&
+    annot.reduce((isCompound, item) => {
+      if (
+        (item.type === TokenTypes.Symbol && item.value === "||") ||
+        item.type === TokenTypes.AmpAmp
+      ) {
+        return true;
+      }
+      return isCompound;
+    }, false);
+
+  if (isCompound) {
+    /** @type {TypeAnnotation} */
+    const first = parseTypeAnnotation(annot[0]);
+    /** @type {Token} */
+    let sep = annot[1];
+    const kind =
+      sep.type === TokenTypes.AmpAmp ? TATypes.Intersection : TATypes.Union;
+    const types = [first];
+
+    let i = 2;
+    while (sep) {
+      types.push(parseTypeAnnotation(annot[i]));
+      i++;
+      sep = annot[i];
+    }
+
+    return { kind, types };
+  }
+
+  return parseTypePrimitive(annotation);
 };

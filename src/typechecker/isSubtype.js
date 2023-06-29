@@ -8,6 +8,12 @@ import { propType } from "./propType.js";
  * @returns {boolean}
  */
 export const isSubtype = (type1, type2) => {
+  // never is bottom type, so is subtype of every type
+  if (Type.isNever(type1)) return true;
+
+  // unknown is top type, so every type is its subtype
+  if (Type.isUnknown(type2)) return true;
+
   if (Type.isAny(type1) || Type.isAny(type2)) return true;
   if (Type.isNumber(type1) && Type.isNumber(type2)) return true;
   if (Type.isString(type1) && Type.isString(type2)) return true;
@@ -49,9 +55,34 @@ export const isSubtype = (type1, type2) => {
   if (Type.isFunctionType(type1) && Type.isFunctionType(type2)) {
     return (
       type1.params.length === type2.params.length &&
-      a.params.every((a, i) => isSubtype(b.params[i], a)) &&
-      isSubtype(a.ret, b.ret)
+      type1.params.every((a, i) => isSubtype(type2.params[i], a)) &&
+      isSubtype(type1.ret, type2.ret)
     );
+  }
+
+  if (Type.isTuple(type1) && Type.isTuple(type2)) {
+    return type1.types.every((a, i) => isSubtype(a, type2.types[i]));
+  }
+
+  if (Type.isSingleton(type1)) {
+    if (Type.isSingleton(type2)) return type1.value === type2.value;
+    else return isSubtype(type1.base, type2);
+  }
+
+  if (Type.isUnion(type1)) {
+    return type1.types.every((t1) => isSubtype(t1, type2));
+  }
+
+  if (Type.isUnion(type2)) {
+    return type2.types.some((t2) => isSubtype(type1, t2));
+  }
+
+  if (Type.isIntersection(type1)) {
+    return type1.types.some((a) => isSubtype(a, type2));
+  }
+
+  if (Type.isIntersection(type2)) {
+    return type2.types.every((b) => isSubtype(type1, b));
   }
 
   return false;

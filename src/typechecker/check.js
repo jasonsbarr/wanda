@@ -1,4 +1,5 @@
 import { AST, ASTTypes } from "../parser/ast.js";
+import { isPrimitive } from "../parser/utils.js";
 import { TypeException } from "../shared/exceptions.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
@@ -13,6 +14,10 @@ import { propType } from "./propType.js";
  * @param {TypeEnvironment} env
  */
 export const check = (ast, type, env) => {
+  if (Type.isIntersection(type)) {
+    return type.types.forEach((t) => check(ast, t, env));
+  }
+
   if (ast.kind === ASTTypes.RecordLiteral && Type.isObject(type)) {
     return checkObject(ast, type, env);
   }
@@ -23,6 +28,19 @@ export const check = (ast, type, env) => {
     Type.isFunctionType(type)
   ) {
     return checkFunction(ast, type, env);
+  }
+
+  if (ast.kind === ASTTypes.VectorLiteral && Type.isTuple(type)) {
+    return checkTuple(ast, type, env);
+  }
+
+  if (Type.isUnion(type)) {
+    return checkUnion(ast, type, env);
+  }
+
+  if (Type.isSingleton(type) && isPrimitive(ast) && ast.value === type.value) {
+    // primitive matches singleton type
+    return;
   }
 
   const inferredType = infer(ast, env);
@@ -70,7 +88,15 @@ const checkObject = (ast, type, env) => {
       );
     }
 
-    check(expr, pType, env);
+    if (
+      Type.isSingleton(pType) &&
+      isPrimitive(expr) &&
+      pType.value === expr.value
+    ) {
+      // continue
+    } else {
+      check(expr, pType, env);
+    }
   });
 };
 
@@ -106,6 +132,49 @@ const checkFunction = (ast, type, env) => {
       `${Type.toString(funcType.ret)} is not a valid subtype of ${Type.toString(
         type.ret
       )}`,
+      ast.srcloc
+    );
+  }
+};
+
+/**
+ * Checks a tuple type against a VectorLiteral node
+ * @param {import("../parser/ast.js").VectorLiteral} ast
+ * @param {import("./types").Tuple} type
+ * @param {TypeEnvironment} env
+ */
+const checkTuple = (ast, type, env) => {
+  let i = 0;
+  for (let t of type.types) {
+    check(ast.members[i], t, env);
+    i++;
+  }
+};
+
+/**
+ * Checks a node against the various arms of a union
+ * @param {AST} ast
+ * @param {import("./types").Union} type
+ * @param {TypeEnvironment} env
+ */
+const checkUnion = (ast, type, env) => {
+  for (let t of type.types) {
+    try {
+      check(ast, t, env);
+      return;
+    } catch (_) {
+      // do nothing
+    }
+  }
+  // Nothing matched, so construct error message based on the whole union
+  // See https://jaked.org/blog/2021-10-14-Reconstructing-TypeScript-part-4 for why this is necessary
+  const inferredType = infer(ast, env);
+
+  if (!isSubtype(inferredType, type)) {
+    throw new TypeException(
+      `Type ${Type.toString(
+        inferredType
+      )} is not a valid subtype of ${Type.toString(type)}`,
       ast.srcloc
     );
   }

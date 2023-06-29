@@ -1,4 +1,5 @@
 import { fail } from "../shared/fail.js";
+import { isNullish as isNil } from "../shared/utils.js";
 import { makeFunction } from "./makeFunction.js";
 import * as utils from "./utils.js";
 import * as obj from "./object.js";
@@ -28,6 +29,8 @@ import { makeNumber } from "./number.js";
  * @prop {Function} makeNumber
  * @prop {Function} failRuntime
  * @prop {Function} fail
+ * @prop {Function} makeNumber
+ * @prop {Function} isNil
  */
 /**
  * Creates a Wanda runtime
@@ -44,5 +47,6 @@ export const makeRuntime = () => {
     makeJSValue,
     fail,
     makeNumber,
+    isNil,
   };
 };

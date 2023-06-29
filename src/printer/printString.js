@@ -1,5 +1,5 @@
 import { hasDict } from "../runtime/object.js";
-import { Cons } from "../shared/cons.js";
+import { Cons, isList } from "../shared/cons.js";
 import { Exception } from "../shared/exceptions.js";
 
 /**
@@ -47,19 +47,18 @@ export const printString = (value, withQuotes) => {
  * @returns {string}
  */
 const printList = (list) => {
-  let prStr = "'(";
-
-  let i = 0;
-  let length = [...list].length;
-  for (let item of list) {
-    if (i === length - 1) {
-      prStr += printString(item);
+  const printListElems = (next, str = "") => {
+    if (next == null) {
+      return str;
+    } else if (next.constructor?.name === "Cons") {
+      return printListElems(next.cdr, str + printString(next.car) + " ");
     } else {
-      prStr += `${printString(item)}, `;
+      return str + ". " + printString(next);
     }
-    i++;
-  }
+  };
 
-  prStr += ")";
-  return prStr;
+  let prStr = printListElems(list);
+  // if it's a list, get rid of the extra space at the end
+  prStr = isList(list) ? prStr.slice(0, -1) : prStr;
+  return "(" + prStr + ")";
 };

@@ -1,4 +1,4 @@
-import { AST } from "../parser/ast.js";
+import { AST, ASTTypes } from "../parser/ast.js";
 import { TATypes } from "../parser/parseTypeAnnotation.js";
 import { Visitor } from "../visitor/Visitor.js";
 
@@ -26,6 +26,15 @@ export class Desugarer extends Visitor {
   }
 
   /**
+   * Desugars a ConstantDeclaration node into a VariableDeclaration
+   * @param {import("../parser/ast.js").ConstantDeclaration && {type: import("../typechecker/types.js").Type}} node
+   * @returns {import("../parser/ast.js").ConstantDeclaration && {type: import("../typechecker/types.js").Type}} node
+   */
+  visitConstantDeclaration(node) {
+    return { ...node, kind: ASTTypes.VariableDeclaration };
+  }
+
+  /**
    * Desugars a FunctionDefinition node into a VariableDeclaration with lambda
    * @param {import("../parser/ast.js").FunctionDeclaration & {type: import("../typechecker/types.js").Type}} node
    * @returns {import("../parser/ast.js").VariableDeclaration & {type: import("../typechecker/types.js").Type}}
@@ -42,6 +51,7 @@ export class Desugarer extends Visitor {
       node.srcloc
     );
     lambda.type = type;
+    lambda.name = node.name.name;
     const paramTypes = node.params.map(
       (p) => p.typeAnnotation ?? { kind: TATypes.AnyLiteral }
     );

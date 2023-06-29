@@ -33,7 +33,9 @@ export class TypeEnvironment extends Namespace {
    * @returns {TypeEnvironment}
    */
   extend(name) {
-    return new TypeEnvironment(this, { name });
+    let env = new TypeEnvironment(this, { name });
+    env.checkingOn = this.checkingOn;
+    return env;
   }
 
   /**

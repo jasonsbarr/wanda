@@ -77,9 +77,23 @@ class ASTPrinter {
         return this.printFunctionDeclaration(node, indent);
       case ASTTypes.LambdaExpression:
         return this.printLambdaExpression(node, indent);
+      case ASTTypes.ConstantDeclaration:
+        return this.printConstantDeclaration(node, indent);
+      case ASTTypes.AsExpression:
+        return this.printAsExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
+  }
+
+  /**
+   * Prints the expression of an AsExpression node
+   * @param {import("../parser/ast.js").AsExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printAsExpression(node, indent) {
+    return this.print(node.expression, indent);
   }
 
   /**
@@ -103,6 +117,19 @@ class ASTPrinter {
       i++;
     }
 
+    return prStr;
+  }
+
+  /**
+   * Prints ConstantDeclaration node
+   * @param {import("../parser/ast.js").ConstantDeclaration} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printConstantDeclaration(node, indent) {
+    let prStr = `${prIndent(indent)}ConstantDeclaration:\n`;
+    prStr += `${this.print(node.lhv, indent + 2)}\n`;
+    prStr += `${this.print(node.expression, indent + 2)}`;
     return prStr;
   }
 

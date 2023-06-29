@@ -2,6 +2,8 @@ import { TATypes } from "../parser/parseTypeAnnotation.js";
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { Exception } from "../shared/exceptions.js";
+import { TokenTypes } from "../lexer/TokenTypes.js";
+import { fail } from "../shared/fail.js";
 
 /**
  * Constructs a concrete type from a type annotation node
@@ -27,6 +29,10 @@ export const fromTypeAnnotation = (
       return Type.keyword;
     case TATypes.NilLiteral:
       return Type.nil;
+    case TATypes.Never:
+      return Type.never;
+    case TATypes.Unknown:
+      return Type.unknown;
     case TATypes.Symbol: {
       const name = typeAnnotation.name;
       const type = typeEnv.getType(name);
@@ -60,6 +66,47 @@ export const fromTypeAnnotation = (
       );
       const retType = fromTypeAnnotation(typeAnnotation.retType, typeEnv);
       return Type.functionType(paramTypes, retType, typeAnnotation.variadic);
+    }
+    case TATypes.Tuple: {
+      /** @type {import("./types.js").Type[]} */
+      let types = [];
+
+      for (let mem of typeAnnotation.types) {
+        types.push(fromTypeAnnotation(mem, typeEnv));
+      }
+
+      return Type.tuple(types);
+    }
+    case TATypes.Singleton: {
+      const tType = typeAnnotation.token.type;
+      const base =
+        tType === TokenTypes.Number
+          ? "Number"
+          : tType === TokenTypes.String
+          ? "String"
+          : tType === TokenTypes.Boolean
+          ? "Boolean"
+          : TokenTypes.Keyword
+          ? "Keyword"
+          : fail(
+              `Invalid token type ${tType} when parsing type annotation ${JSON.stringify(
+                typeAnnotation,
+                null,
+                2
+              )}`
+            );
+      const value = typeAnnotation.token.value;
+
+      return Type.singleton(base, value);
+    }
+    case TATypes.Union:
+      return Type.union(
+        ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
+      );
+    case TATypes.Intersection: {
+      return Type.intersection(
+        ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
+      );
     }
     default:
       throw new Exception(

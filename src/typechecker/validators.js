@@ -107,3 +107,57 @@ export const isObject = (type) => {
 export const isUndefined = (type) => {
   return type.kind === TypeTypes.Undefined;
 };
+
+/**
+ * Checks if current type is a tuple
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isTuple = (type) => {
+  return type.kind === TypeTypes.Tuple;
+};
+
+/**
+ * Checks if current type is a singleton
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isSingleton = (type) => {
+  return type.kind === TypeTypes.Singleton;
+};
+
+/**
+ * Checks if current type is a never
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isNever = (type) => {
+  return type.kind === TypeTypes.Never;
+};
+
+/**
+ * Checks if current type is a union
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isUnion = (type) => {
+  return type.kind === TypeTypes.Union;
+};
+
+/**
+ * Checks if current type is unknown
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isUnknown = (type) => {
+  return type.kind === TypeTypes.Unknown;
+};
+
+/**
+ * Checks if current type is an intersection
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isIntersection = (type) => {
+  return type.kind === TypeTypes.Intersection;
+};

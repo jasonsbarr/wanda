@@ -144,3 +144,14 @@ export class Cons extends Array {
 }
 
 export const cons = (car, cdr) => new Cons(car, cdr);
+
+export const isList = (obj) => {
+  if (obj != null && obj.constructor?.name !== "Cons") {
+    return false;
+  } else if (obj == null) {
+    return true;
+  }
+
+  // only option left is cons
+  return isList(obj.cdr);
+};

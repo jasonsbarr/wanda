@@ -1,5 +1,4 @@
-import { makeFunction } from "./makeFunction.js";
-import { hasDict, hasMetaField, makeObject } from "./object.js";
+import { hasDict, addMetaField, makeObject } from "./object.js";
 import { makeKeyword } from "./utils.js";
 
 /**

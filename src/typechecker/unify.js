@@ -14,7 +14,7 @@ export const unify = (type1, type2) => {
     return type1;
   }
 
-  return null;
+  return Type.unknown;
 };
 
 /**
@@ -24,8 +24,7 @@ export const unify = (type1, type2) => {
  */
 export const unifyAll = (...types) => {
   return types.reduce((unified, type) => {
-    if (unified === null) return null;
-    if (Type.isAny(unified)) return unified;
+    if (Type.isUnknown(unified) || Type.isAny(unified)) return unified;
 
     return unify(unified, type);
   });

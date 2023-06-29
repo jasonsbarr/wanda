@@ -4,7 +4,7 @@ import { makeWandaValue } from "./conversion.js";
 import { addMetaField } from "./object.js";
 import { parseContract } from "./parseContract.js";
 
-export const makeFunction = (func, { contract = "" } = {}) => {
+export const makeFunction = (func, { contract = "", name = "" } = {}) => {
   let fn = curryN(func.length, (...args) => {
     const val = makeWandaValue(func(...args));
 
@@ -18,7 +18,7 @@ export const makeFunction = (func, { contract = "" } = {}) => {
 
   addMetaField(fn, "wanda", true);
   addMetaField(fn, "arity", func.length);
-  addMetaField(fn, "name", hash);
+  addMetaField(fn, "name", name || hash);
 
   if (contract !== "") {
     Object.defineProperty(fn, "contract", {
@@ -33,7 +33,7 @@ export const makeFunction = (func, { contract = "" } = {}) => {
     enumerable: false,
     configurable: false,
     writable: false,
-    value: hash,
+    value: name || hash,
   });
 
   return fn;
