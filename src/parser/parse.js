@@ -429,6 +429,20 @@ const parseCondExpression = (form) => {
 };
 
 /**
+ * Parses a when expression
+ * @param {List} form
+ * @returns {import("./ast.js").WhenExpression}
+ */
+const parseWhenExpression = (form) => {
+  const [_, test, ...body] = form;
+  const srcloc = form.srcloc;
+  const parsedTest = parseExpr(test);
+  const parsedBody = body.map(parseExpr);
+
+  return AST.WhenExpression(parsedTest, parsedBody, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -453,6 +467,8 @@ const parseList = (form) => {
       return parseIfExpression(form);
     case "cond":
       return parseCondExpression(form);
+    case "when":
+      return parseWhenExpression(form);
     default:
       return parseCall(form);
   }
