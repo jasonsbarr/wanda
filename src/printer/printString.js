@@ -58,6 +58,7 @@ const printList = (list) => {
   };
 
   let prStr = printListElems(list);
+  // if it's a list, get rid of the extra space at the end
   prStr = isList(list) ? prStr.slice(0, -1) : prStr;
   return "(" + prStr + ")";
 };
