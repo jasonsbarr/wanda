@@ -131,7 +131,7 @@ export const ASTTypes = {
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression} AST
  */
 export const AST = {
   /**
