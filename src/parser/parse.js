@@ -1,5 +1,5 @@
 import { TokenTypes } from "../lexer/TokenTypes.js";
-import { SyntaxException } from "../shared/exceptions.js";
+import { Exception, SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
 import { Cons, cons } from "../shared/cons.js";
 import { AST, ASTTypes } from "./ast.js";
@@ -389,6 +389,46 @@ const parseIfExpression = (form) => {
 };
 
 /**
+ * Parses a cond expression
+ * @param {List} form
+ * @returns {import("./ast.js").CondExpression}
+ */
+const parseCondExpression = (form) => {
+  const [_, ...clauses] = form;
+  const srcloc = form.srcloc;
+  /** @type {import("./ast.js").CondClause[]} */
+  const parsedClauses = [];
+  let hasElse = false;
+
+  for (let clause of clauses) {
+    const [test, expr] = clause;
+
+    if (test.type === TokenTypes.Keyword && test.value === ":else") {
+      hasElse = true;
+      break;
+    }
+
+    const parsedTest = parseExpr(test);
+    const parsedExpr = parseExpr(expr);
+
+    parsedClauses.push({ test: parsedTest, expression: parsedExpr });
+  }
+
+  if (!hasElse) {
+    throw new Exception(
+      `Cond expression expects an :else clause; none given at ${srcloc.file}, (${srcloc.line}:${srcloc.col})`
+    );
+  }
+
+  /** @type {Cons} */
+  const elseClause = clauses[clauses.length - 1];
+  // we need the first element of the tail of the else clause
+  const parsedElse = parseExpr(elseClause.cdr.car);
+
+  return AST.CondExpression(parsedClauses, parsedElse, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -411,6 +451,8 @@ const parseList = (form) => {
       return parseLambdaExpression(form);
     case "if":
       return parseIfExpression(form);
+    case "cond":
+      return parseCondExpression(form);
     default:
       return parseCall(form);
   }
