@@ -7,6 +7,7 @@ import { getAliasBase } from "./utils.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 import { unifyAll } from "./unify.js";
 import { propType } from "./propType.js";
+import { type } from "ramda";
 
 /**
  * Infers a type from an AST node
@@ -134,7 +135,10 @@ const inferCallExpression = (node, env, constant) => {
 
   if (Type.isAny(func)) {
     return Type.any;
-  } else if (Type.isUndefined(func) || Type.isUndefined(func.ret)) {
+  } else if (
+    Type.isUndefined(func) ||
+    (type.ret && Type.isUndefined(func.ret))
+  ) {
     // this should only happen during first typechecker pass
     return Type.undefinedType;
   } else if (Type.isTypeAlias(func)) {
