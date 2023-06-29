@@ -374,6 +374,21 @@ const parseConstantDeclaration = (form) => {
 };
 
 /**
+ * Parses an if expression
+ * @param {List} form
+ * @returns {import("./ast.js").IfExpression}
+ */
+const parseIfExpression = (form) => {
+  const [_, test, then, elseBranch] = form;
+  const srcloc = form.srcloc;
+  const parsedTest = parseExpr(test);
+  const parsedThen = parseExpr(then);
+  const parsedElse = parseExpr(elseBranch);
+
+  return AST.IfExpression(parsedTest, parsedThen, parsedElse, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -394,6 +409,8 @@ const parseList = (form) => {
       return parseMaybeFunctionDeclaration(form);
     case "fn":
       return parseLambdaExpression(form);
+    case "if":
+      return parseIfExpression(form);
     default:
       return parseCall(form);
   }
