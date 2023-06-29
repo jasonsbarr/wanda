@@ -116,7 +116,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.IfExpression; test: AST; then: AST; else: AST}} IfExpression
  */
 /**
- * @typedef {test: AST; expression: AST} CondClause
+ * @typedef {{test: AST; expression: AST}} CondClause
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.CondExpression; clauses: CondClause[]; else: AST}} CondExpression
