@@ -29,6 +29,9 @@ export const ASTTypes = {
   LambdaExpression: "LambdaExpression",
   AsExpression: "AsExpression",
   ConstantDeclaration: "ConstantDeclaration",
+  IfExpression: "IfExpression",
+  CondExpression: "CondExpression",
+  WhenExpression: "WhenExpression",
 };
 
 /**
@@ -108,6 +111,18 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.AsExpression; expression: AST; type: import("./parseTypeAnnotation.js").TypeAnnotation;}} AsExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.IfExpression; test: AST; then: AST; else: AST}} IfExpression
+ */
+/**
+ * @typedef {test: AST; expression: AST} CondClause
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.CondExpression; clauses: CondClause[]; else: AST}} CondExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.WhenExpression; test: AST; body: AST[]}} WhenExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -435,6 +450,53 @@ export const AST = {
       expression,
       srcloc,
       typeAnnotation,
+    };
+  },
+  /**
+   * Constructs an IfExpression AST node
+   * @param {AST} test
+   * @param {AST} then
+   * @param {AST} elseBranch
+   * @param {SrcLoc} srcloc
+   * @returns {IfExpression}
+   */
+  IfExpression(test, then, elseBranch, srcloc) {
+    return {
+      kind: ASTTypes.IfExpression,
+      test,
+      then,
+      else: elseBranch,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a CondExpression AST node
+   * @param {CondClause[]} clauses
+   * @param {AST} elseBranch
+   * @param {SrcLoc} srcloc
+   * @returns {CondExpression}
+   */
+  CondExpression(clauses, elseBranch, srcloc) {
+    return {
+      kind: ASTTypes.CondExpression,
+      clauses,
+      else: elseBranch,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a WhenExpression AST node
+   * @param {AST} test
+   * @param {AST[]} body
+   * @param {SrcLoc} srcloc
+   * @returns {WhenExpression}
+   */
+  WhenExpression(test, body, srcloc) {
+    return {
+      kind: ASTTypes.WhenExpression,
+      test,
+      body,
+      srcloc,
     };
   },
 };
