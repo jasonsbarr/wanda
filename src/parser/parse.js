@@ -400,6 +400,12 @@ const parseCondExpression = (form) => {
   const parsedClauses = [];
   let hasElse = false;
 
+  if (!(clauses.length >= 2)) {
+    throw new Exception(
+      `Cond expression must have at least 2 clauses; ${clauses.length} given at ${srcloc.file}, (${srcloc.line}:${srcloc.col})`
+    );
+  }
+
   for (let clause of clauses) {
     const [test, expr] = clause;
 
