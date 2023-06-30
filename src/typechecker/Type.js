@@ -5,6 +5,7 @@ import { typeToString } from "./typeToString.js";
 import { union } from "./union.js";
 import { map } from "./map.js";
 import { intersection } from "./intersection.js";
+import { isTruthy, isFalsy, truthy, falsy } from "./utils.js";
 
 export const Type = {
   Type: TypeTypes,
@@ -14,4 +15,8 @@ export const Type = {
   union,
   map,
   intersection,
+  isTruthy,
+  isFalsy,
+  truthy,
+  falsy,
 };

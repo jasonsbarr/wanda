@@ -1,6 +1,9 @@
 import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
+import { nil, not, singleton } from "./constructors.js";
+import { intersection } from "./intersection.js";
 import { TypeTypes } from "./types.js";
+import { union } from "./union.js";
 
 /**
  * Gets the base type of a type alias
@@ -57,3 +60,10 @@ export const isFalsy = (type) => {
       }
   }
 };
+
+export const falsy = union(singleton("Boolean", "false"), nil);
+
+export const truthy = intersection(
+  not(singleton("Boolean", "false")),
+  not(nil)
+);
