@@ -122,6 +122,7 @@ export const TypeTypes = {
 /**
  * @typedef Not
  * @prop {TypeTypes.Not} kind
+ * @prop {Type} base
  */
 /**
  * @typedef {Number|String|Boolean|Keyword|Nil|Undefined} PrimitiveType
