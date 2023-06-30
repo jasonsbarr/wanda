@@ -32,6 +32,7 @@ export const ASTTypes = {
   IfExpression: "IfExpression",
   CondExpression: "CondExpression",
   WhenExpression: "WhenExpression",
+  BinaryExpression: "BinaryExpression",
   LogicalExpression: "LogicalExpression",
   UnaryExpression: "UnaryExpression",
 };
@@ -125,6 +126,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.WhenExpression; test: AST; body: AST[]}} WhenExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.BinaryExpression; left: AST; op: "equal?"|"not-equal?"; right: AST}} BinaryExpression
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.LogicalExpression; left: AST; op: "and"|"or"; right: AST}} LogicalExpression
@@ -507,7 +511,23 @@ export const AST = {
       srcloc,
     };
   },
-
+  /**
+   * Constructs a BinaryExpression AST node
+   * @param {AST*} left : ;
+   * @param {"equal?"|"not-equal?"} op
+   * @param {AST} right
+   * @param {SrcLoc} srcloc
+   * @returns {BinaryExpression}
+   */
+  BinaryExpression(left, op, right, srcloc) {
+    return {
+      kind: ASTTypes.BinaryExpression,
+      left,
+      op,
+      right,
+      srcloc,
+    };
+  },
   /**
    * Constructs a LogicalExpression AST node
    * @param {AST} left
