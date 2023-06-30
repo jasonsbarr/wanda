@@ -26,9 +26,52 @@ export class Desugarer extends Visitor {
   }
 
   /**
+   *
+   * @param {import("../parser/ast.js").CondExpression & {type: import(".node./typechecker/types.js").Type}} node
+   * @returns {import("../parser/ast.js").CondExpression & {type: import(".node./typechecker/types.js").Type}}
+   */
+  visitCondExpression(node) {
+    const srcloc = node.srcloc;
+
+    /**
+     * Recursive helper to construct IfExpression from CondExpression
+     * @param {import("../parser/ast.js").CondClause[]} clauses
+     * @param {import("../parser/ast.js").IfExpression} accum
+     */
+    const condVisitHelper = (clauses, accum = null) => {
+      if (accum && clauses.length > 1) {
+        const clause = clauses[0];
+        accum = AST.IfExpression(
+          clause.test,
+          clause.expression,
+          condVisitHelper(clauses.slice(1), accum),
+          srcloc
+        );
+
+        return accum;
+      } else if (clauses.length === 1) {
+        const clause = clauses[0];
+        const elseBranch = node.else;
+
+        return AST.IfExpression(
+          clause.test,
+          clause.expression,
+          elseBranch,
+          srcloc
+        );
+      } else {
+        // accum is null, clauses must have at least one clause in it
+        return condVisitHelper(clauses, {});
+      }
+    };
+
+    return condVisitHelper(node.clauses);
+  }
+
+  /**
    * Desugars a ConstantDeclaration node into a VariableDeclaration
-   * @param {import("../parser/ast.js").ConstantDeclaration && {type: import("../typechecker/types.js").Type}} node
-   * @returns {import("../parser/ast.js").ConstantDeclaration && {type: import("../typechecker/types.js").Type}} node
+   * @param {import("../parser/ast.js").ConstantDeclaration & {type: import("../typechecker/types.js").Type}} node
+   * @returns {import("../parser/ast.js").ConstantDeclaration & {type: import("../typechecker/types.js").Type}}
    */
   visitConstantDeclaration(node) {
     return { ...node, kind: ASTTypes.VariableDeclaration };
