@@ -45,7 +45,11 @@ export const check = (ast, type, env) => {
   }
 
   if (ast.kind === ASTTypes.IfExpression) {
-    return checkConditionalExpression(ast, type, env);
+    return checkIfExpression(ast, type, env);
+  }
+
+  if (ast.kind === ASTTypes.CondExpression) {
+    return checkCondExpression(ast, type, env);
   }
 
   const inferredType = infer(ast, env);
@@ -191,7 +195,7 @@ const checkUnion = (ast, type, env) => {
  * @param {import("./types").Type} type
  * @param {TypeEnvironment} env
  */
-const checkConditionalExpression = (ast, type, env) => {
+const checkIfExpression = (ast, type, env) => {
   const test = infer(ast.test, env);
   const consequent = () => check(ast.then, type, narrow(ast.test, env, true));
   const alternate = () => check(ast.else, type, narrow(ast.test, env, false));
@@ -204,4 +208,24 @@ const checkConditionalExpression = (ast, type, env) => {
     consequent();
     alternate();
   }
+};
+
+/**
+ * Checks a cond expression against a type
+ * @param {import("../parser/ast.js").CondExpression} ast
+ * @param {import("./types").Type} type
+ * @param {TypeEnvironment} env
+ */
+const checkCondExpression = (ast, type, env) => {
+  for (let clause of ast.clauses) {
+    const test = infer(clause.test, env);
+    check(clause.expression, type, narrow(ast.test, env, true));
+
+    if (Type.isTruthy(test)) {
+      // we can stop here if test is truthy
+      return;
+    }
+  }
+
+  check(ast.else, type, env);
 };
