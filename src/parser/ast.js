@@ -32,6 +32,7 @@ export const ASTTypes = {
   IfExpression: "IfExpression",
   CondExpression: "CondExpression",
   WhenExpression: "WhenExpression",
+  LogicalExpression: "LogicalExpression",
 };
 
 /**
@@ -125,13 +126,16 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.WhenExpression; test: AST; body: AST[]}} WhenExpression
  */
 /**
+ * @typedef {ASTNode & {kind: ASTTypes.LogicalExpression; left: AST; op: "and"|"or"; right: AST}} LogicalExpression
+ */
+/**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression|LogicalExpression} AST
  */
 export const AST = {
   /**
@@ -496,6 +500,24 @@ export const AST = {
       kind: ASTTypes.WhenExpression,
       test,
       body,
+      srcloc,
+    };
+  },
+
+  /**
+   * Constructs a LogicalExpression AST node
+   * @param {AST} left
+   * @param {"and"|"or"} op
+   * @param {AST} right
+   * @param {SrcLoc} srcloc
+   * @returns {LogicalExpression}
+   */
+  LogicalExpression(left, op, right, srcloc) {
+    return {
+      kind: ASTTypes.LogicalExpression,
+      left,
+      op,
+      right,
       srcloc,
     };
   },

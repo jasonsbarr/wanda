@@ -443,6 +443,20 @@ const parseWhenExpression = (form) => {
 };
 
 /**
+ * Parses a logical expression (and, or)
+ * @param {List} form
+ * @returns {import("./ast.js").LogicalExpression}
+ */
+const parseLogicalExpression = (form) => {
+  const [op, left, right] = form;
+  const srcloc = form.srcloc;
+  const parsedLeft = parseExpr(left);
+  const parsedRight = parseExpr(right);
+
+  return AST.LogicalExpression(parsedLeft, op.value, parsedRight, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -469,6 +483,9 @@ const parseList = (form) => {
       return parseCondExpression(form);
     case "when":
       return parseWhenExpression(form);
+    case "and":
+    case "or":
+      return parseLogicalExpression(form);
     default:
       return parseCall(form);
   }
