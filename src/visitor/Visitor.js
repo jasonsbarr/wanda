@@ -218,6 +218,18 @@ export class Visitor {
   }
 
   /**
+   * LogicalExpression node visitor
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @returns {import("../parser/ast.js").LogicalExpression}
+   */
+  visitLogicalExpression(node) {
+    const left = this.visit(node.left);
+    const right = this.visit(node.right);
+
+    return { ...node, left, right };
+  }
+
+  /**
    * MemberExpression node visitor
    * @param {import("../reader/read").MemberExpression} node
    * @returns {import("../parser/ast").MemberExpression}
@@ -323,6 +335,16 @@ export class Visitor {
    */
   visitTypeAlias(node) {
     return node;
+  }
+
+  /**
+   * UnaryExpression node visitor
+   * @param {import("../parser/ast.js").UnaryExpression} node
+   * @returns {import("../parser/ast.js").UnaryExpression}
+   */
+  visitUnaryExpression(node) {
+    const operand = this.visit(node.operand);
+    return { ...node, operand };
   }
 
   /**
