@@ -5,6 +5,7 @@ import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { infer } from "./infer.js";
 import { isSubtype } from "./isSubtype.js";
+import { narrow } from "./narrow.js";
 import { propType } from "./propType.js";
 
 /**
@@ -41,6 +42,10 @@ export const check = (ast, type, env) => {
   if (Type.isSingleton(type) && isPrimitive(ast) && ast.value === type.value) {
     // primitive matches singleton type
     return;
+  }
+
+  if (ast.kind === ASTTypes.IfExpression) {
+    return checkConditionalExpression(ast, type, env);
   }
 
   const inferredType = infer(ast, env);
@@ -177,5 +182,26 @@ const checkUnion = (ast, type, env) => {
       )} is not a valid subtype of ${Type.toString(type)}`,
       ast.srcloc
     );
+  }
+};
+
+/**
+ * Checks an if expression against a type
+ * @param {import("../parser/ast.js").IfExpression} ast
+ * @param {import("./types").Type} type
+ * @param {TypeEnvironment} env
+ */
+const checkConditionalExpression = (ast, type, env) => {
+  const test = infer(ast.test, env);
+  const consequent = () => check(ast.then, type, narrow(ast.test, env, true));
+  const alternate = () => check(ast.else, type, narrow(ast.test, env, false));
+
+  if (Type.isTruthy(test)) {
+    consequent();
+  } else if (Type.isFalsy(test)) {
+    alternate();
+  } else {
+    consequent();
+    alternate();
   }
 };
