@@ -127,3 +127,8 @@ export const never = { kind: TypeTypes.Never };
  * Unknown type constructor
  */
 export const unknown = { kind: TypeTypes.Unknown };
+
+/**
+ * Not type constructor
+ */
+export const not = { kind: TypeTypes.Not };

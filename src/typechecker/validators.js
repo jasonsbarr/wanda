@@ -161,3 +161,12 @@ export const isUnknown = (type) => {
 export const isIntersection = (type) => {
   return type.kind === TypeTypes.Intersection;
 };
+
+/**
+ * Checks if current type is a negation type
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isNot = (type) => {
+  return type.kind === TypeTypes.Not;
+};
