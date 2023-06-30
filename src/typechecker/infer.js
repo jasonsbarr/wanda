@@ -465,7 +465,35 @@ const inferWhenExpression = (node, env, constant) => {};
 
 const inferCondExpression = (node, env, constant) => {};
 
-const inferUnaryExpression = (node, env, constant) => {};
+/**
+ * Infers a type from a unary expression
+ * @param {import("../parser/ast.js").UnaryExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferUnaryExpression = (node, env, constant) => {
+  const operand = infer(node.operand, env, constant);
+
+  return Type.map(operand, (operand) => {
+    switch (node.op) {
+      case "not":
+        if (Type.isTruthy(operand)) {
+          return Type.singleton("Boolean", "false");
+        } else if (Type.isFalsy(operand)) {
+          return Type.singleton("Boolean", true);
+        } else {
+          return Type.boolean;
+        }
+
+      case "typeof":
+        return Type.string;
+
+      default:
+        throw new Exception(`Unknown unary operator ${node.op}`);
+    }
+  });
+};
 
 /**
  * Infers a type from a binary expression
