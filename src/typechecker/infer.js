@@ -8,7 +8,7 @@ import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
 import { unify, unifyAll } from "./unify.js";
 import { propType } from "./propType.js";
 import { type } from "ramda";
-import { narrow } from "./narrow.js";
+import { narrow, narrowType } from "./narrow.js";
 
 /**
  * Infers a type from an AST node
@@ -500,4 +500,37 @@ const inferBinaryExpression = (node, env, constant) => {
   });
 };
 
-const inferLogicalExpression = (node, env, constant) => {};
+/**
+ * Infers a type from a logical expression
+ * @param {import("../parser/ast.js").LogicalExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferLogicalExpression = (node, env, constant) => {
+  const left = infer(node.left, env, constant);
+  const right = () => infer(node.right, env, constant);
+
+  switch (node.op) {
+    case "and":
+      if (Type.isFalsy(left)) {
+        return left;
+      } else if (Type.isTruthy(left)) {
+        return right();
+      } else {
+        return unify(narrowType(left, Type.falsy), right());
+      }
+
+    case "or":
+      if (Type.isTruthy(left)) {
+        return left;
+      } else if (Type.isFalsy(left)) {
+        return right();
+      } else {
+        return unify(narrowType(left, Type.truthy), right());
+      }
+
+    default:
+      throw new Exception(`Unknown logical operator ${node.op}`);
+  }
+};

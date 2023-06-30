@@ -245,7 +245,7 @@ const narrowPathUnary = (ast, env, type) => {
  * @param {import("./types").Type} y
  * @returns {import("./types").Type}
  */
-const narrowType = (x, y) => {
+export const narrowType = (x, y) => {
   if (Type.isAny(x) || Type.isAny(y)) return Type.any;
   if (Type.isUndefined(x) && Type.isUndefined(y)) return Type.undefinedType;
   if (Type.isUndefined(x)) return widenNots(y);
