@@ -449,8 +449,8 @@ const inferAsExpression = (node, env, constant) => {
  */
 const inferIfExpression = (node, env, constant) => {
   const test = infer(node.test, env, constant);
-  const consequent = () => infer(narrow(node.test, env, true), node.then);
-  const alternate = () => infer(narrow(node.test, env, false), node.else);
+  const consequent = () => infer(node.then, narrow(node.test, env, true));
+  const alternate = () => infer(node.else, narrow(node.test, env, false));
 
   if (Type.isTruthy(test)) {
     return consequent();
@@ -461,7 +461,25 @@ const inferIfExpression = (node, env, constant) => {
   }
 };
 
-const inferWhenExpression = (node, env, constant) => {};
+/**
+ * Infers a type from a when expression
+ * @param {import("../parser/ast.js").WhenExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Nil}
+ */
+const inferWhenExpression = (node, env, constant) => {
+  const test = infer(node.test, env, constant);
+
+  if (!Type.isFalsy(test)) {
+    // check expressions in body
+    for (let expr of node.body) {
+      infer(expr, env, constant);
+    }
+  }
+
+  return Type.nil;
+};
 
 /**
  * Infers a type from a cond expression
@@ -476,7 +494,11 @@ const inferCondExpression = (node, env, constant) => {
 
   for (let clause of node.clauses) {
     const test = infer(clause.test, env, constant);
-    const type = infer(narrow(clause.test, env, true));
+    const type = infer(
+      clause.expression,
+      narrow(clause.test, env, true),
+      constant
+    );
 
     if (Type.isTruthy(test)) {
       // the first truthy condition type will trigger the clause's expression
