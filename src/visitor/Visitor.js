@@ -95,6 +95,18 @@ export class Visitor {
   }
 
   /**
+   * Visits a BinaryExpression node
+   * @param {import("../parser/ast.js").BinaryExpression} node
+   * @returns {import("../parser/ast.js").BinaryExpression}
+   */
+  visitBinaryExpression(node) {
+    const left = this.visit(node.left);
+    const right = this.visit(node.right);
+
+    return { ...node, left, right };
+  }
+
+  /**
    * BooleanLiteral node visitor
    * @param {import("../parser/ast").BooleanLiteral} node
    * @returns {import("../parser/ast").BooleanLiteral}
