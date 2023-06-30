@@ -463,7 +463,33 @@ const inferIfExpression = (node, env, constant) => {
 
 const inferWhenExpression = (node, env, constant) => {};
 
-const inferCondExpression = (node, env, constant) => {};
+/**
+ * Infers a type from a cond expression
+ * @param {import("../parser/ast.js").CondExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferCondExpression = (node, env, constant) => {
+  /** @type {import("./types").Type[]} */
+  let types = [];
+
+  for (let clause of node.clauses) {
+    const test = infer(clause.test, env, constant);
+    const type = infer(narrow(clause.test, env, true));
+
+    if (Type.isTruthy(test)) {
+      // the first truthy condition type will trigger the clause's expression
+      return type;
+    }
+
+    types.push(type);
+  }
+
+  const elseType = infer(node.else, env, constant);
+
+  return unifyAll([...types, elseType]);
+};
 
 /**
  * Infers a type from a unary expression
