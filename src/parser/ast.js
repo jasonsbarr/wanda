@@ -33,6 +33,7 @@ export const ASTTypes = {
   CondExpression: "CondExpression",
   WhenExpression: "WhenExpression",
   LogicalExpression: "LogicalExpression",
+  UnaryExpression: "UnaryExpression",
 };
 
 /**
@@ -129,13 +130,16 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.LogicalExpression; left: AST; op: "and"|"or"; right: AST}} LogicalExpression
  */
 /**
+ * @typedef {ASTNode & {kind: ASTTypes.UnaryExpression; op: "typeof"|"not"; operand: AST}} UnaryExpression
+ */
+/**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression|LogicalExpression} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression|LogicalExpression|UnaryExpression} AST
  */
 export const AST = {
   /**
@@ -518,6 +522,20 @@ export const AST = {
       left,
       op,
       right,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a UnaryExpression AST node
+   * @param {"typeof"|"not"} op
+   * @param {AST} operand
+   * @param {SrcLoc} srcloc
+   */
+  UnaryExpression(op, operand, srcloc) {
+    return {
+      kind: ASTTypes.UnaryExpression,
+      op,
+      operand,
       srcloc,
     };
   },

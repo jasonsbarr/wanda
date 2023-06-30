@@ -457,6 +457,19 @@ const parseLogicalExpression = (form) => {
 };
 
 /**
+ * Parses a unary expression (typeof, not) for typechecking purposes only
+ * @param {List} form
+ * @returns {import("./ast.js").UnaryExpression}
+ */
+const parseUnaryExpression = (form) => {
+  const [op, operand] = form;
+  const srcloc = form.srcloc;
+  const parsedOperand = parseExpr(operand);
+
+  return AST.UnaryExpression(op.value, parsedOperand, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -486,6 +499,9 @@ const parseList = (form) => {
     case "and":
     case "or":
       return parseLogicalExpression(form);
+    case "typeof":
+    case "not":
+      return parseUnaryExpression(form);
     default:
       return parseCall(form);
   }
