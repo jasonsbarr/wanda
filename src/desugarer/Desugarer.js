@@ -1,3 +1,4 @@
+import { Token } from "../lexer/Token.js";
 import { AST, ASTTypes } from "../parser/ast.js";
 import { TATypes } from "../parser/parseTypeAnnotation.js";
 import { Visitor } from "../visitor/Visitor.js";
@@ -115,5 +116,20 @@ export class Desugarer extends Visitor {
 
     varDecl.type = type;
     return varDecl;
+  }
+
+  /**
+   *
+   * @param {import("../parser/ast.js").UnaryExpression & {type: import("../typechecker/types.js").Type}} node
+   * @returns {import("../parser/ast.js").UnaryExpression & {type: import("../typechecker/types.js").Type}}
+   */
+  visitUnaryExpression(node) {
+    const operand = this.visit(node.operand);
+
+    return AST.CallExpression(
+      AST.Symbol(Token.new("Symbol", node.op, node.srcloc)),
+      [operand],
+      node.srcloc
+    );
   }
 }
