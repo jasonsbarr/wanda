@@ -1,4 +1,5 @@
 import { Token } from "../lexer/Token.js";
+import { TokenTypes } from "../lexer/TokenTypes.js";
 import { AST, ASTTypes } from "../parser/ast.js";
 import { TATypes } from "../parser/parseTypeAnnotation.js";
 import { Visitor } from "../visitor/Visitor.js";
@@ -27,7 +28,20 @@ export class Desugarer extends Visitor {
   }
 
   /**
-   *
+   * Desugars a BinaryExpression into a CallExpression
+   * @param {import("../parser/ast.js").BinaryExpression & {type: import("../typechecker/types.js").Type}} node
+   * @returns {import("../parser/ast.js").BinaryExpression & {type: import("../typechecker/types.js").Type}}
+   */
+  visitBinaryExpression(node) {
+    const left = this.visit(node.left);
+    const right = this.visit(node.right);
+    const func = AST.Symbol(Token.new(TokenTypes.Symbol, node.op, node.srcloc));
+
+    return AST.CallExpression(func, [left, right], node.srcloc);
+  }
+
+  /**
+   * Desugars a CondExpression into nested IfExpressions
    * @param {import("../parser/ast.js").CondExpression & {type: import(".node./typechecker/types.js").Type}} node
    * @returns {import("../parser/ast.js").CondExpression & {type: import(".node./typechecker/types.js").Type}}
    */
@@ -124,7 +138,7 @@ export class Desugarer extends Visitor {
     const operand = this.visit(node.operand);
 
     return AST.CallExpression(
-      AST.Symbol(Token.new("Symbol", node.op, node.srcloc)),
+      AST.Symbol(Token.new(TokenTypes.Symbol, node.op, node.srcloc)),
       [operand],
       node.srcloc
     );
