@@ -54,6 +54,18 @@ export const infer = (ast, env, constant = false) => {
       return inferVariableDeclaration(ast, env, true);
     case ASTTypes.AsExpression:
       return inferAsExpression(ast, env, constant);
+    case ASTTypes.IfExpression:
+      return inferIfExpression(ast, env, constant);
+    case ASTTypes.WhenExpression:
+      return inferWhenExpression(ast, env, constant);
+    case ASTTypes.CondExpression:
+      return inferCondExpression(ast, env, constant);
+    case ASTTypes.UnaryExpression:
+      return inferUnaryExpression(ast, env, constant);
+    case ASTTypes.BinaryExpression:
+      return inferBinaryExpression(ast, env, constant);
+    case ASTTypes.LogicalExpression:
+      return inferLogicalExpression(ast, env, constant);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -426,3 +438,15 @@ const inferAsExpression = (node, env, constant) => {
 
   return type;
 };
+
+const inferIfExpression = (node, env, constant) => {};
+
+const inferWhenExpression = (node, env, constant) => {};
+
+const inferCondExpression = (node, env, constant) => {};
+
+const inferUnaryExpression = (node, env, constant) => {};
+
+const inferBinaryExpression = (node, env, constant) => {};
+
+const inferLogicalExpression = (node, env, constant) => {};
