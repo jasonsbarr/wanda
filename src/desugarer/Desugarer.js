@@ -39,8 +39,8 @@ export class Desugarer extends Visitor {
      * @param {import("../parser/ast.js").CondClause[]} clauses
      * @param {import("../parser/ast.js").IfExpression} accum
      */
-    const condVisitHelper = (clauses, accum = null) => {
-      if (accum && clauses.length > 1) {
+    const condVisitHelper = (clauses, accum) => {
+      if (clauses.length > 1) {
         const clause = clauses[0];
         accum = AST.IfExpression(
           clause.test,
@@ -60,13 +60,10 @@ export class Desugarer extends Visitor {
           elseBranch,
           srcloc
         );
-      } else {
-        // accum is null, clauses must have at least one clause in it
-        return condVisitHelper(clauses, {});
       }
     };
 
-    return condVisitHelper(node.clauses);
+    return condVisitHelper(node.clauses, {});
   }
 
   /**
