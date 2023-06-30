@@ -478,7 +478,26 @@ const inferBinaryExpression = (node, env, constant) => {
   const left = infer(node.left, env, constant);
   const right = infer(node.right, env, constant);
 
-  return Type.map();
+  return Type.map(left, right, (left, right) => {
+    switch (node.op) {
+      case "equal?":
+        if (Type.isSingleton(left) && Type.isSingleton(right)) {
+          return Type.singleton(left.value === right.value ? "true" : "false");
+        } else {
+          return Type.boolean;
+        }
+
+      case "not-equal?":
+        if (Type.isSingleton(left) && Type.isSingleton(right)) {
+          return Type.singleton(left.value !== right.value ? "true" : "false");
+        } else {
+          return Type.boolean;
+        }
+
+      default:
+        throw new Exception(`Unknown binary operator ${node.op}`);
+    }
+  });
 };
 
 const inferLogicalExpression = (node, env, constant) => {};
