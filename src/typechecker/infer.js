@@ -5,9 +5,10 @@ import { TypeEnvironment } from "./TypeEnvironment.js";
 import { isSubtype } from "./isSubtype.js";
 import { getAliasBase } from "./utils.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
-import { unifyAll } from "./unify.js";
+import { unify, unifyAll } from "./unify.js";
 import { propType } from "./propType.js";
 import { type } from "ramda";
+import { narrow } from "./narrow.js";
 
 /**
  * Infers a type from an AST node
@@ -439,7 +440,26 @@ const inferAsExpression = (node, env, constant) => {
   return type;
 };
 
-const inferIfExpression = (node, env, constant) => {};
+/**
+ * Infers a type from an if expression
+ * @param {import("../parser/ast.js").IfExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferIfExpression = (node, env, constant) => {
+  const test = infer(node.test, env, constant);
+  const consequent = () => infer(narrow(node.test, env, true), node.then);
+  const alternate = () => infer(narrow(node.test, env, false), node.else);
+
+  if (Type.isTruthy(test)) {
+    return consequent();
+  } else if (Type.isFalsy(test)) {
+    return alternate();
+  } else {
+    return unify(consequent(), alternate());
+  }
+};
 
 const inferWhenExpression = (node, env, constant) => {};
 
@@ -447,6 +467,18 @@ const inferCondExpression = (node, env, constant) => {};
 
 const inferUnaryExpression = (node, env, constant) => {};
 
-const inferBinaryExpression = (node, env, constant) => {};
+/**
+ * Infers a type from a binary expression
+ * @param {import("../parser/ast.js").BinaryExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferBinaryExpression = (node, env, constant) => {
+  const left = infer(node.left, env, constant);
+  const right = infer(node.right, env, constant);
+
+  return Type.map();
+};
 
 const inferLogicalExpression = (node, env, constant) => {};
