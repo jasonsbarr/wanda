@@ -81,6 +81,8 @@ export class Emitter {
         return this.emitVectorPattern(node, ns);
       case ASTTypes.LambdaExpression:
         return this.emitLambdaExpression(node, ns);
+      case ASTTypes.LogicalExpression:
+        return this.emitLogicalExpression(node, ns);
       case ASTTypes.IfExpression:
         return this.emitIfExpression(node, ns);
       default:
