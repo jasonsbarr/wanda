@@ -77,6 +77,8 @@ export class Emitter {
         return this.emitVectorPattern(node, ns);
       case ASTTypes.LambdaExpression:
         return this.emitLambdaExpression(node, ns);
+      case ASTTypes.IfExpression:
+        return this.emitIfExpression(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -126,6 +128,18 @@ export class Emitter {
 
     code += "})();";
     return code;
+  }
+
+  /**
+   * Generates code for an IfExpression AST node
+   * @param {import("../parser/ast.js").IfExpression} node
+   * @param {Namespace} ns
+   */
+  emitIfExpression(node, ns) {
+    return `rt.isTruthy(${this.emit(node.test, ns)}) ? ${this.emit(
+      node.then,
+      ns
+    )} : ${this.emit(node.else, ns)}`;
   }
 
   /**
