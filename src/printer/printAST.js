@@ -85,6 +85,8 @@ class ASTPrinter {
         return this.printIfExpression(node, indent);
       case ASTTypes.CondExpression:
         return this.printCondExpression(node, indent);
+      case ASTTypes.WhenExpression:
+        return this.printWhenExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
@@ -388,6 +390,25 @@ number} indent
    */
   printVectorPattern(node, indent) {
     return `${prIndent(indent)}${node.members.map((p) => p.name).join(", ")}`;
+  }
+
+  /**
+   * Prints a WhenExpression AST node
+   * @param {import("../parser/ast.js").WhenExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printWhenExpression(node, indent) {
+    let prStr = `${prIndent(indent)}WhenExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Test:\n`;
+    prStr += this.print(node.test, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Body:`;
+
+    for (let expr of node.body) {
+      prStr += this.print(expr, indent + 4) + "\n";
+    }
+
+    return prStr;
   }
 }
 
