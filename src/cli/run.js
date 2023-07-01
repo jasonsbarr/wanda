@@ -1,7 +1,6 @@
 import vm from "vm";
 import fs from "fs";
 import { join } from "path";
-import { Exception } from "../shared/exceptions.js";
 import { repl } from "./repl.js";
 import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
 import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
