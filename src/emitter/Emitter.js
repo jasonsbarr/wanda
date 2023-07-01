@@ -140,6 +140,7 @@ export class Emitter {
    * Generates code for an IfExpression AST node
    * @param {import("../parser/ast.js").IfExpression} node
    * @param {Namespace} ns
+   * @returns {string}
    */
   emitIfExpression(node, ns) {
     return `rt.isTruthy(${this.emit(node.test, ns)}) ? ${this.emit(
@@ -202,6 +203,7 @@ export class Emitter {
    * Generates code from a LogicalExpression AST node
    * @param {import("../parser/ast.js").LogicalExpression} node
    * @param {Namespace} ns
+   * @returns {string}
    */
   emitLogicalExpression(node, ns) {
     switch (node.op) {
@@ -220,6 +222,7 @@ export class Emitter {
    * Generates code from an and expression
    * @param {import("../parser/ast.js").LogicalExpression} node
    * @param {Namespace} ns
+   * @returns {string}
    */
   emitLogicalAnd(node, ns) {
     const left = this.emit(node.left, ns);
@@ -232,6 +235,7 @@ export class Emitter {
    * Generates code from an or expression
    * @param {import("../parser/ast.js").LogicalExpression} node
    * @param {Namespace} ns
+   * @returns {string}
    */
   emitLogicalOr(node, ns) {
     const left = this.emit(node.left, ns);
@@ -523,4 +527,12 @@ export class Emitter {
     code += "]";
     return code;
   }
+
+  /**
+   * Generates code from a WhenExpression node
+   * @param {import("../parser/ast.js").WhenExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitWhenExpression(node, ns) {}
 }
