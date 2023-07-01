@@ -87,6 +87,12 @@ class ASTPrinter {
         return this.printCondExpression(node, indent);
       case ASTTypes.WhenExpression:
         return this.printWhenExpression(node, indent);
+      case ASTTypes.BinaryExpression:
+        return this.printBinaryExpression(node, indent);
+      case ASTTypes.LogicalExpression:
+        return this.printLogicalExpression(node, indent);
+      case ASTTypes.UnaryExpression:
+        return this.printUnaryExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
@@ -100,6 +106,24 @@ class ASTPrinter {
    */
   printAsExpression(node, indent) {
     return this.print(node.expression, indent);
+  }
+
+  /**
+   * Prints a BinaryExpression AST node
+   * @param {import("../parser/ast.js").BinaryExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printBinaryExpression(node, indent) {
+    let prStr = `${prIndent(indent)}BinaryExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Left:\n`;
+    prStr += this.print(node.left, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Operator:\n`;
+    prStr += `${prIndent(indent + 4)}${node.op}\n`;
+    prStr += `${prIndent(indent + 2)}Right:\n`;
+    prStr += this.print(node.right, indent + 4) + "\n";
+
+    return prStr;
   }
 
   /**
@@ -246,6 +270,24 @@ class ASTPrinter {
   }
 
   /**
+   * Prints a LogicalExpression AST node
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printLogicalExpression(node, indent) {
+    let prStr = `${prIndent(indent)}LogicalExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Left:\n`;
+    prStr += this.print(node.left, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Operator:\n`;
+    prStr += `${prIndent(indent + 4)}${node.op}\n`;
+    prStr += `${prIndent(indent + 2)}Right:\n`;
+    prStr += this.print(node.right, indent + 4) + "\n";
+
+    return prStr;
+  }
+
+  /**
    * Prints a MemberExpression node
    * @param {import("../parser/ast.js").MemberExpression} node
    * @param {number} indent
@@ -350,6 +392,22 @@ class ASTPrinter {
    */
   printTypeAlias(node, indent) {
     return "";
+  }
+
+  /**
+   * Prints a UnaryExpression AST node
+   * @param {import("../parser/ast.js").UnaryExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printUnaryExpression(node, indent) {
+    let prStr = `${prIndent(indent)}UnaryExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Operator:\n`;
+    prStr += `${prIndent(indent + 4)}${node.op}\n`;
+    prStr += `${prIndent(indent + 2)}Operand:\n`;
+    prStr += this.print(node.operand, indent + 4) + "\n";
+
+    return prStr;
   }
 
   /**
