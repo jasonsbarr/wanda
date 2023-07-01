@@ -192,45 +192,6 @@ const narrowPathUnary = (ast, env, type) => {
     case "not":
       return env;
 
-    case "typeof":
-      if (Type.isSingleton(type)) {
-        switch (type.base) {
-          case "Boolean":
-            return narrowPath(ast.operand, env, Type.boolean);
-
-          case "Number":
-            return narrowPath(ast.operand, env, Type.number);
-
-          case "String":
-            return narrowPath(ast.operand, env, Type.string);
-
-          case "Keyword":
-            return narrowPath(ast.operand, env, Type.keyword);
-
-          default:
-            return env;
-        }
-      } else if (Type.isNot(type) && Type.isSingleton(type.base)) {
-        switch (type.base.base) {
-          case "Boolean":
-            return narrowPath(ast.operand, env, Type.boolean);
-
-          case "Number":
-            return narrowPath(ast.operand, env, Type.number);
-
-          case "String":
-            return narrowPath(ast.operand, env, Type.string);
-
-          case "Keyword":
-            return narrowPath(ast.operand, env, Type.keyword);
-
-          default:
-            return env;
-        }
-      } else {
-        return env;
-      }
-
     default:
       throw new Exception(`Unknown unary operator ${ast.op}`);
   }
