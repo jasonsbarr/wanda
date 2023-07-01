@@ -11,7 +11,8 @@ import { emitGlobalEnv } from "../src/emitter/emitGlobalEnv.js";
 import { Exception } from "../src/shared/exceptions.js";
 
 if (!process.argv[2]) {
-  throw new Exception(`wandac requires either a file path or command argument`);
+  console.log(`wandac requires either a file path or command argument`);
+  process.exit(1);
 }
 
 switch (process.argv[2]) {
