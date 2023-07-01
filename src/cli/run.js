@@ -21,8 +21,7 @@ export const run = () => {
       break;
     case undefined:
     case "repl":
-      repl();
-      break;
+      return repl();
     case "run":
       if (!process.argv[3]) {
         console.log(`run command requires file path as argument`);
