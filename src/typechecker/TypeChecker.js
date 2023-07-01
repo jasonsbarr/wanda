@@ -97,6 +97,14 @@ export class TypeChecker {
         return this.checkConstantDeclaration(node, env);
       case ASTTypes.AsExpression:
         return this.checkAsExpression(node, env);
+      case ASTTypes.UnaryExpression:
+        return this.checkUnaryExpression(node, env);
+      case ASTTypes.BinaryExpression:
+        return this.checkBinaryExpression(node, env);
+      case ASTTypes.LogicalExpression:
+        return this.checkLogicalExpression(node, env);
+      case ASTTypes.CondExpression:
+        return this.checkCondExpression(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
@@ -112,6 +120,18 @@ export class TypeChecker {
     env.checkingOn = true;
     const type = infer(node, env);
     return { ...node.expression, type };
+  }
+
+  /**
+   * Type checks a binary expression
+   * @param {import("../parser/ast.js").BinaryExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkBinaryExpression(node, env) {
+    const left = this.checkNode(node.left, env);
+    const right = this.checkNode(node.right, env);
+    return { ...node, left, right, type: infer(node, env) };
   }
 
   /**
@@ -139,6 +159,28 @@ export class TypeChecker {
     }
 
     return { ...node, type };
+  }
+
+  /**
+   * Type checks a cond expression
+   * @param {import("../parser/ast.js").CondExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkCondExpression(node, env) {
+    /** @type {TypedAST[]} */
+    let clauses = [];
+
+    for (let clause of node.clauses) {
+      const test = this.checkNode(clause.test, env);
+      const expression = this.checkNode(clause.expression, env);
+
+      clauses.push({ test, expression });
+    }
+
+    const elseBranch = this.checkNode(node.else, env);
+
+    return { ...node, clauses, else: elseBranch, type: infer(node, env) };
   }
 
   /**
@@ -204,6 +246,20 @@ export class TypeChecker {
   }
 
   /**
+   * Type checks an if expression
+   * @param {import("../parser/ast.js").IfExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkIfExpression(node, env) {
+    const test = this.checkNode(node.test, env);
+    const then = this.checkNode(node.then, env);
+    const elseBranch = this.checkNode(node.else, env);
+
+    return { ...node, test, then, else: elseBranch, type: infer(node, env) };
+  }
+
+  /**
    * Type checks a keyword literal
    * @param {import("../parser/ast").KeywordLiteral} node
    * @param {TypeEnvironment} env
@@ -233,6 +289,18 @@ export class TypeChecker {
     }
 
     return { ...node, type };
+  }
+
+  /**
+   * Type checks a logical expression
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkLogicalExpression(node, env) {
+    const left = this.checkNode(node.left, env);
+    const right = this.checkNode(node.right, env);
+    return { ...node, left, right, type: infer(node, env) };
   }
 
   checkMemberExpression(node, env) {
@@ -396,6 +464,17 @@ export class TypeChecker {
   }
 
   /**
+   * Type checks a unary expression
+   * @param {import("../parser/ast.js").UnaryExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkUnaryExpression(node, env) {
+    const operand = this.checkNode(node.operand, env);
+    return { ...node, operand, type: infer(node, env) };
+  }
+
+  /**
    * Type checks a variable declaration
    * @param {import("../parser/ast.js").VariableDeclaration} node
    * @param {TypeEnvironment} env
@@ -505,5 +584,27 @@ export class TypeChecker {
    */
   checkVectorLiteral(node, env) {
     return { ...node, type: infer(node, env) };
+  }
+
+  /**
+   * Type checks a when expression
+   * @param {import("../parser/ast.js").WhenExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkWhenExpression(node, env) {
+    if (!node.env) {
+      node.env = env.extend("WhenExpression");
+    }
+
+    const whenEnv = node.env;
+    /** @type {TypedAST[]} */
+    let body = [];
+
+    for (let expr of node.body) {
+      body.push(this.checkNode(expr, whenEnv));
+    }
+
+    return { ...node, body, type: infer(node, env) };
   }
 }
