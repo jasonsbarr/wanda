@@ -474,7 +474,7 @@ const inferWhenExpression = (node, env, constant) => {
   if (!Type.isFalsy(test)) {
     // check expressions in body
     for (let expr of node.body) {
-      infer(expr, env, constant);
+      infer(expr, narrow(node.test, env, true), constant);
     }
   }
 
