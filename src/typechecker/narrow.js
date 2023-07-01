@@ -192,6 +192,14 @@ export const narrowType = (x, y) => {
   if (Type.isUnknown(x)) return widenNots(y);
   if (Type.isUnknown(y)) return x;
 
+  if (Type.isTuple(x)) {
+    return Type.tuple(x.types.map((a) => narrowType(a, y)));
+  }
+
+  if (Type.isTuple(y)) {
+    return Type.tuple(y.types.map((b) => narrowType(x, b)));
+  }
+
   if (Type.isUnion(x)) {
     return Type.union(...x.types.map((a) => narrowType(a, y)));
   }
