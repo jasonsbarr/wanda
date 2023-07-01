@@ -5,6 +5,7 @@ import { Type } from "./Type.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { infer } from "./infer.js";
 import { isSubtype } from "./isSubtype.js";
+import { narrow } from "./narrow.js";
 import { propType } from "./propType.js";
 
 /**
@@ -41,6 +42,14 @@ export const check = (ast, type, env) => {
   if (Type.isSingleton(type) && isPrimitive(ast) && ast.value === type.value) {
     // primitive matches singleton type
     return;
+  }
+
+  if (ast.kind === ASTTypes.IfExpression) {
+    return checkIfExpression(ast, type, env);
+  }
+
+  if (ast.kind === ASTTypes.CondExpression) {
+    return checkCondExpression(ast, type, env);
   }
 
   const inferredType = infer(ast, env);
@@ -178,4 +187,45 @@ const checkUnion = (ast, type, env) => {
       ast.srcloc
     );
   }
+};
+
+/**
+ * Checks an if expression against a type
+ * @param {import("../parser/ast.js").IfExpression} ast
+ * @param {import("./types").Type} type
+ * @param {TypeEnvironment} env
+ */
+const checkIfExpression = (ast, type, env) => {
+  const test = infer(ast.test, env);
+  const consequent = () => check(ast.then, type, narrow(ast.test, env, true));
+  const alternate = () => check(ast.else, type, narrow(ast.test, env, false));
+
+  if (Type.isTruthy(test)) {
+    consequent();
+  } else if (Type.isFalsy(test)) {
+    alternate();
+  } else {
+    consequent();
+    alternate();
+  }
+};
+
+/**
+ * Checks a cond expression against a type
+ * @param {import("../parser/ast.js").CondExpression} ast
+ * @param {import("./types").Type} type
+ * @param {TypeEnvironment} env
+ */
+const checkCondExpression = (ast, type, env) => {
+  for (let clause of ast.clauses) {
+    const test = infer(clause.test, env);
+    check(clause.expression, type, narrow(ast.test, env, true));
+
+    if (Type.isTruthy(test)) {
+      // we can stop here if test is truthy
+      return;
+    }
+  }
+
+  check(ast.else, type, env);
 };

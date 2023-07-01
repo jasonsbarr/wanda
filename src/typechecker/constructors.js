@@ -127,3 +127,10 @@ export const never = { kind: TypeTypes.Never };
  * Unknown type constructor
  */
 export const unknown = { kind: TypeTypes.Unknown };
+
+/**
+ * Not type constructor
+ * @param {import("./types.js").Type} base
+ * @returns {import("./types.js").Not}
+ */
+export const not = (base) => ({ kind: TypeTypes.Not, base });

@@ -5,8 +5,10 @@ import { TypeEnvironment } from "./TypeEnvironment.js";
 import { isSubtype } from "./isSubtype.js";
 import { getAliasBase } from "./utils.js";
 import { fromTypeAnnotation } from "./fromTypeAnnotation.js";
-import { unifyAll } from "./unify.js";
+import { unify, unifyAll } from "./unify.js";
 import { propType } from "./propType.js";
+import { type } from "ramda";
+import { narrow, narrowType } from "./narrow.js";
 
 /**
  * Infers a type from an AST node
@@ -53,6 +55,18 @@ export const infer = (ast, env, constant = false) => {
       return inferVariableDeclaration(ast, env, true);
     case ASTTypes.AsExpression:
       return inferAsExpression(ast, env, constant);
+    case ASTTypes.IfExpression:
+      return inferIfExpression(ast, env, constant);
+    case ASTTypes.WhenExpression:
+      return inferWhenExpression(ast, env, constant);
+    case ASTTypes.CondExpression:
+      return inferCondExpression(ast, env, constant);
+    case ASTTypes.UnaryExpression:
+      return inferUnaryExpression(ast, env, constant);
+    case ASTTypes.BinaryExpression:
+      return inferBinaryExpression(ast, env, constant);
+    case ASTTypes.LogicalExpression:
+      return inferLogicalExpression(ast, env, constant);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -134,7 +148,10 @@ const inferCallExpression = (node, env, constant) => {
 
   if (Type.isAny(func)) {
     return Type.any;
-  } else if (Type.isUndefined(func) || Type.isUndefined(func.ret)) {
+  } else if (
+    Type.isUndefined(func) ||
+    (type.ret && Type.isUndefined(func.ret))
+  ) {
     // this should only happen during first typechecker pass
     return Type.undefinedType;
   } else if (Type.isTypeAlias(func)) {
@@ -339,7 +356,7 @@ const inferMemberExpression = (node, env, constant) => {
 /**
  * Infers a type for a function
  * @param {import("../parser/ast.js").LambdaExpression|import("../parser/ast.js").FunctionDeclaration} node
- * @param {TypeEnvironment} env // will already be extended function environment
+ * @param {TypeEnvironment} env will already be extended function environment
  * @param {boolean} constant
  * @returns {import("./types").FunctionType}
  */
@@ -351,7 +368,7 @@ const inferFunction = (node, env, constant) => {
     const type = p.typeAnnotation
       ? fromTypeAnnotation(p.typeAnnotation, env)
       : Type.any;
-    env.set(p.name, type);
+    env.set(p.name.name, type);
     return type;
   });
 
@@ -421,4 +438,173 @@ const inferAsExpression = (node, env, constant) => {
   }
 
   return type;
+};
+
+/**
+ * Infers a type from an if expression
+ * @param {import("../parser/ast.js").IfExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferIfExpression = (node, env, constant) => {
+  const test = infer(node.test, env, constant);
+  const consequent = () => infer(node.then, narrow(node.test, env, true));
+  const alternate = () => infer(node.else, narrow(node.test, env, false));
+
+  if (Type.isTruthy(test)) {
+    return consequent();
+  } else if (Type.isFalsy(test)) {
+    return alternate();
+  } else {
+    return unify(consequent(), alternate());
+  }
+};
+
+/**
+ * Infers a type from a when expression
+ * @param {import("../parser/ast.js").WhenExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Nil}
+ */
+const inferWhenExpression = (node, env, constant) => {
+  const test = infer(node.test, env, constant);
+
+  // if the test is falsy, this will never run
+  if (!Type.isFalsy(test)) {
+    // check expressions in body
+    for (let expr of node.body) {
+      infer(expr, narrow(node.test, env, true), constant);
+    }
+  }
+
+  return Type.nil;
+};
+
+/**
+ * Infers a type from a cond expression
+ * @param {import("../parser/ast.js").CondExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferCondExpression = (node, env, constant) => {
+  /** @type {import("./types").Type[]} */
+  let types = [];
+
+  for (let clause of node.clauses) {
+    const test = infer(clause.test, env, constant);
+    const type = infer(
+      clause.expression,
+      narrow(clause.test, env, true),
+      constant
+    );
+
+    if (Type.isTruthy(test)) {
+      // the first truthy condition type will trigger the clause's expression
+      return type;
+    }
+
+    types.push(type);
+  }
+
+  const elseType = infer(node.else, env, constant);
+
+  return unifyAll(...types, elseType);
+};
+
+/**
+ * Infers a type from a unary expression
+ * @param {import("../parser/ast.js").UnaryExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferUnaryExpression = (node, env, constant) => {
+  const operand = infer(node.operand, env, constant);
+
+  return Type.map(operand, (operand) => {
+    switch (node.op) {
+      case "not":
+        if (Type.isTruthy(operand)) {
+          return Type.singleton("Boolean", "false");
+        } else if (Type.isFalsy(operand)) {
+          return Type.singleton("Boolean", true);
+        } else {
+          return Type.boolean;
+        }
+
+      default:
+        throw new Exception(`Unknown unary operator ${node.op}`);
+    }
+  });
+};
+
+/**
+ * Infers a type from a binary expression
+ * @param {import("../parser/ast.js").BinaryExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferBinaryExpression = (node, env, constant) => {
+  const left = infer(node.left, env, constant);
+  const right = infer(node.right, env, constant);
+
+  return Type.map(left, right, (left, right) => {
+    switch (node.op) {
+      case "equal?":
+        if (Type.isSingleton(left) && Type.isSingleton(right)) {
+          return Type.singleton(left.value === right.value ? "true" : "false");
+        } else {
+          return Type.boolean;
+        }
+
+      case "not-equal?":
+        if (Type.isSingleton(left) && Type.isSingleton(right)) {
+          return Type.singleton(left.value !== right.value ? "true" : "false");
+        } else {
+          return Type.boolean;
+        }
+
+      default:
+        throw new Exception(`Unknown binary operator ${node.op}`);
+    }
+  });
+};
+
+/**
+ * Infers a type from a logical expression
+ * @param {import("../parser/ast.js").LogicalExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferLogicalExpression = (node, env, constant) => {
+  const left = infer(node.left, env, constant);
+  const right = () => infer(node.right, env, constant);
+
+  switch (node.op) {
+    case "and":
+      if (Type.isFalsy(left)) {
+        return left;
+      } else if (Type.isTruthy(left)) {
+        return right();
+      } else {
+        return unify(narrowType(left, Type.falsy), right());
+      }
+
+    case "or":
+      if (Type.isTruthy(left)) {
+        return left;
+      } else if (Type.isFalsy(left)) {
+        return right();
+      } else {
+        return unify(narrowType(left, Type.truthy), right());
+      }
+
+    default:
+      throw new Exception(`Unknown logical operator ${node.op}`);
+  }
 };

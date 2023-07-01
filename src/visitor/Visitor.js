@@ -73,6 +73,18 @@ export class Visitor {
         return this.visitConstantDeclaration(node);
       case ASTTypes.AsExpression:
         return this.visitAsExpression(node);
+      case ASTTypes.IfExpression:
+        return this.visitIfExpression(node);
+      case ASTTypes.CondExpression:
+        return this.visitCondExpression(node);
+      case ASTTypes.WhenExpression:
+        return this.visitWhenExpression(node);
+      case ASTTypes.UnaryExpression:
+        return this.visitUnaryExpression(node);
+      case ASTTypes.BinaryExpression:
+        return this.visitBinaryExpression(node);
+      case ASTTypes.LogicalExpression:
+        return this.visitLogicalExpression(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -86,6 +98,18 @@ export class Visitor {
   visitAsExpression(node) {
     const expression = this.visit(node.expression);
     return { ...node, expression };
+  }
+
+  /**
+   * Visits a BinaryExpression node
+   * @param {import("../parser/ast.js").BinaryExpression} node
+   * @returns {import("../parser/ast.js").BinaryExpression}
+   */
+  visitBinaryExpression(node) {
+    const left = this.visit(node.left);
+    const right = this.visit(node.right);
+
+    return { ...node, left, right };
   }
 
   /**
@@ -106,6 +130,27 @@ export class Visitor {
     const func = this.visit(node.func);
     const args = node.args.map(this.visit.bind(this));
     return { ...node, func, args };
+  }
+
+  /**
+   * CondExpression node visitor
+   * @param {import("../parser/ast.js").CondExpression} node
+   * @returns {import("../parser/ast.js").CondExpression}
+   */
+  visitCondExpression(node) {
+    /** @type {import("../parser/ast.js").CondClause[]} */
+    let clauses = [];
+
+    for (let clause of node.clauses) {
+      const test = this.visit(clause.test);
+      const expression = this.visit(clause.expression);
+
+      clauses.push({ test, expression });
+    }
+
+    const elseBranch = this.visit(node.else);
+
+    return { ...node, clauses, else: elseBranch };
   }
 
   /**
@@ -152,6 +197,19 @@ export class Visitor {
   }
 
   /**
+   * IfExpression node visitor
+   * @param {import("../parser/ast.js").IfExpression} node
+   * @returns {import("../parser/ast.js").IfExpression}
+   */
+  visitIfExpression(node) {
+    const test = this.visit(node.test);
+    const then = this.visit(node.then);
+    const elseBranch = this.visit(node.else);
+
+    return { ...node, test, then, else: elseBranch };
+  }
+
+  /**
    * KeywordLiteral node visitor
    * @param {import("../parser/ast").KeywordLiteral} node
    * @returns {import("../parser/ast").KeywordLiteral}
@@ -175,6 +233,18 @@ export class Visitor {
     }
 
     return { ...node, params, body };
+  }
+
+  /**
+   * LogicalExpression node visitor
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @returns {import("../parser/ast.js").LogicalExpression}
+   */
+  visitLogicalExpression(node) {
+    const left = this.visit(node.left);
+    const right = this.visit(node.right);
+
+    return { ...node, left, right };
   }
 
   /**
@@ -286,6 +356,16 @@ export class Visitor {
   }
 
   /**
+   * UnaryExpression node visitor
+   * @param {import("../parser/ast.js").UnaryExpression} node
+   * @returns {import("../parser/ast.js").UnaryExpression}
+   */
+  visitUnaryExpression(node) {
+    const operand = this.visit(node.operand);
+    return { ...node, operand };
+  }
+
+  /**
    * VariableDeclaration node visitor
    * @param {import("../parser/ast").VariableDeclaration} node
    * @returns {import("../parser/ast").VariableDeclaration}
@@ -312,5 +392,22 @@ export class Visitor {
    */
   visitVectorPattern(node) {
     return node;
+  }
+
+  /**
+   * WhenExpression node visitor
+   * @param {import("../parser/ast.js").WhenExpression} node
+   * @returns {import("../parser/ast.js").WhenExpression}
+   */
+  visitWhenExpression(node) {
+    /** @type {AST[]} */
+    let body = [];
+    const test = this.visit(node.test);
+
+    for (let expr of node.body) {
+      body.push(this.visit(expr));
+    }
+
+    return { ...node, test, body };
   }
 }

@@ -1,5 +1,9 @@
 import { ASTTypes } from "../parser/ast.js";
-import { ReferenceException, SyntaxException } from "../shared/exceptions.js";
+import {
+  Exception,
+  ReferenceException,
+  SyntaxException,
+} from "../shared/exceptions.js";
 import { Namespace } from "../shared/Namespace.js";
 import { makeGenSym, makeSymbol } from "../runtime/makeSymbol.js";
 
@@ -77,6 +81,12 @@ export class Emitter {
         return this.emitVectorPattern(node, ns);
       case ASTTypes.LambdaExpression:
         return this.emitLambdaExpression(node, ns);
+      case ASTTypes.LogicalExpression:
+        return this.emitLogicalExpression(node, ns);
+      case ASTTypes.IfExpression:
+        return this.emitIfExpression(node, ns);
+      case ASTTypes.WhenExpression:
+        return this.emitWhenExpression(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -112,7 +122,7 @@ export class Emitter {
    */
   emitDoExpression(node, ns) {
     const childNs = ns.extend("doExpression");
-    let code = "(() => {";
+    let code = "(() => {\n";
 
     let i = 0;
     for (let expr of node.body) {
@@ -126,6 +136,19 @@ export class Emitter {
 
     code += "})();";
     return code;
+  }
+
+  /**
+   * Generates code for an IfExpression AST node
+   * @param {import("../parser/ast.js").IfExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitIfExpression(node, ns) {
+    return `rt.isTruthy(${this.emit(node.test, ns)}) ? ${this.emit(
+      node.then,
+      ns
+    )} : ${this.emit(node.else, ns)}`;
   }
 
   /**
@@ -150,7 +173,7 @@ export class Emitter {
     let i = 0;
 
     for (let p of node.params) {
-      funcNs.set(p.name.name, makeSymbol(p.name));
+      funcNs.set(p.name.name, makeSymbol(p.name.name));
 
       if (node.variadic && i === node.params.length - 1) {
         params.push(`...${this.emit(p.name, funcNs)}`);
@@ -176,6 +199,51 @@ export class Emitter {
     code += `${node.name ? `, { name: "${node.name}" }` : ""})`;
 
     return code;
+  }
+
+  /**
+   * Generates code from a LogicalExpression AST node
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitLogicalExpression(node, ns) {
+    switch (node.op) {
+      case "and":
+        return this.emitLogicalAnd(node, ns);
+
+      case "or":
+        return this.emitLogicalOr(node, ns);
+
+      default:
+        throw new Exception(`Unknown logical operator ${node.op}`);
+    }
+  }
+
+  /**
+   * Generates code from an and expression
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitLogicalAnd(node, ns) {
+    const left = this.emit(node.left, ns);
+    const right = this.emit(node.right, ns);
+
+    return `rt.isTruthy(${left}) ? ${right} : ${left}`;
+  }
+
+  /**
+   * Generates code from an or expression
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitLogicalOr(node, ns) {
+    const left = this.emit(node.left, ns);
+    const right = this.emit(node.right, ns);
+
+    return `rt.isFalsy(${left}) ? ${left} : ${right}`;
   }
 
   /**
@@ -459,6 +527,27 @@ export class Emitter {
     }
 
     code += "]";
+    return code;
+  }
+
+  /**
+   * Generates code from a WhenExpression node
+   * @param {import("../parser/ast.js").WhenExpression} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitWhenExpression(node, ns) {
+    const whenNs = ns.extend("WhenExpression");
+    let code = `(rt.isTruthy(${this.emit(node.test, ns)}))
+  ? (() => {\n`;
+
+    for (let expr of node.body) {
+      code += `    ${this.emit(expr, whenNs)};\n`;
+    }
+
+    code += "    return null";
+    code += "  })()\n";
+    code += "  : null\n";
     return code;
   }
 }

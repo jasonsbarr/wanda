@@ -1,5 +1,5 @@
 import { TokenTypes } from "../lexer/TokenTypes.js";
-import { SyntaxException } from "../shared/exceptions.js";
+import { Exception, SyntaxException } from "../shared/exceptions.js";
 import { ConsReader } from "./ConsReader.js";
 import { Cons, cons } from "../shared/cons.js";
 import { AST, ASTTypes } from "./ast.js";
@@ -374,6 +374,122 @@ const parseConstantDeclaration = (form) => {
 };
 
 /**
+ * Parses an if expression
+ * @param {List} form
+ * @returns {import("./ast.js").IfExpression}
+ */
+const parseIfExpression = (form) => {
+  const [_, test, then, elseBranch] = form;
+  const srcloc = form.srcloc;
+  const parsedTest = parseExpr(test);
+  const parsedThen = parseExpr(then);
+  const parsedElse = parseExpr(elseBranch);
+
+  return AST.IfExpression(parsedTest, parsedThen, parsedElse, srcloc);
+};
+
+/**
+ * Parses a cond expression
+ * @param {List} form
+ * @returns {import("./ast.js").CondExpression}
+ */
+const parseCondExpression = (form) => {
+  const [_, ...clauses] = form;
+  const srcloc = form.srcloc;
+  /** @type {import("./ast.js").CondClause[]} */
+  const parsedClauses = [];
+  let hasElse = false;
+
+  if (!(clauses.length >= 2)) {
+    throw new Exception(
+      `Cond expression must have at least 2 clauses; ${clauses.length} given at ${srcloc.file}, (${srcloc.line}:${srcloc.col})`
+    );
+  }
+
+  for (let clause of clauses) {
+    const [test, expr] = clause;
+
+    if (test.type === TokenTypes.Keyword && test.value === ":else") {
+      hasElse = true;
+      break;
+    }
+
+    const parsedTest = parseExpr(test);
+    const parsedExpr = parseExpr(expr);
+
+    parsedClauses.push({ test: parsedTest, expression: parsedExpr });
+  }
+
+  if (!hasElse) {
+    throw new Exception(
+      `Cond expression expects an :else clause; none given at ${srcloc.file}, (${srcloc.line}:${srcloc.col})`
+    );
+  }
+
+  /** @type {Cons} */
+  const elseClause = clauses[clauses.length - 1];
+  // we need the first element of the tail of the else clause
+  const parsedElse = parseExpr(elseClause.cdr.car);
+
+  return AST.CondExpression(parsedClauses, parsedElse, srcloc);
+};
+
+/**
+ * Parses a when expression
+ * @param {List} form
+ * @returns {import("./ast.js").WhenExpression}
+ */
+const parseWhenExpression = (form) => {
+  const [_, test, ...body] = form;
+  const srcloc = form.srcloc;
+  const parsedTest = parseExpr(test);
+  const parsedBody = body.map(parseExpr);
+
+  return AST.WhenExpression(parsedTest, parsedBody, srcloc);
+};
+
+/**
+ *
+ * @param {List} form
+ * @returns {import("./ast.js").BinaryExpression}
+ */
+const parseBinaryExpression = (form) => {
+  const [op, left, right] = form;
+  const srcloc = form.srcloc;
+  const parsedLeft = parseExpr(left);
+  const parsedRight = parseExpr(right);
+
+  return AST.BinaryExpression(parsedLeft, op.value, parsedRight, srcloc);
+};
+
+/**
+ * Parses a logical expression (and, or)
+ * @param {List} form
+ * @returns {import("./ast.js").LogicalExpression}
+ */
+const parseLogicalExpression = (form) => {
+  const [op, left, right] = form;
+  const srcloc = form.srcloc;
+  const parsedLeft = parseExpr(left);
+  const parsedRight = parseExpr(right);
+
+  return AST.LogicalExpression(parsedLeft, op.value, parsedRight, srcloc);
+};
+
+/**
+ * Parses a unary expression (typeof, not) for typechecking purposes only
+ * @param {List} form
+ * @returns {import("./ast.js").UnaryExpression}
+ */
+const parseUnaryExpression = (form) => {
+  const [op, operand] = form;
+  const srcloc = form.srcloc;
+  const parsedOperand = parseExpr(operand);
+
+  return AST.UnaryExpression(op.value, parsedOperand, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -394,6 +510,20 @@ const parseList = (form) => {
       return parseMaybeFunctionDeclaration(form);
     case "fn":
       return parseLambdaExpression(form);
+    case "if":
+      return parseIfExpression(form);
+    case "cond":
+      return parseCondExpression(form);
+    case "when":
+      return parseWhenExpression(form);
+    case "equal?":
+    case "not-equal?":
+      return parseBinaryExpression(form);
+    case "and":
+    case "or":
+      return parseLogicalExpression(form);
+    case "not":
+      return parseUnaryExpression(form);
     default:
       return parseCall(form);
   }

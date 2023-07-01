@@ -81,6 +81,18 @@ class ASTPrinter {
         return this.printConstantDeclaration(node, indent);
       case ASTTypes.AsExpression:
         return this.printAsExpression(node, indent);
+      case ASTTypes.IfExpression:
+        return this.printIfExpression(node, indent);
+      case ASTTypes.CondExpression:
+        return this.printCondExpression(node, indent);
+      case ASTTypes.WhenExpression:
+        return this.printWhenExpression(node, indent);
+      case ASTTypes.BinaryExpression:
+        return this.printBinaryExpression(node, indent);
+      case ASTTypes.LogicalExpression:
+        return this.printLogicalExpression(node, indent);
+      case ASTTypes.UnaryExpression:
+        return this.printUnaryExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
@@ -94,6 +106,24 @@ class ASTPrinter {
    */
   printAsExpression(node, indent) {
     return this.print(node.expression, indent);
+  }
+
+  /**
+   * Prints a BinaryExpression AST node
+   * @param {import("../parser/ast.js").BinaryExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printBinaryExpression(node, indent) {
+    let prStr = `${prIndent(indent)}BinaryExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Left:\n`;
+    prStr += this.print(node.left, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Operator:\n`;
+    prStr += `${prIndent(indent + 4)}${node.op}\n`;
+    prStr += `${prIndent(indent + 2)}Right:\n`;
+    prStr += this.print(node.right, indent + 4) + "\n";
+
+    return prStr;
   }
 
   /**
@@ -116,6 +146,28 @@ class ASTPrinter {
       prStr += i === node.args.length - 1 ? "" : "\n";
       i++;
     }
+
+    return prStr;
+  }
+
+  /**
+   * Prints a CondExpression AST node
+   * @param {import("../parser/ast.js").CondExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printCondExpression(node, indent) {
+    let prStr = `${prIndent(indent)}CondExpression:\n`;
+
+    for (let clause of node.clauses) {
+      prStr += `${prIndent(indent + 2)}Test:\n`;
+      prStr += this.print(clause.test, indent + 4) + "\n";
+      prStr += `${prIndent(indent + 2)}Expression:\n`;
+      prStr += this.print(clause.expression, indent + 4) + "\n";
+    }
+
+    prStr += `${prIndent(indent + 2)}Else:\n`;
+    prStr += this.print(node.else, indent + 4) + "\n";
 
     return prStr;
   }
@@ -177,6 +229,24 @@ class ASTPrinter {
   }
 
   /**
+   * Prints an IfExpression AST node
+   * @param {import("../parser/ast.js").IfExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printIfExpression(node, indent) {
+    let prStr = `${prIndent(indent)}IfExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Test:\n`;
+    prStr += this.print(node.test, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Then:\n` + "\n";
+    prStr += this.print(node.then, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Else:\n`;
+    prStr += this.print(node.else, indent + 4) + "\n";
+
+    return prStr;
+  }
+
+  /**
    * Prints a LambdaExpression node
    * @param {import("../parser/ast.js").LambdaExpression} node
    * @param {number} indent
@@ -195,6 +265,24 @@ class ASTPrinter {
     for (let expr of node.body) {
       prStr += this.print(expr, indent + 4) + "\n";
     }
+
+    return prStr;
+  }
+
+  /**
+   * Prints a LogicalExpression AST node
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printLogicalExpression(node, indent) {
+    let prStr = `${prIndent(indent)}LogicalExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Left:\n`;
+    prStr += this.print(node.left, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Operator:\n`;
+    prStr += `${prIndent(indent + 4)}${node.op}\n`;
+    prStr += `${prIndent(indent + 2)}Right:\n`;
+    prStr += this.print(node.right, indent + 4) + "\n";
 
     return prStr;
   }
@@ -307,6 +395,22 @@ class ASTPrinter {
   }
 
   /**
+   * Prints a UnaryExpression AST node
+   * @param {import("../parser/ast.js").UnaryExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printUnaryExpression(node, indent) {
+    let prStr = `${prIndent(indent)}UnaryExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Operator:\n`;
+    prStr += `${prIndent(indent + 4)}${node.op}\n`;
+    prStr += `${prIndent(indent + 2)}Operand:\n`;
+    prStr += this.print(node.operand, indent + 4) + "\n";
+
+    return prStr;
+  }
+
+  /**
    * Prints VariableDeclaration node
    * @param {import("../parser/ast.js").VariableDeclaration} node
    * @param {number} indent
@@ -338,11 +442,31 @@ class ASTPrinter {
   /**
    * Prints a RecordPattern node
    * @param {import("../parser/ast.js").VectorPattern} node
-   * @param {number} indent
+   * @param {import { narrow } from '../typechecker/narrow';
+number} indent
    * @returns {string}
    */
   printVectorPattern(node, indent) {
     return `${prIndent(indent)}${node.members.map((p) => p.name).join(", ")}`;
+  }
+
+  /**
+   * Prints a WhenExpression AST node
+   * @param {import("../parser/ast.js").WhenExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printWhenExpression(node, indent) {
+    let prStr = `${prIndent(indent)}WhenExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Test:\n`;
+    prStr += this.print(node.test, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Body:`;
+
+    for (let expr of node.body) {
+      prStr += this.print(expr, indent + 4) + "\n";
+    }
+
+    return prStr;
   }
 }
 

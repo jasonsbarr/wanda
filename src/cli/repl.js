@@ -1,5 +1,6 @@
 import os from "os";
 import vm from "vm";
+import fs from "fs";
 import readlineSync from "readline-sync";
 import { pprintAST, pprintDesugaredAST } from "./pprint.js";
 import { println } from "../printer/println.js";
@@ -12,7 +13,7 @@ import { countIndent, inputFinished } from "./utils.js";
 
 const read = (prompt) => readlineSync.question(prompt);
 
-export const repl = (mode = "repl") => {
+export const repl = ({ mode = "repl", path = "" } = {}) => {
   // Create global compile environment
   const compileEnv = makeGlobalNameMap();
   const typeEnv = makeGlobalTypeEnv();
@@ -21,6 +22,13 @@ export const repl = (mode = "repl") => {
   // This should make all compiled global symbols available
   const globalCode = build(emitGlobalEnv());
   vm.runInThisContext(globalCode);
+
+  if (path) {
+    // load file in REPL interactively
+    const fileContents = fs.readFileSync(path, { encoding: "utf-8" });
+    const compiledFile = compile(fileContents, path, compileEnv, typeEnv);
+    vm.runInThisContext(compiledFile);
+  }
 
   let prompt = "wanda> ";
   let input = "";
@@ -40,6 +48,10 @@ export const repl = (mode = "repl") => {
           break;
         case ":print-desugared":
           mode = "printDesugared";
+          input = "";
+          break;
+        case ":no-print-ast":
+          mode = "repl";
           input = "";
           break;
         // If it's code, compile and run it

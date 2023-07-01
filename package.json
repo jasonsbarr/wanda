@@ -1,7 +1,10 @@
 {
   "type": "module",
   "name": "@jasonsbarr/wanda",
-  "bin": "bin/wanda.js",
+  "bin": {
+    "wanda": "bin/wanda.js",
+    "wandac": "bin/wandac.js"
+  },
   "description": "Programming language for a tutorial series on building a compiler",
   "version": "1.0.0",
   "main": "index.js",

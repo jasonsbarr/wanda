@@ -1,0 +1,4 @@
+(def fib (n: number) -> number
+    (if (= n 1)
+        n
+        (* n (fib (- n 1)))))

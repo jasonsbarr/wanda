@@ -29,6 +29,12 @@ export const ASTTypes = {
   LambdaExpression: "LambdaExpression",
   AsExpression: "AsExpression",
   ConstantDeclaration: "ConstantDeclaration",
+  IfExpression: "IfExpression",
+  CondExpression: "CondExpression",
+  WhenExpression: "WhenExpression",
+  BinaryExpression: "BinaryExpression",
+  LogicalExpression: "LogicalExpression",
+  UnaryExpression: "UnaryExpression",
 };
 
 /**
@@ -110,13 +116,34 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.AsExpression; expression: AST; type: import("./parseTypeAnnotation.js").TypeAnnotation;}} AsExpression
  */
 /**
+ * @typedef {ASTNode & {kind: ASTTypes.IfExpression; test: AST; then: AST; else: AST}} IfExpression
+ */
+/**
+ * @typedef {{test: AST; expression: AST}} CondClause
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.CondExpression; clauses: CondClause[]; else: AST}} CondExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.WhenExpression; test: AST; body: AST[]}} WhenExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.BinaryExpression; left: AST; op: "equal?"|"not-equal?"; right: AST}} BinaryExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.LogicalExpression; left: AST; op: "and"|"or"; right: AST}} LogicalExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.UnaryExpression; op: "typeof"|"not"; operand: AST}} UnaryExpression
+ */
+/**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression|LogicalExpression|UnaryExpression} AST
  */
 export const AST = {
   /**
@@ -435,6 +462,101 @@ export const AST = {
       expression,
       srcloc,
       typeAnnotation,
+    };
+  },
+  /**
+   * Constructs an IfExpression AST node
+   * @param {AST} test
+   * @param {AST} then
+   * @param {AST} elseBranch
+   * @param {SrcLoc} srcloc
+   * @returns {IfExpression}
+   */
+  IfExpression(test, then, elseBranch, srcloc) {
+    return {
+      kind: ASTTypes.IfExpression,
+      test,
+      then,
+      else: elseBranch,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a CondExpression AST node
+   * @param {CondClause[]} clauses
+   * @param {AST} elseBranch
+   * @param {SrcLoc} srcloc
+   * @returns {CondExpression}
+   */
+  CondExpression(clauses, elseBranch, srcloc) {
+    return {
+      kind: ASTTypes.CondExpression,
+      clauses,
+      else: elseBranch,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a WhenExpression AST node
+   * @param {AST} test
+   * @param {AST[]} body
+   * @param {SrcLoc} srcloc
+   * @returns {WhenExpression}
+   */
+  WhenExpression(test, body, srcloc) {
+    return {
+      kind: ASTTypes.WhenExpression,
+      test,
+      body,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a BinaryExpression AST node
+   * @param {AST*} left : ;
+   * @param {"equal?"|"not-equal?"} op
+   * @param {AST} right
+   * @param {SrcLoc} srcloc
+   * @returns {BinaryExpression}
+   */
+  BinaryExpression(left, op, right, srcloc) {
+    return {
+      kind: ASTTypes.BinaryExpression,
+      left,
+      op,
+      right,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a LogicalExpression AST node
+   * @param {AST} left
+   * @param {"and"|"or"} op
+   * @param {AST} right
+   * @param {SrcLoc} srcloc
+   * @returns {LogicalExpression}
+   */
+  LogicalExpression(left, op, right, srcloc) {
+    return {
+      kind: ASTTypes.LogicalExpression,
+      left,
+      op,
+      right,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a UnaryExpression AST node
+   * @param {"typeof"|"not"} op
+   * @param {AST} operand
+   * @param {SrcLoc} srcloc
+   */
+  UnaryExpression(op, operand, srcloc) {
+    return {
+      kind: ASTTypes.UnaryExpression,
+      op,
+      operand,
+      srcloc,
     };
   },
 };
