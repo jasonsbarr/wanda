@@ -534,9 +534,6 @@ const inferUnaryExpression = (node, env, constant) => {
           return Type.boolean;
         }
 
-      case "typeof":
-        return Type.string;
-
       default:
         throw new Exception(`Unknown unary operator ${node.op}`);
     }

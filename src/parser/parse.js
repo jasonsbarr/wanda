@@ -522,7 +522,6 @@ const parseList = (form) => {
     case "and":
     case "or":
       return parseLogicalExpression(form);
-    case "typeof":
     case "not":
       return parseUnaryExpression(form);
     default:
