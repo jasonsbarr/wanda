@@ -13,7 +13,7 @@ import { countIndent, inputFinished } from "./utils.js";
 
 const read = (prompt) => readlineSync.question(prompt);
 
-export const repl = ({ mode = "repl", path = null } = {}) => {
+export const repl = ({ mode = "repl", path = "" } = {}) => {
   // Create global compile environment
   const compileEnv = makeGlobalNameMap();
   const typeEnv = makeGlobalTypeEnv();
