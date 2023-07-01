@@ -42,9 +42,6 @@ const narrowUnary = (ast, env, assume) => {
     case "not":
       return narrow(ast.operand, env, !assume);
 
-    case "typeof":
-      return env;
-
     default:
       throw new Exception(`Unknown unary operator ${ast.op}`);
   }
