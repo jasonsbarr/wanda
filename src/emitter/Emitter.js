@@ -173,7 +173,7 @@ export class Emitter {
     let i = 0;
 
     for (let p of node.params) {
-      funcNs.set(p.name.name, makeSymbol(p.name));
+      funcNs.set(p.name.name, makeSymbol(p.name.name));
 
       if (node.variadic && i === node.params.length - 1) {
         params.push(`...${this.emit(p.name, funcNs)}`);
