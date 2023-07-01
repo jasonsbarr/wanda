@@ -447,7 +447,7 @@ export class TypeChecker {
       let type = infer(node, env);
 
       if (Type.isUndefined(type)) {
-        // this should never happen on the 2nd pass
+        // this should never happen on the 2nd pass, but just in case...
         type = Type.any;
         env.set(node.name, type);
       }
