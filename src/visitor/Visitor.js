@@ -79,6 +79,12 @@ export class Visitor {
         return this.visitCondExpression(node);
       case ASTTypes.WhenExpression:
         return this.visitWhenExpression(node);
+      case ASTTypes.UnaryExpression:
+        return this.visitUnaryExpression(node);
+      case ASTTypes.BinaryExpression:
+        return this.visitBinaryExpression(node);
+      case ASTTypes.LogicalExpression:
+        return this.visitLogicalExpression(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
