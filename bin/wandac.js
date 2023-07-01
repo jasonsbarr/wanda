@@ -10,6 +10,11 @@ import { makeGlobalTypeEnv } from "../src/typechecker/makeGlobalTypeEnv.js";
 import { emitGlobalEnv } from "../src/emitter/emitGlobalEnv.js";
 import { Exception } from "../src/shared/exceptions.js";
 
+const compileFile = (path) => {
+  const contents = fs.readFileSync(path, { encoding: "utf-8" });
+  return compile(contents, path, makeGlobalNameMap(), makeGlobalTypeEnv());
+};
+
 if (!process.argv[2]) {
   console.log(`wandac requires either a file path or command argument`);
   process.exit(1);
@@ -39,8 +44,3 @@ switch (process.argv[2]) {
     break;
   }
 }
-
-const compileFile = (path) => {
-  const contents = fs.readFileSync(path, { encoding: "utf-8" });
-  return compile(contents, path, makeGlobalNameMap(), makeGlobalTypeEnv());
-};
