@@ -81,6 +81,10 @@ class ASTPrinter {
         return this.printConstantDeclaration(node, indent);
       case ASTTypes.AsExpression:
         return this.printAsExpression(node, indent);
+      case ASTTypes.IfExpression:
+        return this.printIfExpression(node, indent);
+      case ASTTypes.CondExpression:
+        return this.printCondExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
@@ -116,6 +120,28 @@ class ASTPrinter {
       prStr += i === node.args.length - 1 ? "" : "\n";
       i++;
     }
+
+    return prStr;
+  }
+
+  /**
+   * Prints a CondExpression AST node
+   * @param {import("../parser/ast.js").CondExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printCondExpression(node, indent) {
+    let prStr = `${prIndent(indent)}CondExpression:\n`;
+
+    for (let clause of node.clauses) {
+      prStr += `${prIndent(indent + 2)}Test:\n`;
+      prStr += this.print(clause.test, indent + 4) + "\n";
+      prStr += `${prIndent(indent + 2)}Expression:\n`;
+      prStr += this.print(clause.expression, indent + 4) + "\n";
+    }
+
+    prStr += `${prIndent(indent + 2)}Else:\n`;
+    prStr += this.print(node.else, indent + 4) + "\n";
 
     return prStr;
   }
@@ -172,6 +198,24 @@ class ASTPrinter {
     for (let expr of node.body) {
       prStr += this.print(expr, indent + 4) + "\n";
     }
+
+    return prStr;
+  }
+
+  /**
+   * Prints an IfExpression AST node
+   * @param {import("../parser/ast.js").IfExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printIfExpression(node, indent) {
+    let prStr = `${prIndent(indent)}IfExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Test:\n`;
+    prStr += this.print(node.test, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Then:\n` + "\n";
+    prStr += this.print(node.then, indent + 4) + "\n";
+    prStr += `${prIndent(indent + 2)}Else:\n`;
+    prStr += this.print(node.else, indent + 4) + "\n";
 
     return prStr;
   }
@@ -338,7 +382,8 @@ class ASTPrinter {
   /**
    * Prints a RecordPattern node
    * @param {import("../parser/ast.js").VectorPattern} node
-   * @param {number} indent
+   * @param {import { narrow } from '../typechecker/narrow';
+number} indent
    * @returns {string}
    */
   printVectorPattern(node, indent) {
