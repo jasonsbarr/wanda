@@ -50,6 +50,10 @@ export const repl = ({ mode = "repl", path = null } = {}) => {
           mode = "printDesugared";
           input = "";
           break;
+        case ":no-print-ast":
+          mode = "repl";
+          input = "";
+          break;
         // If it's code, compile and run it
         default:
           if (inputFinished(input)) {
