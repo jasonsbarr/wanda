@@ -510,7 +510,7 @@ const inferCondExpression = (node, env, constant) => {
 
   const elseType = infer(node.else, env, constant);
 
-  return unifyAll([...types, elseType]);
+  return unifyAll(...types, elseType);
 };
 
 /**
