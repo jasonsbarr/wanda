@@ -85,6 +85,8 @@ export class Emitter {
         return this.emitLogicalExpression(node, ns);
       case ASTTypes.IfExpression:
         return this.emitIfExpression(node, ns);
+      case ASTTypes.WhenExpression:
+        return this.emitWhenExpression(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
