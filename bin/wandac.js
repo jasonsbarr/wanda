@@ -25,8 +25,9 @@ switch (process.argv[2]) {
     const compiledFile = compileFile(pathname);
     const globals = emitGlobalEnv();
     const code = globals + os.EOL + os.EOL + compiledFile;
-    const outfile = basename(pathname).split(".")[0] + ".build" + ".js";
-    const built = build(code, outfile, basename(pathname).split(".")[0]);
+    const bName = basename(pathname).split(".")[0];
+    const outfile = bName + ".build" + ".js";
+    const built = build(code, outfile, bName);
 
     fs.writeFileSync(outfile, built, { encoding: "utf-8" });
     break;
