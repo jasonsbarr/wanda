@@ -356,7 +356,7 @@ const inferMemberExpression = (node, env, constant) => {
 /**
  * Infers a type for a function
  * @param {import("../parser/ast.js").LambdaExpression|import("../parser/ast.js").FunctionDeclaration} node
- * @param {TypeEnvironment} env // will already be extended function environment
+ * @param {TypeEnvironment} env will already be extended function environment
  * @param {boolean} constant
  * @returns {import("./types").FunctionType}
  */
@@ -368,7 +368,7 @@ const inferFunction = (node, env, constant) => {
     const type = p.typeAnnotation
       ? fromTypeAnnotation(p.typeAnnotation, env)
       : Type.any;
-    env.set(p.name, type);
+    env.set(p.name.name, type);
     return type;
   });
 

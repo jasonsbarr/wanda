@@ -70,7 +70,7 @@ export class TypeChecker {
       case ASTTypes.KeywordLiteral:
         return this.checkKeyword(node, env);
       case ASTTypes.NilLiteral:
-        return this.checkKeyword(node, env);
+        return this.checkNil(node, env);
       case ASTTypes.Symbol:
         return this.checkSymbol(node, env);
       case ASTTypes.CallExpression:
@@ -235,6 +235,10 @@ export class TypeChecker {
   checkFunctionDeclaration(node, env) {
     if (!node.env) {
       node.env = env.extend(node.name.name);
+    }
+
+    if (!env.get(node.name.name)) {
+      env.set(node.name.name, Type.undefinedType);
     }
 
     const funcEnv = node.env;
