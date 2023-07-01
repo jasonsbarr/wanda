@@ -122,7 +122,7 @@ export class Emitter {
    */
   emitDoExpression(node, ns) {
     const childNs = ns.extend("doExpression");
-    let code = "(() => {";
+    let code = "(() => {\n";
 
     let i = 0;
     for (let expr of node.body) {
@@ -538,13 +538,14 @@ export class Emitter {
    */
   emitWhenExpression(node, ns) {
     const whenNs = ns.extend("WhenExpression");
-    let code = `if (rt.isTruthy(${this.emit(node.test, ns)})) {\n`;
+    let code = `if (rt.isTruthy(${this.emit(node.test, ns)}))
+  (() => {\n`;
 
     for (let expr of node.body) {
-      code += `  ${this.emit(expr, whenNs)}\n`;
+      code += `    ${this.emit(expr, whenNs)}\n`;
     }
 
-    code += "}\n";
+    code += "  })();\n";
     return code;
   }
 }
