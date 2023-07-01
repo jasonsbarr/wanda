@@ -8,7 +8,6 @@ import { build } from "../src/cli/build.js";
 import { makeGlobalNameMap } from "../src/runtime/makeGlobals.js";
 import { makeGlobalTypeEnv } from "../src/typechecker/makeGlobalTypeEnv.js";
 import { emitGlobalEnv } from "../src/emitter/emitGlobalEnv.js";
-import { Exception } from "../src/shared/exceptions.js";
 
 const compileFile = (path) => {
   const contents = fs.readFileSync(path, { encoding: "utf-8" });
