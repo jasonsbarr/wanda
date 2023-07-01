@@ -244,7 +244,7 @@ export class TypeChecker {
     const funcEnv = node.env;
     const type = infer(node, funcEnv);
 
-    if (funcEnv.checkingOn) {
+    if (funcEnv.checkingOn && isSecondPass) {
       env.checkingOn = funcEnv.checkingOn;
       check(node, type, funcEnv);
     }
