@@ -103,8 +103,12 @@ export class TypeChecker {
         return this.checkBinaryExpression(node, env);
       case ASTTypes.LogicalExpression:
         return this.checkLogicalExpression(node, env);
+      case ASTTypes.IfExpression:
+        return this.checkIfExpression(node, env);
       case ASTTypes.CondExpression:
         return this.checkCondExpression(node, env);
+      case ASTTypes.WhenExpression:
+        return this.checkWhenExpression(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
