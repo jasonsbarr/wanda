@@ -471,6 +471,7 @@ const inferIfExpression = (node, env, constant) => {
 const inferWhenExpression = (node, env, constant) => {
   const test = infer(node.test, env, constant);
 
+  // if the test is falsy, this will never run
   if (!Type.isFalsy(test)) {
     // check expressions in body
     for (let expr of node.body) {
