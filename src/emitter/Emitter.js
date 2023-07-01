@@ -1,5 +1,9 @@
 import { ASTTypes } from "../parser/ast.js";
-import { ReferenceException, SyntaxException } from "../shared/exceptions.js";
+import {
+  Exception,
+  ReferenceException,
+  SyntaxException,
+} from "../shared/exceptions.js";
 import { Namespace } from "../shared/Namespace.js";
 import { makeGenSym, makeSymbol } from "../runtime/makeSymbol.js";
 
@@ -190,6 +194,48 @@ export class Emitter {
     code += `${node.name ? `, { name: "${node.name}" }` : ""})`;
 
     return code;
+  }
+
+  /**
+   * Generates code from a LogicalExpression AST node
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {Namespace} ns
+   */
+  emitLogicalExpression(node, ns) {
+    switch (node.op) {
+      case "and":
+        return this.emitLogicalAnd(node, ns);
+
+      case "or":
+        return this.emitLogicalOr(node, ns);
+
+      default:
+        throw new Exception(`Unknown logical operator ${node.op}`);
+    }
+  }
+
+  /**
+   * Generates code from an and expression
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {Namespace} ns
+   */
+  emitLogicalAnd(node, ns) {
+    const left = this.emit(node.left, ns);
+    const right = this.emit(node.right, ns);
+
+    return `rt.isTruthy(${left}) ? ${right} : ${left}`;
+  }
+
+  /**
+   * Generates code from an or expression
+   * @param {import("../parser/ast.js").LogicalExpression} node
+   * @param {Namespace} ns
+   */
+  emitLogicalOr(node, ns) {
+    const left = this.emit(node.left, ns);
+    const right = this.emit(node.right, ns);
+
+    return `rt.isFalsy(${left}) ? ${left} : ${right}`;
   }
 
   /**
