@@ -136,9 +136,6 @@ const narrowPath = (ast, env, type) => {
     case ASTTypes.MemberExpression:
       return narrowPathMember(ast, env, type);
 
-    case ASTTypes.UnaryExpression:
-      return narrowPathUnary(ast, env, type);
-
     default:
       return env;
   }
@@ -178,23 +175,6 @@ const narrowPathMember = (ast, env, type) => {
     env,
     Type.object([{ name: ast.property.name, type: type }])
   );
-};
-
-/**
- * Narrows a unary expression
- * @param {import("../parser/ast").UnaryExpression} ast
- * @param {TypeEnvironment} env
- * @param {import("./types").Type} type
- * @returns {TypeEnvironment}
- */
-const narrowPathUnary = (ast, env, type) => {
-  switch (ast.op) {
-    case "not":
-      return env;
-
-    default:
-      throw new Exception(`Unknown unary operator ${ast.op}`);
-  }
 };
 
 /**
