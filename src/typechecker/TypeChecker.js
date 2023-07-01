@@ -605,6 +605,6 @@ export class TypeChecker {
       body.push(this.checkNode(expr, whenEnv));
     }
 
-    return { ...node, body, type: infer(node, env) };
+    return { ...node, body, type: infer(node, whenEnv) };
   }
 }
