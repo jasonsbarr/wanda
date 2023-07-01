@@ -1,4 +1,23 @@
-import { Type } from "./Type.js";
+import {
+  isNever,
+  isUnknown,
+  isAny,
+  isNumber,
+  isString,
+  isBoolean,
+  isKeyword,
+  isNil,
+  isTypeAlias,
+  isList,
+  isVector,
+  isObject,
+  isUndefined,
+  isFunctionType,
+  isTuple,
+  isSingleton,
+  isUnion,
+  isIntersection,
+} from "./validators.js";
 import { propType } from "./propType.js";
 
 /**
@@ -9,39 +28,39 @@ import { propType } from "./propType.js";
  */
 export const isSubtype = (type1, type2) => {
   // never is bottom type, so is subtype of every type
-  if (Type.isNever(type1)) return true;
+  if (isNever(type1)) return true;
 
   // unknown is top type, so every type is its subtype
-  if (Type.isUnknown(type2)) return true;
+  if (isUnknown(type2)) return true;
 
-  if (Type.isAny(type1) || Type.isAny(type2)) return true;
-  if (Type.isNumber(type1) && Type.isNumber(type2)) return true;
-  if (Type.isString(type1) && Type.isString(type2)) return true;
-  if (Type.isBoolean(type1) && Type.isBoolean(type2)) return true;
-  if (Type.isKeyword(type1) && Type.isKeyword(type2)) return true;
-  if (Type.isNil(type1) && Type.isNil(type2)) return true;
+  if (isAny(type1) || isAny(type2)) return true;
+  if (isNumber(type1) && isNumber(type2)) return true;
+  if (isString(type1) && isString(type2)) return true;
+  if (isBoolean(type1) && isBoolean(type2)) return true;
+  if (isKeyword(type1) && isKeyword(type2)) return true;
+  if (isNil(type1) && isNil(type2)) return true;
 
-  if (Type.isTypeAlias(type1) && Type.isTypeAlias(type2)) {
+  if (isTypeAlias(type1) && isTypeAlias(type2)) {
     return isSubtype(type1.base, type2.base);
   }
 
-  if (Type.isTypeAlias(type1) && !Type.isTypeAlias(type2)) {
+  if (isTypeAlias(type1) && !isTypeAlias(type2)) {
     return isSubtype(type1.base, type2);
   }
 
-  if (Type.isTypeAlias(type2) && !Type.isTypeAlias(type1)) {
+  if (isTypeAlias(type2) && !isTypeAlias(type1)) {
     return isSubtype(type1, type2.base);
   }
 
-  if (Type.isList(type1) && Type.isList(type2)) {
+  if (isList(type1) && isList(type2)) {
     return isSubtype(type1.listType, type2.listType);
   }
 
-  if (Type.isVector(type1) && Type.isVector(type2)) {
+  if (isVector(type1) && isVector(type2)) {
     return isSubtype(type1.vectorType, type2.vectorType);
   }
 
-  if (Type.isObject(type1) && Type.isObject(type2)) {
+  if (isObject(type1) && isObject(type2)) {
     return type2.properties.every(({ name: type2name, type: type2type }) => {
       const type1type = propType(type1, type2name);
       if (!type1type) return false;
@@ -50,9 +69,9 @@ export const isSubtype = (type1, type2) => {
   }
 
   // a type should only be undefined on the first pass through the checker
-  if (Type.isUndefined(type1) || Type.isUndefined(type2)) return true;
+  if (isUndefined(type1) || isUndefined(type2)) return true;
 
-  if (Type.isFunctionType(type1) && Type.isFunctionType(type2)) {
+  if (isFunctionType(type1) && isFunctionType(type2)) {
     return (
       type1.params.length === type2.params.length &&
       type1.params.every((a, i) => isSubtype(type2.params[i], a)) &&
@@ -60,28 +79,28 @@ export const isSubtype = (type1, type2) => {
     );
   }
 
-  if (Type.isTuple(type1) && Type.isTuple(type2)) {
+  if (isTuple(type1) && isTuple(type2)) {
     return type1.types.every((a, i) => isSubtype(a, type2.types[i]));
   }
 
-  if (Type.isSingleton(type1)) {
-    if (Type.isSingleton(type2)) return type1.value === type2.value;
+  if (isSingleton(type1)) {
+    if (isSingleton(type2)) return type1.value === type2.value;
     else return isSubtype(type1.base, type2);
   }
 
-  if (Type.isUnion(type1)) {
+  if (isUnion(type1)) {
     return type1.types.every((t1) => isSubtype(t1, type2));
   }
 
-  if (Type.isUnion(type2)) {
+  if (isUnion(type2)) {
     return type2.types.some((t2) => isSubtype(type1, t2));
   }
 
-  if (Type.isIntersection(type1)) {
+  if (isIntersection(type1)) {
     return type1.types.some((a) => isSubtype(a, type2));
   }
 
-  if (Type.isIntersection(type2)) {
+  if (isIntersection(type2)) {
     return type2.types.every((b) => isSubtype(type1, b));
   }
 
