@@ -538,14 +538,16 @@ export class Emitter {
    */
   emitWhenExpression(node, ns) {
     const whenNs = ns.extend("WhenExpression");
-    let code = `if (rt.isTruthy(${this.emit(node.test, ns)}))
-  (() => {\n`;
+    let code = `(rt.isTruthy(${this.emit(node.test, ns)}))
+  ? (() => {\n`;
 
     for (let expr of node.body) {
-      code += `    ${this.emit(expr, whenNs)}\n`;
+      code += `    ${this.emit(expr, whenNs)};\n`;
     }
 
-    code += "  })();\n";
+    code += "    return null";
+    code += "  })()\n";
+    code += "  : null\n";
     return code;
   }
 }
