@@ -607,6 +607,7 @@ export class TypeChecker {
     }
 
     const whenEnv = node.env;
+    const test = this.checkNode(node.test, env);
     /** @type {TypedAST[]} */
     let body = [];
 
@@ -614,6 +615,6 @@ export class TypeChecker {
       body.push(this.checkNode(expr, whenEnv));
     }
 
-    return { ...node, body, type: infer(node, whenEnv) };
+    return { ...node, test, body, type: infer(node, whenEnv) };
   }
 }
