@@ -13,7 +13,8 @@ export const run = () => {
   switch (process.argv[2]) {
     case "-i":
       if (!process.argv[3]) {
-        throw new Exception(`-i option requires file path as argument`);
+        console.log(`-i option requires file path as argument`);
+        process.exit(1);
       }
       const path = join(process.cwd(), process.argv[3]);
       repl({ path });
@@ -24,11 +25,13 @@ export const run = () => {
       break;
     case "run":
       if (!process.argv[3]) {
-        throw new Exception(`run command requires file path as argument`);
+        console.log(`run command requires file path as argument`);
+        process.exit(1);
       }
       return runFile(join(process.cwd(), process.argv[3]));
     default:
-      throw new Exception("Invalid command specified");
+      console.log("Invalid command specified");
+      process.exit(1);
   }
 };
 
