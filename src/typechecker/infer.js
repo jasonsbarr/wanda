@@ -67,6 +67,8 @@ export const infer = (ast, env, constant = false) => {
       return inferBinaryExpression(ast, env, constant);
     case ASTTypes.LogicalExpression:
       return inferLogicalExpression(ast, env, constant);
+    case ASTTypes.ForExpression:
+      return inferForExpression(ast, env, constant);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -608,3 +610,12 @@ const inferLogicalExpression = (node, env, constant) => {
       throw new Exception(`Unknown logical operator ${node.op}`);
   }
 };
+
+/**
+ * Infers a type from a for expression
+ * @param {import("../parser/ast.js").ForExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferForExpression = (node, env, constant) => {};
