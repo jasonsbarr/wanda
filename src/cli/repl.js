@@ -27,9 +27,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
 
   if (path) {
     // load file in REPL interactively
-    const fileContents = fs.readFileSync(path, { encoding: "utf-8" });
-    const compiledFile = compile(fileContents, path, compileEnv, typeEnv);
-    vm.runInThisContext(compiledFile);
+    compileAndRunFromPath(path);
   }
 
   let prompt = "wanda> ";
@@ -102,4 +100,10 @@ const saveAsFile = (session) => {
       `Error while saving file, please try again later: ${e.message}`
     );
   }
+};
+
+const compileAndRunFromPath = (path) => {
+  const fileContents = fs.readFileSync(path, { encoding: "utf-8" });
+  const compiledFile = compile(fileContents, path, compileEnv, typeEnv);
+  vm.runInThisContext(compiledFile);
 };
