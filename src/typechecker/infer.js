@@ -194,7 +194,11 @@ const inferCallExpression = (node, env, constant) => {
 
 const checkArgTypes = (node, params, env, func, constant) => {
   node.args.forEach((arg, i) => {
-    const argType = infer(arg, env, constant);
+    let argEnv =
+      arg.kind === ASTTypes.LambdaExpression
+        ? env.extend("LambdaExpression")
+        : env;
+    const argType = infer(arg, argEnv, constant);
 
     if (func.variadic && i >= params.length - 1) {
       // is part of rest args
