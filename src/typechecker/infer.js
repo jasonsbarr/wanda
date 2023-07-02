@@ -641,5 +641,5 @@ const inferForExpression = (node, env, constant) => {
   );
   const opArgs = [lambda, ...node.vars.map((v) => v.initializer)];
 
-  return infer(AST.CallExpression(node.op, opArgs, node.srcloc));
+  return infer(AST.CallExpression(node.op, opArgs, node.srcloc), env, constant);
 };
