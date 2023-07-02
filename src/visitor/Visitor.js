@@ -180,6 +180,24 @@ export class Visitor {
   }
 
   /**
+   * ForExpression node visitor
+   * @param {import("../parser/ast.js").ForExpression} node
+   * @returns {import("../parser/ast.js").ForExpression}
+   */
+  visitForExpression(node) {
+    const op = this.visit(node.op);
+
+    /** @type {AST[]} */
+    let body = [];
+
+    for (let expr of node.body) {
+      body.push(this.visit(expr));
+    }
+
+    return { ...node, op, body };
+  }
+
+  /**
    * FunctionDeclaration node visitor
    * @param {import("../parser/ast.js").FunctionDeclaration} node
    * @returns {import("../parser/ast.js").FunctionDeclaration}
