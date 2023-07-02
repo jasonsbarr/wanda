@@ -557,6 +557,7 @@ export const AST = {
    * @param {"typeof"|"not"} op
    * @param {AST} operand
    * @param {SrcLoc} srcloc
+   * @returns {UnaryExpression}
    */
   UnaryExpression(op, operand, srcloc) {
     return {
@@ -571,13 +572,15 @@ export const AST = {
    * @param {Symbol} op
    * @param {ForVar[]} vars
    * @param {AST} body
+   * @param {SrcLoc} srcloc
    */
-  ForExpression(op, vars, body) {
+  ForExpression(op, vars, body, srcloc) {
     return {
       kind: ASTTypes.ForExpression,
       op,
       vars,
       body,
+      srcloc,
     };
   },
 };
