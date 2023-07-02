@@ -634,7 +634,7 @@ const inferForExpression = (node, env, constant) => {
       varType = varType.vectorType;
     }
 
-    return { ...v.var, type: varType };
+    return { name: v.var, type: varType };
   });
   const lambda = AST.LambdaExpression(
     lambdaArgs,
