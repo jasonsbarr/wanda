@@ -34,9 +34,9 @@
     "@paralleldrive/cuid2": "^2.2.1",
     "esbuild": "^0.17.19",
     "fast-deep-equal": "^3.1.3",
+    "ffi-napi": "^4.0.3",
     "object-hash": "^3.0.0",
-    "ramda": "^0.29.0",
-    "readline-sync": "^1.4.10"
+    "ramda": "^0.29.0"
   },
   "devDependencies": {
     "jest": "^29.5.0",
