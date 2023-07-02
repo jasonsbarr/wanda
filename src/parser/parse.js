@@ -490,6 +490,37 @@ const parseUnaryExpression = (form) => {
 };
 
 /**
+ * Parses a for expression (iterative)
+ * @param {List} form
+ * @returns {import("./ast.js").ForExpression}
+ */
+const parseForExpression = (form) => {
+  const [_, op, rawVars, ...body] = form;
+  const srcloc = form.srcloc;
+  const parsedOp = parseExpr(op);
+
+  /** @type {import("./ast.js").ForVar[]} */
+  let vars = [];
+
+  for (let rawVar of rawVars) {
+    const varName = parseExpr(rawVar.car);
+    // need the head of the tail of the rawVar list
+    const initializer = parseExpr(rawVar.cdr.car);
+
+    vars.push({ var: varName, initializer });
+  }
+
+  /** @type {AST[]} */
+  let parsedBody = [];
+
+  for (let expr of body) {
+    parsedBody.push(parseExpr(expr));
+  }
+
+  return AST.ForExpression(parsedOp, vars, parsedBody, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -524,6 +555,8 @@ const parseList = (form) => {
       return parseLogicalExpression(form);
     case "not":
       return parseUnaryExpression(form);
+    case "for":
+      return parseForExpression(form);
     default:
       return parseCall(form);
   }
