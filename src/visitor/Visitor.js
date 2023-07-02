@@ -85,6 +85,8 @@ export class Visitor {
         return this.visitBinaryExpression(node);
       case ASTTypes.LogicalExpression:
         return this.visitLogicalExpression(node);
+      case ASTTypes.ForExpression:
+        return this.visitForExpression(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
