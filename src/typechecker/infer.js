@@ -369,6 +369,8 @@ const inferFunction = (node, env, constant) => {
     }
     const type = p.typeAnnotation
       ? fromTypeAnnotation(p.typeAnnotation, env)
+      : p.type
+      ? p.type
       : Type.any;
     env.set(p.name.name, type);
     return type;
@@ -618,4 +620,26 @@ const inferLogicalExpression = (node, env, constant) => {
  * @param {boolean} constant
  * @returns {import("./types").Type}
  */
-const inferForExpression = (node, env, constant) => {};
+const inferForExpression = (node, env, constant) => {
+  const lambdaArgs = node.vars.map((v) => {
+    let varType = infer(v.initializer, env, constant);
+
+    if (Type.isList(varType)) {
+      varType = varType.listType;
+    } else if (Type.isVector(varType)) {
+      varType = varType.vectorType;
+    }
+
+    return { ...v.var, type: varType };
+  });
+  const lambda = AST.LambdaExpression(
+    lambdaArgs,
+    node.body,
+    false,
+    null,
+    node.srcloc
+  );
+  const opArgs = [lambda, ...node.vars.map((v) => v.initializer)];
+
+  return infer(AST.CallExpression(node.op, opArgs, node.srcloc));
+};
