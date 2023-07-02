@@ -141,7 +141,7 @@ export const ASTTypes = {
  * @typedef {{var: Symbol; initializer: AST}} ForVar
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.ForExpression; vars: ForVar[]; body: AST[]}} ForExpression
+ * @typedef {ASTNode & {kind: ASTTypes.ForExpression; op: Symbol; vars: ForVar[]; body: AST[]}} ForExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
