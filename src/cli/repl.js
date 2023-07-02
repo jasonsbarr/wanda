@@ -1,6 +1,8 @@
 import os from "os";
 import vm from "vm";
 import fs from "fs";
+import { join } from "path";
+import readlineSync from "readline-sync";
 import { pprintAST, pprintDesugaredAST } from "./pprint.js";
 import { println } from "../printer/println.js";
 import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
@@ -33,6 +35,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
   let prompt = "wanda> ";
   let input = "";
   let indent = 0;
+  let session = "";
 
   while (true) {
     try {
@@ -54,6 +57,10 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
           mode = "repl";
           input = "";
           break;
+        case ":save-file":
+          saveAsFile(session);
+          input = "";
+          break;
         // If it's code, compile and run it
         default:
           if (inputFinished(input)) {
@@ -67,6 +74,9 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
             }
 
             println(result);
+            session += input + os.EOL;
+            input = "";
+            indent = 0;
           } else {
             input += os.EOL;
             indent = countIndent(input);
@@ -74,9 +84,22 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
       }
     } catch (e) {
       console.error(e.stack);
-    } finally {
       input = "";
       indent = 0;
     }
+  }
+};
+
+const saveAsFile = (session) => {
+  const path = readlineSync.question("Enter the path to save the file at: ");
+  const filePath = join(process.cwd(), path);
+
+  try {
+    fs.writeFileSync(filePath, session, { encoding: "utf-8" });
+    console.log("File saved!");
+  } catch (e) {
+    console.log(
+      `Error while saving file, please try again later: ${e.message}`
+    );
   }
 };
