@@ -67,8 +67,6 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
             }
 
             println(result);
-            input = "";
-            indent = 0;
           } else {
             input += os.EOL;
             indent = countIndent(input);
@@ -76,6 +74,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
       }
     } catch (e) {
       console.error(e.stack);
+    } finally {
       input = "";
       indent = 0;
     }
