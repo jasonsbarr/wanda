@@ -96,7 +96,7 @@ export class Desugarer extends Visitor {
    */
   visitForExpression(node) {
     const op = this.visit(node.op);
-    const lambdaArgs = node.vars.map((v) => v.var);
+    const lambdaArgs = node.vars.map((v) => ({ name: v.var }));
     const lambda = AST.LambdaExpression(
       lambdaArgs,
       node.body,
