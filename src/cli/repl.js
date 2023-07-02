@@ -1,7 +1,6 @@
 import os from "os";
 import vm from "vm";
 import fs from "fs";
-import readlineSync from "readline-sync";
 import { pprintAST, pprintDesugaredAST } from "./pprint.js";
 import { println } from "../printer/println.js";
 import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
@@ -10,8 +9,9 @@ import { build } from "./build.js";
 import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { countIndent, inputFinished } from "./utils.js";
+import { readline } from "../shared/readline.js";
 
-const read = (prompt) => readlineSync.question(prompt);
+const read = (prompt) => readline(prompt);
 
 export const repl = ({ mode = "repl", path = "" } = {}) => {
   // Create global compile environment
