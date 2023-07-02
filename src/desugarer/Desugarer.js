@@ -30,7 +30,7 @@ export class Desugarer extends Visitor {
   /**
    * Desugars a BinaryExpression into a CallExpression
    * @param {import("../parser/ast.js").BinaryExpression & {type: import("../typechecker/types.js").Type}} node
-   * @returns {import("../parser/ast.js").BinaryExpression & {type: import("../typechecker/types.js").Type}}
+   * @returns {import("../parser/ast.js").CallExpression & {type: import("../typechecker/types.js").Type}}
    */
   visitBinaryExpression(node) {
     const left = this.visit(node.left);
@@ -43,7 +43,7 @@ export class Desugarer extends Visitor {
   /**
    * Desugars a CondExpression into nested IfExpressions
    * @param {import("../parser/ast.js").CondExpression & {type: import(".node./typechecker/types.js").Type}} node
-   * @returns {import("../parser/ast.js").CondExpression & {type: import(".node./typechecker/types.js").Type}}
+   * @returns {import("../parser/ast.js").IfExpression & {type: import(".node./typechecker/types.js").Type}}
    */
   visitCondExpression(node) {
     const srcloc = node.srcloc;
@@ -83,7 +83,7 @@ export class Desugarer extends Visitor {
   /**
    * Desugars a ConstantDeclaration node into a VariableDeclaration
    * @param {import("../parser/ast.js").ConstantDeclaration & {type: import("../typechecker/types.js").Type}} node
-   * @returns {import("../parser/ast.js").ConstantDeclaration & {type: import("../typechecker/types.js").Type}}
+   * @returns {import("../parser/ast.js").VariableDeclaration & {type: import("../typechecker/types.js").Type}}
    */
   visitConstantDeclaration(node) {
     return { ...node, kind: ASTTypes.VariableDeclaration };
@@ -132,7 +132,7 @@ export class Desugarer extends Visitor {
   /**
    *
    * @param {import("../parser/ast.js").UnaryExpression & {type: import("../typechecker/types.js").Type}} node
-   * @returns {import("../parser/ast.js").UnaryExpression & {type: import("../typechecker/types.js").Type}}
+   * @returns {import("../parser/ast.js").CallExpression & {type: import("../typechecker/types.js").Type}}
    */
   visitUnaryExpression(node) {
     const operand = this.visit(node.operand);
