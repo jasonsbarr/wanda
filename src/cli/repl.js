@@ -15,11 +15,11 @@ import { readline } from "../shared/readline.js";
 
 const read = (prompt) => readline(prompt);
 
-export const repl = ({ mode = "repl", path = "" } = {}) => {
-  // Create global compile environment
-  const compileEnv = makeGlobalNameMap();
-  const typeEnv = makeGlobalTypeEnv();
+// Create global compile environment
+const compileEnv = makeGlobalNameMap();
+const typeEnv = makeGlobalTypeEnv();
 
+export const repl = ({ mode = "repl", path = "" } = {}) => {
   // Build global module and instantiate in REPL context
   // This should make all compiled global symbols available
   const globalCode = build(emitGlobalEnv());
@@ -57,6 +57,10 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
           break;
         case ":save-file":
           saveAsFile(session);
+          input = "";
+          break;
+        case ":load-file":
+          compileAndRunFromPath(getPathFromInput());
           input = "";
           break;
         // If it's code, compile and run it
@@ -106,4 +110,9 @@ const compileAndRunFromPath = (path) => {
   const fileContents = fs.readFileSync(path, { encoding: "utf-8" });
   const compiledFile = compile(fileContents, path, compileEnv, typeEnv);
   vm.runInThisContext(compiledFile);
+};
+
+const getPathFromInput = () => {
+  const path = readlineSync.question("Enter the path to load the file from: ");
+  return join(process.cwd(), path);
 };
