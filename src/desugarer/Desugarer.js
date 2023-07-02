@@ -90,6 +90,26 @@ export class Desugarer extends Visitor {
   }
 
   /**
+   * Desugars a ForExpression node into a CallExpression node
+   * @param {import("../parser/ast.js").ForExpression} node
+   * @return {import("../parser/ast.js").CallExpression & {type: import("../typechecker/types.js").Type}}
+   */
+  visitForExpression(node) {
+    const op = this.visit(node.op);
+    const lambdaArgs = node.vars.map((v) => v.var);
+    const lambda = AST.LambdaExpression(
+      lambdaArgs,
+      node.body,
+      false,
+      null,
+      node.srcloc
+    );
+    const callArgs = [lambda, ...node.vars.map((v) => v.initializer)];
+
+    return AST.CallExpression(op, callArgs, node.srcloc);
+  }
+
+  /**
    * Desugars a FunctionDefinition node into a VariableDeclaration with lambda
    * @param {import("../parser/ast.js").FunctionDeclaration & {type: import("../typechecker/types.js").Type}} node
    * @returns {import("../parser/ast.js").VariableDeclaration & {type: import("../typechecker/types.js").Type}}
