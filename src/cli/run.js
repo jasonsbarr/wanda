@@ -10,9 +10,9 @@ import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 
 export const run = () => {
   switch (process.argv[2]) {
-    case "-i":
+    case "load":
       if (!process.argv[3]) {
-        console.log(`-i option requires file path as argument`);
+        console.log(`load command requires file path as argument`);
         process.exit(1);
       }
       const path = join(process.cwd(), process.argv[3]);
