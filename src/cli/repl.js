@@ -12,6 +12,7 @@ import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { countIndent, inputFinished } from "./utils.js";
 import { readline } from "../shared/readline.js";
+import { getVersion } from "./utils.js";
 
 const read = (prompt) => readline(prompt);
 
@@ -29,8 +30,11 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
     // load file in REPL interactively
     compileAndRunFromPath(path);
   }
+  console.log(
+    `**** Welcome to the Wanda Programming Language v${getVersion()} interactive session ****`
+  );
 
-  let prompt = "wanda> ";
+  let prompt = "> ";
   let input = "";
   let indent = 0;
   let session = "";
