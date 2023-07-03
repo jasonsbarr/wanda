@@ -75,7 +75,7 @@ export const wandac = () => {
       // should be a file path
       const pathname = join(process.cwd(), process.argv[2]);
       const compiledFile = compileFile(pathname);
-      const globals = emitGlobalEnv();
+      const globals = emitGlobalEnv(true);
       const code = globals + os.EOL + os.EOL + compiledFile;
       const outfile = basename(pathname).split(".")[0] + ".js";
 
