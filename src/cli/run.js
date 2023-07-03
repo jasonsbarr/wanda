@@ -7,6 +7,7 @@ import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
 import { build } from "./build.js";
 import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
+import { getVersion } from "./utils.js";
 
 export const run = () => {
   switch (process.argv[2]) {
@@ -26,6 +27,9 @@ export const run = () => {
         process.exit(1);
       }
       return runFile(join(process.cwd(), process.argv[3]));
+    case "-v":
+    case "version":
+      return console.log(getVersion());
     case undefined:
     case "repl":
       return repl();
