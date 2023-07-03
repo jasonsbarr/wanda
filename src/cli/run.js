@@ -61,7 +61,11 @@ export const run = () => {
       return console.log(getVersion());
     case "help":
     case "-h":
-      return getHelp(COMMANDS, "Wanda Programming Language");
+      return getHelp(
+        COMMANDS,
+        "Wanda Programming Language",
+        "Just running wanda with no command also starts an interactive session"
+      );
     case undefined:
     case "repl":
     case "-i":

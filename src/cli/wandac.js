@@ -6,6 +6,33 @@ import { build } from "./build.js";
 import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
+import { getVersion, getHelp } from "./utils.js";
+
+const COMMANDS = {
+  compile: {
+    alias: "-c",
+    description:
+      "Compiles a single Wanda file to JavaScript that imports its dependencies",
+    usage: "wandac compile <filepath> or wandac -c <filepath>",
+  },
+  build: {
+    alias: "-b",
+    description:
+      "Compiles a Wanda file and builds it with bundled JavaScript dependencies",
+    usage: "wandac build <filepath> or wandac -b <filepath>",
+  },
+  version: {
+    alias: "-v",
+    description:
+      "Prints the current version number of your WandaC installation",
+    usage: "wandac version or wandac -v",
+  },
+  help: {
+    alias: "-h",
+    description: "Prints this help message on the screen",
+    usage: "wandac help or wandac -h",
+  },
+};
 
 const compileFile = (path) => {
   const contents = fs.readFileSync(path, { encoding: "utf-8" });
@@ -19,7 +46,8 @@ export const wandac = () => {
   }
 
   switch (process.argv[2]) {
-    case "build": {
+    case "build":
+    case "-b": {
       const pathname = join(process.cwd(), process.argv[3]);
       const compiledFile = compileFile(pathname);
       const globals = emitGlobalEnv();
@@ -31,6 +59,18 @@ export const wandac = () => {
       fs.writeFileSync(outfile, built, { encoding: "utf-8" });
       break;
     }
+    case "version":
+    case "-v":
+      getVersion();
+      break;
+    case "help":
+    case "-h":
+      getHelp(
+        COMMANDS,
+        "WandaC Compiler",
+        "Just using wandac <filename> also compiles a single file"
+      );
+      break;
     default: {
       // should be a file path
       const pathname = join(process.cwd(), process.argv[2]);

@@ -31,20 +31,18 @@ export const getVersion = () => {
   return packageJson.version;
 };
 
-export const getHelp = (commands, application) => {
+export const getHelp = (commands, application, postscript = "") => {
   console.log(`**** ${application} v${getVersion()} help info ****`);
   console.log("Usage: wanda <command> <args>");
   console.log();
 
   for (let [name, command] of Object.entries(commands)) {
-    console.log(`wanda ${name}:`);
+    console.log(`${name}:`);
     console.log(`        Alias: wanda ${command.alias}`);
     console.log(`        Description: ${command.description}`);
     console.log(`        Usage: ${command.usage}`);
   }
 
   console.log();
-  console.log(
-    "Just running wanda with no command also starts an interactive session"
-  );
+  postscript && console.log(postscript);
 };
