@@ -9,9 +9,38 @@ import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { getVersion } from "./utils.js";
 
+const COMMANDS = {
+  load: {
+    alias: "-l",
+    description:
+      "Loads a Wanda file into an interactive session so you can use its definitions",
+    usage: "wanda load <filepath> or wanda -l <filepath>",
+  },
+  run: {
+    alias: "-r",
+    description: "Runs a Wanda file from the command line",
+    usage: "wanda run <filepath> or wanda -r <filepath>",
+  },
+  repl: {
+    alias: "-i",
+    description: "Starts an interactive session with the Wanda REPL",
+    usage: "wanda repl or wanda -i",
+  },
+  version: {
+    alias: "-v",
+    description: "Prints the current version number of your Wanda installation",
+    usage: "wanda version or wanda -v",
+  },
+  help: {
+    alias: "-h",
+    description: "Prints this help message on the screen",
+    usage: "wanda help or wanda -h",
+  },
+};
+
 export const run = () => {
   switch (process.argv[2]) {
-    case "-i":
+    case "-l":
     case "load":
       if (!process.argv[3]) {
         console.log(`load command requires file path as argument`);
@@ -30,8 +59,12 @@ export const run = () => {
     case "-v":
     case "version":
       return console.log(getVersion());
+    case "help":
+    case "-h":
+      return getHelp();
     case undefined:
     case "repl":
+    case "-i":
       return repl();
     default:
       console.log("Invalid command specified");
@@ -48,4 +81,24 @@ const runFile = (path) => {
 
   vm.runInThisContext(globalCode);
   return vm.runInThisContext(compiledCode);
+};
+
+const getHelp = () => {
+  console.log(
+    `**** Wanda Programming Language v${getVersion()} help info ****`
+  );
+  console.log("Usage: wanda <command> <args>");
+  console.log();
+
+  for (let [name, command] of Object.entries(COMMANDS)) {
+    console.log(`wanda ${name}:`);
+    console.log(`        Alias: wanda ${command.alias}`);
+    console.log(`        Description: ${command.description}`);
+    console.log(`        Usage: ${command.usage}`);
+  }
+
+  console.log();
+  console.log(
+    "Just running wanda with no command also starts an interactive session"
+  );
 };
