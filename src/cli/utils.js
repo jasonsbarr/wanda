@@ -33,13 +33,12 @@ export const getVersion = () => {
 
 export const getHelp = (commands, application, postscript = "") => {
   console.log(`**** ${application} v${getVersion()} help info ****`);
-  console.log("Usage: wanda <command> <args>");
   console.log();
 
   for (let [name, command] of Object.entries(commands)) {
-    console.log(`${name}:`);
+    console.log(`${name}`);
     command.alias && console.log(`        Alias: wanda ${command.alias}`);
-    console.log(`        Description: ${command.description}`);
+    console.log(`        ${command.description}`);
     command.usage && console.log(`        Usage: ${command.usage}`);
   }
 
