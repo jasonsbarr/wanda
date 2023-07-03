@@ -12,13 +12,45 @@ import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { countIndent, inputFinished } from "./utils.js";
 import { readline } from "../shared/readline.js";
-import { getVersion } from "./utils.js";
+import { getVersion, getHelp } from "./utils.js";
 
 const read = (prompt) => readline(prompt);
 
 // Create global compile environment
 const compileEnv = makeGlobalNameMap();
 const typeEnv = makeGlobalTypeEnv();
+
+const COMMANDS = {
+  ":quit": {
+    description: "Quits the REPL with exit 0",
+  },
+  ":print-ast": {
+    description:
+      "Makes a printed representation of the AST show when you enter an expression",
+  },
+  ":print-desugared": {
+    description:
+      "Like :print-ast, but shows the desugared tree prior to code emitting",
+  },
+  ":no-print-ast": {
+    description: "Turns off AST printing if it's on",
+  },
+  ":save-file": {
+    description: "Saves the current REPL session as a file",
+    usage: "Prompts you for a path to save the file",
+  },
+  ":load-file": {
+    description:
+      "Loads the definitions from a file into the interactive session",
+    usage: "Prompts you for a path to load the file from",
+  },
+  ":version": {
+    description: "Prints the currently installed version of Wanda",
+  },
+  ":help": {
+    description: "Shows this help message",
+  },
+};
 
 export const repl = ({ mode = "repl", path = "" } = {}) => {
   // Build global module and instantiate in REPL context
@@ -33,6 +65,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
   console.log(
     `**** Welcome to the Wanda Programming Language v${getVersion()} interactive session ****`
   );
+  console.log("Enter :help for more information");
 
   let prompt = "> ";
   let input = "";
@@ -65,6 +98,14 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
           break;
         case ":load-file":
           compileAndRunFromPath(getPathFromInput());
+          input = "";
+          break;
+        case ":version":
+          console.log(getVersion());
+          input = "";
+          break;
+        case ":help":
+          getHelp(COMMANDS, "Wanda Interactive Session");
           input = "";
           break;
         // If it's code, compile and run it

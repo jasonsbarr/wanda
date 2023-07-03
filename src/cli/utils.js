@@ -38,9 +38,9 @@ export const getHelp = (commands, application, postscript = "") => {
 
   for (let [name, command] of Object.entries(commands)) {
     console.log(`${name}:`);
-    console.log(`        Alias: wanda ${command.alias}`);
+    command.alias && console.log(`        Alias: wanda ${command.alias}`);
     console.log(`        Description: ${command.description}`);
-    console.log(`        Usage: ${command.usage}`);
+    command.usage && console.log(`        Usage: ${command.usage}`);
   }
 
   console.log();
