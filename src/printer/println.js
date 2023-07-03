@@ -1,4 +1,5 @@
 import { printString } from "./printString.js";
 
-export const println = (input, withQuotes = true) =>
-  console.log(printString(input, withQuotes));
+export const println = (input, withQuotes = true, stdout = process.stdout) => {
+  stdout.write(printString(input, withQuotes) + "\n");
+};
