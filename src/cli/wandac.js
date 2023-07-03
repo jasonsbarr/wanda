@@ -6,7 +6,7 @@ import { build } from "./build.js";
 import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
-import { getVersion, getHelp } from "./utils.js";
+import { getVersion, printHelp } from "./utils.js";
 
 const COMMANDS = {
   compile: {
@@ -65,7 +65,7 @@ export const wandac = () => {
       break;
     case "help":
     case "-h":
-      getHelp(
+      printHelp(
         COMMANDS,
         "WandaC Compiler",
         "Just using wandac <filename> also compiles a single file"

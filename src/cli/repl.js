@@ -12,7 +12,7 @@ import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { countIndent, inputFinished } from "./utils.js";
 import { readline } from "../shared/readline.js";
-import { getVersion, getHelp } from "./utils.js";
+import { getVersion, printHelp } from "./utils.js";
 
 const read = (prompt) => readline(prompt);
 
@@ -105,7 +105,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
           input = "";
           break;
         case ":help":
-          getHelp(
+          printHelp(
             COMMANDS,
             "Wanda Interactive Session",
             "Enter an expression at the prompt for immediate evaluation"

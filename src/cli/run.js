@@ -7,7 +7,7 @@ import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
 import { build } from "./build.js";
 import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
-import { getVersion, getHelp } from "./utils.js";
+import { getVersion, printHelp } from "./utils.js";
 
 const COMMANDS = {
   load: {
@@ -61,7 +61,7 @@ export const run = () => {
       return console.log(getVersion());
     case "help":
     case "-h":
-      return getHelp(
+      return printHelp(
         COMMANDS,
         "Wanda Programming Language",
         "Just running wanda with no command also starts an interactive session"

@@ -31,7 +31,7 @@ export const getVersion = () => {
   return packageJson.version;
 };
 
-export const getHelp = (commands, application, postscript = "") => {
+export const printHelp = (commands, application, postscript = "") => {
   console.log(`**** ${application} v${getVersion()} help info ****`);
   console.log();
   console.log("Command:  |  Info:");
