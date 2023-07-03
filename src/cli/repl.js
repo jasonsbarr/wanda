@@ -125,7 +125,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
             }
 
             println(result);
-            session += input + os.EOL;
+            session += input + os.EOL + os.EOL;
             input = "";
             indent = 0;
           } else {
