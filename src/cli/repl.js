@@ -105,7 +105,11 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
           input = "";
           break;
         case ":help":
-          getHelp(COMMANDS, "Wanda Interactive Session");
+          getHelp(
+            COMMANDS,
+            "Wanda Interactive Session",
+            "Enter an expression at the prompt for immediate evaluation"
+          );
           input = "";
           break;
         // If it's code, compile and run it
