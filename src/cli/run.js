@@ -7,7 +7,7 @@ import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
 import { build } from "./build.js";
 import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
-import { getVersion } from "./utils.js";
+import { getVersion, getHelp } from "./utils.js";
 
 const COMMANDS = {
   load: {
@@ -61,7 +61,7 @@ export const run = () => {
       return console.log(getVersion());
     case "help":
     case "-h":
-      return getHelp();
+      return getHelp(COMMANDS, "Wanda Programming Language");
     case undefined:
     case "repl":
     case "-i":
@@ -81,24 +81,4 @@ const runFile = (path) => {
 
   vm.runInThisContext(globalCode);
   return vm.runInThisContext(compiledCode);
-};
-
-const getHelp = () => {
-  console.log(
-    `**** Wanda Programming Language v${getVersion()} help info ****`
-  );
-  console.log("Usage: wanda <command> <args>");
-  console.log();
-
-  for (let [name, command] of Object.entries(COMMANDS)) {
-    console.log(`wanda ${name}:`);
-    console.log(`        Alias: wanda ${command.alias}`);
-    console.log(`        Description: ${command.description}`);
-    console.log(`        Usage: ${command.usage}`);
-  }
-
-  console.log();
-  console.log(
-    "Just running wanda with no command also starts an interactive session"
-  );
 };
