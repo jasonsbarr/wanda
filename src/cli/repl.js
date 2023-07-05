@@ -30,7 +30,7 @@ const COMMANDS = {
   },
   ":print-ast -d": {
     description:
-      "Like :print-ast, but shows the desugared tree prior to code emitting",
+      "Like :print-ast, but shows the tree after the desugaring step, right before emitting code",
     usage: ":print-ast -d",
   },
   ":no-print-ast": {
