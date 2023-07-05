@@ -109,6 +109,8 @@ export class TypeChecker {
         return this.checkCondExpression(node, env);
       case ASTTypes.WhenExpression:
         return this.checkWhenExpression(node, env);
+      case ASTTypes.ForExpression:
+        return this.checkForExpression(node, env);
       default:
         throw new Exception(`Type checking not implemented for ${node.kind}`);
     }
@@ -224,6 +226,17 @@ export class TypeChecker {
       srcloc: node.srcloc,
       type: infer(node, doEnv),
     };
+  }
+
+  /**
+   * Type checks a for expression
+   * @param {import("../parser/ast.js").ForExpression} node
+   * @param {TypeEnvironment} env
+   * @returns {TypedAST}
+   */
+  checkForExpression(node, env) {
+    const op = this.checkNode(node.op, env);
+    return { ...node, op, type: infer(node, env) };
   }
 
   /**

@@ -67,6 +67,8 @@ export const infer = (ast, env, constant = false) => {
       return inferBinaryExpression(ast, env, constant);
     case ASTTypes.LogicalExpression:
       return inferLogicalExpression(ast, env, constant);
+    case ASTTypes.ForExpression:
+      return inferForExpression(ast, env, constant);
     default:
       throw new Exception(`No type inferred for AST node type ${ast.kind}`);
   }
@@ -192,7 +194,11 @@ const inferCallExpression = (node, env, constant) => {
 
 const checkArgTypes = (node, params, env, func, constant) => {
   node.args.forEach((arg, i) => {
-    const argType = infer(arg, env, constant);
+    let argEnv =
+      arg.kind === ASTTypes.LambdaExpression
+        ? env.extend("LambdaExpression")
+        : env;
+    const argType = infer(arg, argEnv, constant);
 
     if (func.variadic && i >= params.length - 1) {
       // is part of rest args
@@ -367,6 +373,8 @@ const inferFunction = (node, env, constant) => {
     }
     const type = p.typeAnnotation
       ? fromTypeAnnotation(p.typeAnnotation, env)
+      : p.type
+      ? p.type
       : Type.any;
     env.set(p.name.name, type);
     return type;
@@ -607,4 +615,35 @@ const inferLogicalExpression = (node, env, constant) => {
     default:
       throw new Exception(`Unknown logical operator ${node.op}`);
   }
+};
+
+/**
+ * Infers a type from a for expression
+ * @param {import("../parser/ast.js").ForExpression} node
+ * @param {TypeEnvironment} env
+ * @param {boolean} constant
+ * @returns {import("./types").Type}
+ */
+const inferForExpression = (node, env, constant) => {
+  const lambdaArgs = node.vars.map((v) => {
+    let varType = infer(v.initializer, env, constant);
+
+    if (Type.isList(varType)) {
+      varType = varType.listType;
+    } else if (Type.isVector(varType)) {
+      varType = varType.vectorType;
+    }
+
+    return { name: v.var, type: varType };
+  });
+  const lambda = AST.LambdaExpression(
+    lambdaArgs,
+    node.body,
+    false,
+    null,
+    node.srcloc
+  );
+  const opArgs = [lambda, ...node.vars.map((v) => v.initializer)];
+
+  return infer(AST.CallExpression(node.op, opArgs, node.srcloc), env, constant);
 };

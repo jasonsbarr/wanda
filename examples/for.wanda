@@ -1,0 +1,2 @@
+(for map ((i (range 5)))
+  (+ i i))

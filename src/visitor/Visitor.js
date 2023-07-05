@@ -85,6 +85,8 @@ export class Visitor {
         return this.visitBinaryExpression(node);
       case ASTTypes.LogicalExpression:
         return this.visitLogicalExpression(node);
+      case ASTTypes.ForExpression:
+        return this.visitForExpression(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -177,6 +179,34 @@ export class Visitor {
     }
 
     return { ...node, body };
+  }
+
+  /**
+   * ForExpression node visitor
+   * @param {import("../parser/ast.js").ForExpression} node
+   * @returns {import("../parser/ast.js").ForExpression}
+   */
+  visitForExpression(node) {
+    const op = this.visit(node.op);
+
+    /** @type {import("../parser/ast.js").ForVar[]} */
+    let vars = [];
+
+    for (let nodevar of node.vars) {
+      const v = this.visit(nodevar.var);
+      const initializer = this.visit(nodevar.initializer);
+
+      vars.push({ var: v, initializer });
+    }
+
+    /** @type {AST[]} */
+    let body = [];
+
+    for (let expr of node.body) {
+      body.push(this.visit(expr));
+    }
+
+    return { ...node, op, vars, body };
   }
 
   /**

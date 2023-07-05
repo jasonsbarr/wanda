@@ -35,6 +35,7 @@ export const ASTTypes = {
   BinaryExpression: "BinaryExpression",
   LogicalExpression: "LogicalExpression",
   UnaryExpression: "UnaryExpression",
+  ForExpression: "ForExpression",
 };
 
 /**
@@ -135,6 +136,12 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.UnaryExpression; op: "typeof"|"not"; operand: AST}} UnaryExpression
+ */
+/**
+ * @typedef {{var: Symbol; initializer: AST}} ForVar
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.ForExpression; op: Symbol; vars: ForVar[]; body: AST[]}} ForExpression
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -550,12 +557,29 @@ export const AST = {
    * @param {"typeof"|"not"} op
    * @param {AST} operand
    * @param {SrcLoc} srcloc
+   * @returns {UnaryExpression}
    */
   UnaryExpression(op, operand, srcloc) {
     return {
       kind: ASTTypes.UnaryExpression,
       op,
       operand,
+      srcloc,
+    };
+  },
+  /**
+   *
+   * @param {Symbol} op
+   * @param {ForVar[]} vars
+   * @param {AST} body
+   * @param {SrcLoc} srcloc
+   */
+  ForExpression(op, vars, body, srcloc) {
+    return {
+      kind: ASTTypes.ForExpression,
+      op,
+      vars,
+      body,
       srcloc,
     };
   },
