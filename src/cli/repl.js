@@ -136,7 +136,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
           }
       }
     } catch (e) {
-      console.error(e.stack);
+      console.error(e.stack ? e.stack : e.message);
       input = "";
       indent = 0;
     }
