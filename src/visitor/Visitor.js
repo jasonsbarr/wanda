@@ -189,6 +189,16 @@ export class Visitor {
   visitForExpression(node) {
     const op = this.visit(node.op);
 
+    /** @type {import("../parser/ast.js").ForVar[]} */
+    let vars = [];
+
+    for (let nodevar of node.vars) {
+      const v = this.visit(nodevar.var);
+      const initializer = this.visit(nodevar.initializer);
+
+      vars.push({ var: v, initializer });
+    }
+
     /** @type {AST[]} */
     let body = [];
 
@@ -196,7 +206,7 @@ export class Visitor {
       body.push(this.visit(expr));
     }
 
-    return { ...node, op, body };
+    return { ...node, op, vars, body };
   }
 
   /**
