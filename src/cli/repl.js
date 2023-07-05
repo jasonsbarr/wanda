@@ -11,7 +11,7 @@ import { build } from "./build.js";
 import { compile } from "./compile.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { countIndent, inputFinished } from "./utils.js";
-import { readline } from "../shared/readline.js";
+import { readline } from "./readline.js";
 import { getVersion, printHelp } from "./utils.js";
 
 const read = (prompt) => readline(prompt);
