@@ -31,6 +31,7 @@ const COMMANDS = {
   ":print-ast -d": {
     description:
       "Like :print-ast, but shows the desugared tree prior to code emitting",
+    usage: ":print-ast -d",
   },
   ":no-print-ast": {
     description: "Turns off AST printing if it's on",
