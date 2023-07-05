@@ -63,6 +63,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
     // load file in REPL interactively
     compileAndRunFromPath(path);
   }
+
   console.log(
     `**** Welcome to the Wanda Programming Language v${getVersion()} interactive session ****`
   );
