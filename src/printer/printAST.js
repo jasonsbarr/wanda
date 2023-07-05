@@ -93,6 +93,8 @@ class ASTPrinter {
         return this.printLogicalExpression(node, indent);
       case ASTTypes.UnaryExpression:
         return this.printUnaryExpression(node, indent);
+      case ASTTypes.ForExpression:
+        return this.printForExpression(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
