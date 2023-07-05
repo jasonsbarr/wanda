@@ -28,7 +28,7 @@ const COMMANDS = {
     description:
       "Makes a printed representation of the AST show when you enter an expression",
   },
-  ":print-desugared": {
+  ":print-ast -d": {
     description:
       "Like :print-ast, but shows the desugared tree prior to code emitting",
   },
@@ -84,7 +84,7 @@ export const repl = ({ mode = "repl", path = "" } = {}) => {
           mode = "printAST";
           input = "";
           break;
-        case ":print-desugared":
+        case ":print-ast -d":
           mode = "printDesugared";
           input = "";
           break;
