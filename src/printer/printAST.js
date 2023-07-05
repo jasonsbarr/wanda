@@ -205,6 +205,35 @@ class ASTPrinter {
   }
 
   /**
+   * Prints a ForExpression node
+   * @param {import("../parser/ast.js").ForExpression} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printForExpression(node, indent) {
+    let prStr = `${prIndent(indent)}ForExpression:\n`;
+    prStr += `${prIndent(indent + 2)}Operator:\n`;
+    prStr += ` ${this.print(node.op, indent + 4)}\n`;
+    prStr += `${prIndent(indent + 2)}Vars:\n`;
+
+    for (let nodevar of node.vars) {
+      prStr += `${prIndent(indent + 4)}Var: ${this.print(nodevar.var, 0)}\n`;
+      prStr += `${prIndent(indent + 4)}Init: ${this.print(
+        nodevar.initializer,
+        0
+      )}\n`;
+    }
+
+    prStr += `${prIndent(indent + 2)}Body:\n`;
+
+    for (let expr of node.body) {
+      prStr += this.print(expr, indent + 4) + "\n";
+    }
+
+    return prStr;
+  }
+
+  /**
    * Prints a FunctionDeclaration node
    * @param {import("../parser/ast.js").FunctionDeclaration} node
    * @param {number} indent
