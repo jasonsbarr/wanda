@@ -402,7 +402,7 @@ export const AST = {
   /**
    * Constructs a FunctionDeclaration AST node
    * @param {Symbol} name
-   * @param {Symbol[]} params
+   * @param {Param[]} params
    * @param {AST[]} body
    * @param {boolean} variadic
    * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
@@ -423,7 +423,7 @@ export const AST = {
 
   /**
    * Constructs a LambdaExpression AST node
-   * @param {Symbol[]} params
+   * @param {Param[]} params
    * @param {AST[]} body
    * @param {boolean} variadic
    * @param {import("./parseTypeAnnotation.js").TypeAnnotation|null} retType
