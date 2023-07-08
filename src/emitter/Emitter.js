@@ -109,6 +109,7 @@ export class Emitter {
    * @returns {string}
    */
   emitCallExpression(node, ns) {
+    console.log(node);
     const func = `(${this.emit(node.func, ns)})(${node.args
       .map((a) => this.emit(a, ns))
       .join(", ")})`;
@@ -190,9 +191,9 @@ export class Emitter {
     let j = 0;
     for (let expr of node.body) {
       if (j === node.body.length - 1) {
-        code += `return ${this.emit(expr, funcNs)};`;
+        code += `  return ${this.emit(expr, funcNs)};`;
       } else {
-        code += this.emit(expr, funcNs) + ";\n";
+        code += "  " + this.emit(expr, funcNs) + ";\n";
       }
       j++;
     }
