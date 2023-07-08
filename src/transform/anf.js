@@ -168,21 +168,22 @@ const transformVariableDeclaration = (node) => {
   let unnestedExprs = [];
   const anfedExpr = anf(node.expression);
   let anfedDecl;
+  let expression;
 
   if (Array.isArray(anfedExpr)) {
-    let expression = anfedExpr.pop();
+    expression = anfedExpr.pop();
     anfedDecl = { ...node, expression };
 
     unnestedExprs = unnestedExprs.concat(anfedExpr);
   } else {
-    anfedDecl = { ...node, expression: anfedExpr };
+    expression = anfedExpr;
+    anfedDecl = { ...node, expression };
   }
 
   if (node.lhv.kind === ASTTypes.VectorPattern) {
     // is vector pattern destructuring
     /** @type {import("../parser/ast.js").VectorPattern} */
     const pattern = node.lhv;
-    let assignments = [];
     let i = 0;
 
     for (let mem of pattern.members) {
@@ -196,7 +197,7 @@ const transformVariableDeclaration = (node) => {
               AST.NumberLiteral(
                 Token.new(TokenTypes.Number, i.toString(), mem.srcloc)
               ),
-              anfedExpr,
+              expression,
             ],
             mem.srcloc
           )
@@ -213,7 +214,7 @@ const transformVariableDeclaration = (node) => {
               AST.NumberLiteral(
                 Token.new(TokenTypes.Number, i.toString(), mem.srcloc)
               ),
-              anfedExpr,
+              expression,
             ]
           )
         );
