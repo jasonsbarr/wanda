@@ -38,6 +38,8 @@ export const anf = (node) => {
       return transformRecordLiteral(node);
     case ASTTypes.MemberExpression:
       return transformMemberExpression(node);
+    case ASTTypes.DoExpression:
+      return transformDoExpression(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -377,6 +379,16 @@ const transformMemberExpression = (node) => {
   }
 
   return [{ ...node, object: anfedObject }];
+};
+
+/**
+ * Transforms a DoExpression node
+ * @param {import("../parser/ast.js").DoExpression} node
+ * @returns {import("../parser/ast.js").DoExpression}
+ */
+const transformDoExpression = (node) => {
+  const body = node.body.flatMap(anf);
+  return { ...node, body };
 };
 
 const createFreshSymbol = (srcloc) => {
