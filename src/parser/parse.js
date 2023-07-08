@@ -319,7 +319,9 @@ const parseFunction = (params, maybeArrow, maybeRetType, maybeBody) => {
     body = maybeBody;
   } else {
     retType = null;
-    body = [maybeArrow, ...maybeBody];
+    body = maybeRetType
+      ? [maybeArrow, maybeRetType, ...maybeBody]
+      : [maybeArrow, ...maybeBody];
   }
 
   const variadic = [...params].reduce((isVar, param) => {
