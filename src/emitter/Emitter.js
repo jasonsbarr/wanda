@@ -109,9 +109,11 @@ export class Emitter {
    * @returns {string}
    */
   emitCallExpression(node, ns) {
-    return `(${this.emit(node.func, ns)})(${node.args
+    const func = `(${this.emit(node.func, ns)})(${node.args
       .map((a) => this.emit(a, ns))
       .join(", ")})`;
+
+    return node.isTailRec ? `() => ${func}` : func;
   }
 
   /**
@@ -198,7 +200,7 @@ export class Emitter {
     code += "\n}";
     code += `${node.name ? `, { name: "${node.name}" }` : ""})`;
 
-    return code;
+    return node.isTailRec ? `rt.trampoline(${code})` : code;
   }
 
   /**
