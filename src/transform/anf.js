@@ -187,7 +187,7 @@ const transformVariableDeclaration = (node) => {
     let i = 0;
 
     for (let mem of pattern.members) {
-      if (i === pattern.length - 1 && pattern.rest) {
+      if (i === pattern.members.length - 1 && pattern.rest) {
         // need to slice off the rest of the list/vector/tuple and assign it to the last member
         const destructuredDecl = AST.VariableDeclaration(
           mem,
