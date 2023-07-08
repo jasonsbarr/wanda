@@ -69,7 +69,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.CallExpression; func: AST, args: AST[]}} CallExpression
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.VariableDeclaration; lhv: AST, expression: AST, typeAnnotation: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
+ * @typedef {ASTNode & {kind: ASTTypes.VariableDeclaration; lhv: LHV, expression: AST, typeAnnotation: null | import("./parseTypeAnnotation.js").TypeAnnotation}} VariableDeclaration
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.SetExpression; lhv: LHV, expression: AST}} SetExpression
