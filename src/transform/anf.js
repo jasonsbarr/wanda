@@ -20,7 +20,7 @@ export const anf = (node) => {
     case ASTTypes.KeywordLiteral:
     case ASTTypes.NilLiteral:
     case ASTTypes.Symbol:
-      return transformPrimitive(node);
+      return node;
     case ASTTypes.CallExpression:
       return transformCallExpression(node);
     case ASTTypes.LambdaExpression:
@@ -29,6 +29,9 @@ export const anf = (node) => {
       return transformVariableDeclaration(node);
     case ASTTypes.SetExpression:
       return transformSetExpression(node);
+    case ASTTypes.TypeAlias:
+      // ignore
+      return node;
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -53,14 +56,6 @@ const transformProgram = (node) => {
   }
 
   return { ...node, body };
-};
-
-/**
- * Base case - transforms a primitive or Symbol node
- */
-const transformPrimitive = (node) => {
-  // primitives and symbols are already in ANF
-  return node;
 };
 
 /**
