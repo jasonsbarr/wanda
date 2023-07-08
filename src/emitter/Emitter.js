@@ -104,7 +104,7 @@ export class Emitter {
 
   /**
    * Generates code for a CallExpression AST node
-   * @param {import("../parser/ast.js").CallExpression} node
+   * @param {import("../parser/ast.js").CallExpression & {isTailRec: boolean}} node
    * @param {Namespace} ns
    * @returns {string}
    */
@@ -140,7 +140,7 @@ export class Emitter {
 
   /**
    * Generates code for an IfExpression AST node
-   * @param {import("../parser/ast.js").IfExpression} node
+   * @param {import("../parser/ast.js").IfExpression & {isTailRec?: boolean}} node
    * @param {Namespace} ns
    * @returns {string}
    */
@@ -163,7 +163,7 @@ export class Emitter {
 
   /**
    * Generates code from a LambdaExpression AST node
-   * @param {import("../parser/ast.js").LambdaExpression} node
+   * @param {import("../parser/ast.js").LambdaExpression & {isTailRec: boolean}} node
    * @param {Namespace} ns
    */
   emitLambdaExpression(node, ns) {
