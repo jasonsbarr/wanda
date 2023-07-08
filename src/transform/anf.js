@@ -32,6 +32,10 @@ export const anf = (node) => {
     case ASTTypes.TypeAlias:
       // ignore
       return node;
+    case ASTTypes.VectorLiteral:
+      return transformVectorLiteral(node);
+    case ASTTypes.RecordLiteral:
+      return transformRecordLiteral(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -195,6 +199,31 @@ const transformSetExpression = (node) => {
 
   return [{ ...node, expression: anfedExpr }];
 };
+
+/**
+ * Transforms a VectorLiteral node
+ * @param {import("../parser/ast.js").VectorLiteral} node
+ * @returns {AST[]}
+ */
+const transformVectorLiteral = (node) => {
+  let unnestedExprs = [];
+  let members = [];
+
+  for (let mem of node.members) {
+    let anfed = anf(mem);
+
+    if (Array.isArray(anfed)) {
+      members.push(anfed.pop());
+      unnestedExprs = unnestedExprs.concat(anfed);
+    } else {
+      members.push(anfed);
+    }
+  }
+
+  return [...unnestedExprs, { ...node, members }];
+};
+
+const transformRecordLiteral = (node) => {};
 
 const createFreshSymbol = (srcloc) => {
   return AST.Symbol(Token.new(TokenTypes.Symbol, makeGenSym(), srcloc));
