@@ -12,8 +12,7 @@ export const makeFunction = (
     const val = makeWandaValue(func(...args));
 
     if (typeof val === "function" && !tailRec) {
-      // return makeFunction(val);
-      console.log("make function!");
+      return makeFunction(val);
     }
 
     return val;
