@@ -430,64 +430,10 @@ export class Emitter {
       }
     }
 
-    return this.emitVariableDeclarationAssignment(
-      node.lhv,
+    return `var ${makeSymbol(node.lhv.name)} = ${this.emit(
       node.expression,
       ns
-    );
-  }
-
-  /**
-   * Generates code for a variable assignment.
-   * @param {import("../parser/ast.js").LHV} lhv
-   * @param {AST} rhv
-   * @param {Namespace} ns
-   * @returns {string}
-   */
-  emitVariableDeclarationAssignment(lhv, rhv, ns) {
-    if (lhv.kind === ASTTypes.Symbol) {
-      return `var ${makeSymbol(lhv.name)} = ${this.emit(rhv, ns)}`;
-    } else if (lhv.kind === ASTTypes.VectorPattern) {
-      return `var ${this.emit(lhv, ns)} = ${this.emit(rhv, ns)}`;
-    } else if (lhv.kind === ASTTypes.RecordPattern) {
-      /* Note that this DOES NOT WORK on rest variables in nested record patterns */
-      // create random variable to hold object being destructured
-      const gensym = makeGenSym();
-      let origObjCode = `var ${gensym} = ${this.emit(rhv, ns)}`;
-      let code = `${origObjCode};\n`;
-
-      code += `var ${this.emit(lhv, ns)} = ${gensym};\n`;
-
-      if (lhv.rest) {
-        /** @type {string[]} */
-        let used = [];
-        let i = 0;
-        for (let prop of lhv.properties) {
-          if (i !== lhv.properties.length - 1) {
-            used.push(prop.name);
-          }
-          i++;
-        }
-
-        /** @type {import("../parser/ast.js").Property[]} */
-        const unusedProps = rhv.type.properties.filter((p) => {
-          return !used.includes(p.name);
-        });
-
-        const restVarName = lhv.properties[lhv.properties.length - 1].name;
-        let restObjCode = "{ ";
-
-        for (let prop of unusedProps) {
-          restObjCode += `"${prop.name}": rt.getField(${gensym}, "${prop.name}"), `;
-        }
-
-        restObjCode += "}";
-
-        code += `var ${makeSymbol(restVarName)} = ${restObjCode}`;
-      }
-
-      return code;
-    }
+    )}`;
   }
 
   /**
