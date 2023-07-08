@@ -46,6 +46,8 @@ export const anf = (node) => {
       return transformIfExpression(node);
     case ASTTypes.WhenExpression:
       return transformWhenExpression(node);
+    case ASTTypes.LogicalExpression:
+      return transformLogicalExpression(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -480,6 +482,36 @@ const transformWhenExpression = (node) => {
   }
 
   return [...unnestedExprs, { ...node, test, body }];
+};
+
+/**
+ * Transforms a LogicalExpression node
+ * @param {import("../parser/ast.js").LogicalExpression} node
+ * @returns {AST[]}
+ */
+const transformLogicalExpression = (node) => {
+  let unnestedExprs = [];
+  let transformedLeft = anf(node.left);
+  let left;
+
+  if (Array.isArray(transformedLeft)) {
+    left = transformedLeft.pop();
+    unnestedExprs = unnestedExprs.concat(transformedLeft);
+  } else {
+    left = transformedLeft;
+  }
+
+  let transformedRight = anf(right);
+  let right;
+
+  if (Array.isArray(transformedRight)) {
+    right = transformedRight.pop();
+    unnestedExprs = unnestedExprs.concat(transformedRight);
+  } else {
+    right = transformedRight;
+  }
+
+  return [...unnestedExprs, { ...node, left, right }];
 };
 
 const createFreshSymbol = (srcloc) => {
