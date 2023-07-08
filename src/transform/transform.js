@@ -1,5 +1,6 @@
 import { AST } from "../parser/ast.js";
 import { anf } from "./anf.js";
+import { tco } from "./tco.js";
 /**
  * Performs transformations and optimizations on the AST
  * @param {AST} program
@@ -7,5 +8,6 @@ import { anf } from "./anf.js";
  */
 export const transform = (program) => {
   const transformed = anf(program);
-  return transformed;
+  const tcoed = tco(transformed);
+  return tcoed;
 };
