@@ -109,7 +109,6 @@ export class Emitter {
    * @returns {string}
    */
   emitCallExpression(node, ns) {
-    console.log(node);
     const func = `(${this.emit(node.func, ns)})(${node.args
       .map((a) => this.emit(a, ns))
       .join(", ")})`;
