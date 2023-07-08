@@ -47,17 +47,7 @@ export const anf = (node) => {
  * @returns {import("../parser/ast").Program}
  */
 const transformProgram = (node) => {
-  let body = [];
-
-  for (let expr of node.body) {
-    let transformed = anf(expr);
-
-    if (Array.isArray(transformed)) {
-      body = body.concat(transformed);
-    } else {
-      body.push(transformed);
-    }
-  }
+  let body = node.body.flatMap(anf);
 
   return { ...node, body };
 };
@@ -223,7 +213,29 @@ const transformVectorLiteral = (node) => {
   return [...unnestedExprs, { ...node, members }];
 };
 
-const transformRecordLiteral = (node) => {};
+/**
+ * Transforms a RecordLiteral node
+ * @param {import("../parser/ast.js").RecordLiteral} node
+ * @returns {AST[]}
+ */
+const transformRecordLiteral = (node) => {
+  let unnestedExprs = [];
+  let properties = [];
+
+  for (let prop of node.properties) {
+    let anfed = anf(prop.value);
+
+    if (Array.isArray(anfed)) {
+      let value = anfed.pop();
+      properties.push({ ...prop, value });
+      unnestedExprs = unnestedExprs.concat(anfed);
+    } else {
+      properties.push({ ...prop, value: anfed });
+    }
+  }
+
+  return [...unnestedExprs, { ...node, properties }];
+};
 
 const createFreshSymbol = (srcloc) => {
   return AST.Symbol(Token.new(TokenTypes.Symbol, makeGenSym(), srcloc));
