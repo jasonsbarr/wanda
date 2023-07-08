@@ -40,6 +40,8 @@ export const anf = (node) => {
       return transformMemberExpression(node);
     case ASTTypes.DoExpression:
       return transformDoExpression(node);
+    case ASTTypes.AsExpression:
+      return transformAsExpression(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -389,6 +391,21 @@ const transformMemberExpression = (node) => {
 const transformDoExpression = (node) => {
   const body = node.body.flatMap(anf);
   return { ...node, body };
+};
+
+/**
+ * Transforms an AsExpression node
+ * @param {import("../parser/ast.js").AsExpression} node
+ * @returns {AST[]}
+ */
+const transformAsExpression = (node) => {
+  const anfed = anf(node.expression);
+
+  if (Array.isArray(anfed)) {
+    return anfed;
+  }
+
+  return [anfed];
 };
 
 const createFreshSymbol = (srcloc) => {
