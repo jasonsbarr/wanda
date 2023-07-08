@@ -44,6 +44,8 @@ export const anf = (node) => {
       return transformAsExpression(node);
     case ASTTypes.IfExpression:
       return transformIfExpression(node);
+    case ASTTypes.WhenExpression:
+      return transformWhenExpression(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -448,6 +450,36 @@ const transformIfExpression = (node) => {
   }
 
   return [...unnestedExprs, { ...node, test, then, else: elseBranch }];
+};
+
+/**
+ * Transforms a WhenExpression node
+ * @param {import("../parser/ast.js").WhenExpression} node
+ * @returns {AST[]}
+ */
+const transformWhenExpression = (node) => {
+  let unnestedExprs = [];
+  let transformedCondition = anf(node.test);
+  let test;
+
+  if (Array.isArray(transformedCondition)) {
+    test = transformedCondition.pop();
+    unnestedExprs = unnestedExprs.concat(transformedCondition);
+  }
+
+  let body = [];
+
+  for (let expr of node.body) {
+    let transformedExpr = anf(expr);
+
+    if (Array.isArray(transformedExpr)) {
+      body = body.concat(transformedExpr);
+    } else {
+      body.push(transformedExpr);
+    }
+  }
+
+  return [...unnestedExprs, { ...node, test, body }];
 };
 
 const createFreshSymbol = (srcloc) => {
