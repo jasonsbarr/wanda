@@ -8,7 +8,7 @@ import { Exception } from "../shared/exceptions.js";
  * @param {Boolean} withQuotes
  * @returns {string}
  */
-export const printString = (value, withQuotes) => {
+export const printString = (value, withQuotes = true) => {
   switch (typeof value) {
     case "number":
       return String(value);
