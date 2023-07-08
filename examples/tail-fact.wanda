@@ -1,0 +1,5 @@
+(def fact (n a)
+  (if (= 1 n)
+    a
+    (fact (- n 1) (* n a))))
+
