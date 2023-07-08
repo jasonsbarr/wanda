@@ -42,6 +42,8 @@ export const anf = (node) => {
       return transformDoExpression(node);
     case ASTTypes.AsExpression:
       return transformAsExpression(node);
+    case ASTTypes.IfExpression:
+      return transformIfExpression(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -406,6 +408,46 @@ const transformAsExpression = (node) => {
   }
 
   return [anfed];
+};
+
+/**
+ * Transforms an IfExpression node
+ * @param {import("../parser/ast.js").IfExpression} node
+ * @returns {AST[]}
+ */
+const transformIfExpression = (node) => {
+  let unnestedExprs = [];
+  let transformedCondition = anf(node.test);
+  let test;
+
+  if (Array.isArray(transformedCondition)) {
+    test = transformedCondition.pop();
+    unnestedExprs = unnestedExprs.concat(transformedCondition);
+  } else {
+    test = transformedCondition;
+  }
+
+  let transformedThen = anf(node.then);
+  let then;
+
+  if (Array.isArray(transformedThen)) {
+    then = transformedThen.pop();
+    unnestedExprs = unnestedExprs.concat(transformedThen);
+  } else {
+    then = transformedThen;
+  }
+
+  let transformedElse = anf(node.else);
+  let elseBranch;
+
+  if (Array.isArray(transformedElse)) {
+    elseBranch = transformedElse.pop();
+    unnestedExprs = unnestedExprs.concat(transformedElse);
+  } else {
+    elseBranch = transformedElse;
+  }
+
+  return [...unnestedExprs, { ...node, test, then, else: elseBranch }];
 };
 
 const createFreshSymbol = (srcloc) => {
