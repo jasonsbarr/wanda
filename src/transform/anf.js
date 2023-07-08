@@ -27,6 +27,8 @@ export const anf = (node) => {
       return transformLambdaExpression(node);
     case ASTTypes.VariableDeclaration:
       return transformVariableDeclaration(node);
+    case ASTTypes.SetExpression:
+      return transformSetExpression(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -172,14 +174,28 @@ const transformLambdaExpression = (node) => {
  * @returns {AST[]}
  */
 const transformVariableDeclaration = (node) => {
-  let unnestedExprs = [];
   const anfedExpr = anf(node.expression);
 
   if (Array.isArray(anfedExpr)) {
     let expression = anfedExpr.pop();
-    unnestedExprs = unnestedExprs.concat(anfedExpr);
 
-    return [...unnestedExprs, { ...node, expression }];
+    return [...anfedExpr, { ...node, expression }];
+  }
+
+  return [{ ...node, expression: anfedExpr }];
+};
+
+/**
+ * Transforms a SetExpression node
+ * @param {import("../parser/ast.js").SetExpression} node
+ * @returns {AST[]}
+ */
+const transformSetExpression = (node) => {
+  const anfedExpr = anf(node.expression);
+
+  if (Array.isArray(anfedExpr)) {
+    let expression = anfedExpr.pop();
+    return [...anfedExpr, { ...node, expression }];
   }
 
   return [{ ...node, expression: anfedExpr }];
