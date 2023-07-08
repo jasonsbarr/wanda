@@ -271,7 +271,11 @@ const transformVariableDeclaration = (node) => {
         }, []);
         const remainingObject = AST.RecordLiteral(properties, prop.srcloc);
         // and a set expression using the object because the property name has already been used
-        const restDecl = AST.SetExpression(prop, remainingObject, prop.srcloc);
+        const restDecl = AST.VariableDeclaration(
+          prop,
+          remainingObject,
+          prop.srcloc
+        );
 
         unnestedExprs.push(restDecl);
       } else {
