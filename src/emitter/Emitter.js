@@ -199,7 +199,11 @@ export class Emitter {
     }
 
     code += "\n}";
-    code += `${node.name ? `, { name: "${node.name}" }` : ""})`;
+    code += `${
+      node.name
+        ? `, { name: "${node.name}"${node.isTailRec ? ", tailRec: true" : ""} }`
+        : ""
+    })`;
 
     return node.isTailRec ? `rt.trampoline(${code})` : code;
   }
