@@ -36,6 +36,8 @@ export const anf = (node) => {
       return transformVectorLiteral(node);
     case ASTTypes.RecordLiteral:
       return transformRecordLiteral(node);
+    case ASTTypes.MemberExpression:
+      return transformMemberExpression(node);
     default:
       throw new Exception(`Unhandled node kind: ${node.kind}`);
   }
@@ -163,15 +165,73 @@ const transformLambdaExpression = (node) => {
  * @returns {AST[]}
  */
 const transformVariableDeclaration = (node) => {
+  let unnestedExprs = [];
   const anfedExpr = anf(node.expression);
+  let anfedDecl;
 
   if (Array.isArray(anfedExpr)) {
     let expression = anfedExpr.pop();
+    anfedDecl = { ...node, expression };
 
-    return [...anfedExpr, { ...node, expression }];
+    unnestedExprs = unnestedExprs.concat(anfedExpr);
+  } else {
+    anfedDecl = { ...node, expression: anfedExpr };
   }
 
-  return [{ ...node, expression: anfedExpr }];
+  if (node.lhv.kind === ASTTypes.VectorPattern) {
+    // is vector pattern destructuring
+    /** @type {import("../parser/ast.js").VectorPattern} */
+    const pattern = node.lhv;
+    let assignments = [];
+    let i = 0;
+
+    for (let mem of pattern.members) {
+      if (i === pattern.length - 1 && pattern.rest) {
+        // need to slice off the rest of the list/vector/tuple and assign it to the last member
+        const destructuredDecl = AST.VariableDeclaration(
+          mem,
+          AST.CallExpression(
+            AST.Symbol(Token.new(TokenTypes.Symbol, "slice", mem.srcloc)),
+            [
+              AST.NumberLiteral(
+                Token.new(TokenTypes.Number, i.toString(), mem.srcloc)
+              ),
+              anfedExpr,
+            ],
+            mem.srcloc
+          )
+        );
+        // and push it onto the unnestedExprs array
+        unnestedExprs.push(destructuredDecl);
+      } else {
+        // need to get the value from the current index of the list/vector/tuple and assign it to the current pattern member
+        const destructuredDecl = AST.VariableDeclaration(
+          mem,
+          AST.CallExpression(
+            AST.Symbol(Token.new(TokenTypes.Symbol, "get", mem.srcloc)),
+            [
+              AST.NumberLiteral(
+                Token.new(TokenTypes.Number, i.toString(), mem.srcloc)
+              ),
+              anfedExpr,
+            ]
+          )
+        );
+        // and push it onto the unnestedExprs array
+        unnestedExprs.push(destructuredDecl);
+      }
+      i++;
+    }
+    return unnestedExprs;
+  } else if (node.lhv.kind === ASTTypes.RecordPattern) {
+    // is record pattern destructuring
+    // remember, we have the RHV's type at this point
+    /** @type {import("../parser/ast.js").RecordPattern} */
+    const pattern = node.lhv;
+  } else {
+    // is a Symbol
+    return [...unnestedExprs, anfedDecl];
+  }
 };
 
 /**
@@ -235,6 +295,24 @@ const transformRecordLiteral = (node) => {
   }
 
   return [...unnestedExprs, { ...node, properties }];
+};
+
+/**
+ * Transforms a MemberExpression node
+ * @param {import("../parser/ast.js").MemberExpression} node
+ * @returns {AST[]}
+ */
+const transformMemberExpression = (node) => {
+  let unnestedExprs = [];
+  let anfedObject = anf(node.object);
+
+  if (Array.isArray(anfedObject)) {
+    const object = anfedObject.pop();
+    unnestedExprs = unnestedExprs.concat(anfedObject);
+    return { ...node, object };
+  }
+
+  return [{ ...node, object: anfedObject }];
 };
 
 const createFreshSymbol = (srcloc) => {
