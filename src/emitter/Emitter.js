@@ -398,42 +398,11 @@ export class Emitter {
    * @returns {string}
    */
   emitVariableDeclaration(node, ns) {
-    if (node.lhv.kind === ASTTypes.Symbol) {
-      const name = node.lhv.name;
+    const name = node.lhv.name;
+    const translatedName = makeSymbol(name);
+    ns.set(name, translatedName);
 
-      if (ns.has(name)) {
-        throw new ReferenceException(
-          `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
-          node.srcloc
-        );
-      }
-
-      const translatedName = makeSymbol(name);
-      ns.set(name, translatedName);
-    } else if (
-      node.lhv.kind === ASTTypes.VectorPattern ||
-      node.lhv.kind === ASTTypes.RecordPattern
-    ) {
-      const members =
-        node.lhv.kind === ASTTypes.RecordPattern
-          ? node.lhv.properties
-          : node.lhv.members;
-
-      for (let mem of members) {
-        if (ns.has(mem.name)) {
-          throw new ReferenceException(
-            `Name ${mem.name} has already been accessed in the current namespace; cannot access name before its definition`,
-            mem.srcloc
-          );
-        }
-        ns.set(mem.name, makeSymbol(mem.name));
-      }
-    }
-
-    return `var ${makeSymbol(node.lhv.name)} = ${this.emit(
-      node.expression,
-      ns
-    )}`;
+    return `var ${makeSymbol(name)} = ${this.emit(node.expression, ns)}`;
   }
 
   /**
