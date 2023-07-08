@@ -229,6 +229,65 @@ const transformVariableDeclaration = (node) => {
     // remember, we have the RHV's type at this point
     /** @type {import("../parser/ast.js").RecordPattern} */
     const pattern = node.lhv;
+    // first we need to assign the actual object to a fresh variable name
+    const objSymbol = createFreshSymbol(expression.srcloc);
+    const objDecl = AST.VariableDeclaration(
+      objSymbol,
+      expression,
+      expression.srcloc
+    );
+
+    unnestedExprs.push(objDecl);
+
+    let i = 0;
+    let used = [];
+
+    for (let prop of pattern.properties) {
+      if (i === pattern.properties.length - 1 && pattern.rest) {
+        // need to get the rest of the object's properties and assign them to the rest variable
+        // this maps the array of unused properties from the type to an array of Symbol
+        // nodes with each property name as the node name
+        const unusedProps = expression.type.properties
+          .filter((p) => {
+            return !used.includes(p.name);
+          })
+          .map((p) =>
+            AST.Symbol(Token.new(TokenTypes.Symbol, p.name, prop.srcloc))
+          );
+
+        // create variable declarations for each unused property to unnest them
+        for (let p of unusedProps) {
+          const propDecl = AST.VariableDeclaration(
+            p,
+            AST.MemberExpression(objSymbol, p, p.srcloc),
+            p.srcloc
+          );
+          unnestedExprs.push(propDecl);
+        }
+
+        // now create an object using the properties
+        const properties = unusedProps.reduce((props, p) => {
+          return [...props, AST.Property(p, p, p.srcloc)];
+        }, []);
+        const remainingObject = AST.RecordLiteral(properties, prop.srcloc);
+        // and a set expression using the object because the property name has already been used
+        const restDecl = AST.SetExpression(prop, remainingObject, prop.srcloc);
+
+        unnestedExprs.push(restDecl);
+      } else {
+        // need to assign the current variable's object property
+        const currentDecl = AST.VariableDeclaration(
+          prop,
+          AST.MemberExpression(objSymbol, prop, prop.srcloc)
+        );
+        // and push it onto the unnestedExprs array
+        unnestedExprs.push(currentDecl);
+        used.push(prop.name);
+      }
+      i++;
+    }
+
+    return unnestedExprs;
   } else {
     // is a Symbol
     return [...unnestedExprs, anfedDecl];
