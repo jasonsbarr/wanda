@@ -86,14 +86,9 @@ const transformCallExpression = (node) => {
   let args = [];
 
   for (let arg of node.args) {
-    // if it's a variable declaration, we need to anf the expression
-    // you shouldn't ever use a variable declaration as the argument
-    // to a call expression, but someone probably will at some point
-    if (arg.kind === ASTTypes.VariableDeclaration) {
-      arg = anf(arg.expression);
-      // if it's a call expression, we need to unnest any subexpressions from
-      // the arguments to the sub-call expression and create a new call expr
-    } else if (arg.kind === ASTTypes.CallExpression) {
+    // if it's a call expression, we need to unnest any subexpressions from
+    // the arguments to the sub-call expression and create a new call expr
+    if (arg.kind === ASTTypes.CallExpression) {
       // we'll need unnested arguments for the subcall
       let subArgs = [];
       for (let a of arg.args) {
@@ -280,7 +275,7 @@ const transformVariableDeclaration = (node) => {
           return [...props, AST.Property(p, p, p.srcloc)];
         }, []);
         const remainingObject = AST.RecordLiteral(properties, prop.srcloc);
-        // and a set expression using the object because the property name has already been used
+        // and a variable declaration using the remainder object assigning it to the rest variable
         const restDecl = AST.VariableDeclaration(
           prop,
           remainingObject,
@@ -302,10 +297,9 @@ const transformVariableDeclaration = (node) => {
     }
 
     return unnestedExprs;
-  } else {
-    // is a Symbol
-    return [...unnestedExprs, anfedDecl];
   }
+  // If we get here, it's a simple variable declaration with a symbol as LHV
+  return [...unnestedExprs, anfedDecl];
 };
 
 /**
