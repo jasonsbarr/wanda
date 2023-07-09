@@ -260,19 +260,16 @@ const transformVariableDeclaration = (node) => {
             AST.Symbol(Token.new(TokenTypes.Symbol, p.name, prop.srcloc))
           );
 
-        // create variable declarations for each unused property to unnest them
-        for (let p of unusedProps) {
-          const propDecl = AST.VariableDeclaration(
-            p,
-            AST.MemberExpression(objSymbol, p, p.srcloc),
-            p.srcloc
-          );
-          unnestedExprs.push(propDecl);
-        }
-
         // now create an object using the properties
         const properties = unusedProps.reduce((props, p) => {
-          return [...props, AST.Property(p, p, p.srcloc)];
+          return [
+            ...props,
+            AST.Property(
+              p,
+              AST.MemberExpression(objSymbol, p, p.srcloc),
+              p.srcloc
+            ),
+          ];
         }, []);
         const remainingObject = AST.RecordLiteral(properties, prop.srcloc);
         // and a variable declaration using the remainder object assigning it to the rest variable
@@ -377,7 +374,7 @@ const transformMemberExpression = (node) => {
   if (Array.isArray(anfedObject)) {
     const object = anfedObject.pop();
     unnestedExprs = unnestedExprs.concat(anfedObject);
-    return { ...node, object };
+    return [...unnestedExprs, { ...node, object }];
   }
 
   return [{ ...node, object: anfedObject }];
