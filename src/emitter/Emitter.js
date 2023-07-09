@@ -406,6 +406,14 @@ export class Emitter {
   emitVariableDeclaration(node, ns) {
     const name = node.lhv.name;
     const translatedName = makeSymbol(name);
+
+    if (ns.has(name)) {
+      throw new ReferenceException(
+        `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
+        node.srcloc
+      );
+    }
+
     ns.set(name, translatedName);
 
     return `var ${makeSymbol(name)} = ${this.emit(node.expression, ns)}`;
