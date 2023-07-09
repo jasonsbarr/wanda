@@ -6,8 +6,4 @@ import { tco } from "./tco.js";
  * @param {AST} program
  * @returns {AST}
  */
-export const transform = (program) => {
-  const transformed = anf(program);
-  const tcoed = tco(transformed);
-  return tcoed;
-};
+export const transform = (program) => tco(anf(program));
