@@ -460,17 +460,7 @@ const transformWhenExpression = (node) => {
     unnestedExprs = unnestedExprs.concat(transformedCondition);
   }
 
-  let body = [];
-
-  for (let expr of node.body) {
-    let transformedExpr = anf(expr);
-
-    if (Array.isArray(transformedExpr)) {
-      body = body.concat(transformedExpr);
-    } else {
-      body.push(transformedExpr);
-    }
-  }
+  let body = node.body.flatMap(anf);
 
   return [...unnestedExprs, { ...node, test, body }];
 };
