@@ -36,10 +36,6 @@ export const makeJSValue = (val) => {
 
   switch (typeof val) {
     case "object":
-      if (val === null) {
-        return null;
-      }
-
       if (hasDict(val)) {
         return val[makeKeyword("dict")];
       }

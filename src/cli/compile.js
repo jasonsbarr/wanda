@@ -5,6 +5,7 @@ import { parse } from "../parser/parse.js";
 import { desugar } from "../desugarer/desugar.js";
 import { emit } from "../emitter/emit.js";
 import { typecheck } from "../typechecker/typecheck.js";
+import { transform } from "../transform/transform.js";
 
 export const compile = (
   input,
@@ -13,6 +14,8 @@ export const compile = (
   typeEnv = undefined
 ) =>
   emit(
-    desugar(typecheck(parse(expand(read(tokenize(input, file)))), typeEnv)),
+    transform(
+      desugar(typecheck(parse(expand(read(tokenize(input, file)))), typeEnv))
+    ),
     ns
   );

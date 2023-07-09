@@ -4,11 +4,14 @@ import { makeWandaValue } from "./conversion.js";
 import { addMetaField } from "./object.js";
 import { parseContract } from "./parseContract.js";
 
-export const makeFunction = (func, { contract = "", name = "" } = {}) => {
+export const makeFunction = (
+  func,
+  { contract = "", name = "", tailRec = false } = {}
+) => {
   let fn = curryN(func.length, (...args) => {
     const val = makeWandaValue(func(...args));
 
-    if (typeof val === "function") {
+    if (typeof val === "function" && !tailRec) {
       return makeFunction(val);
     }
 

@@ -104,14 +104,16 @@ export class Emitter {
 
   /**
    * Generates code for a CallExpression AST node
-   * @param {import("../parser/ast.js").CallExpression} node
+   * @param {import("../parser/ast.js").CallExpression & {isTailRec: boolean}} node
    * @param {Namespace} ns
    * @returns {string}
    */
   emitCallExpression(node, ns) {
-    return `(${this.emit(node.func, ns)})(${node.args
+    const func = `(${this.emit(node.func, ns)})(${node.args
       .map((a) => this.emit(a, ns))
       .join(", ")})`;
+
+    return node.isTailRec ? `() => ${func}` : func;
   }
 
   /**
@@ -140,7 +142,7 @@ export class Emitter {
 
   /**
    * Generates code for an IfExpression AST node
-   * @param {import("../parser/ast.js").IfExpression} node
+   * @param {import("../parser/ast.js").IfExpression & {isTailRec?: boolean}} node
    * @param {Namespace} ns
    * @returns {string}
    */
@@ -163,7 +165,7 @@ export class Emitter {
 
   /**
    * Generates code from a LambdaExpression AST node
-   * @param {import("../parser/ast.js").LambdaExpression} node
+   * @param {import("../parser/ast.js").LambdaExpression & {isTailRec: boolean}} node
    * @param {Namespace} ns
    */
   emitLambdaExpression(node, ns) {
@@ -188,17 +190,21 @@ export class Emitter {
     let j = 0;
     for (let expr of node.body) {
       if (j === node.body.length - 1) {
-        code += `return ${this.emit(expr, funcNs)};`;
+        code += `  return ${this.emit(expr, funcNs)};`;
       } else {
-        code += this.emit(expr, funcNs) + ";\n";
+        code += "  " + this.emit(expr, funcNs) + ";\n";
       }
       j++;
     }
 
     code += "\n}";
-    code += `${node.name ? `, { name: "${node.name}" }` : ""})`;
+    code += `${
+      node.name
+        ? `, { name: "${node.name}"${node.isTailRec ? ", tailRec: true" : ""} }`
+        : ""
+    })`;
 
-    return code;
+    return node.isTailRec ? `rt.trampoline(${code})` : code;
   }
 
   /**
@@ -398,96 +404,19 @@ export class Emitter {
    * @returns {string}
    */
   emitVariableDeclaration(node, ns) {
-    if (node.lhv.kind === ASTTypes.Symbol) {
-      const name = node.lhv.name;
+    const name = node.lhv.name;
+    const translatedName = makeSymbol(name);
 
-      if (ns.has(name)) {
-        throw new ReferenceException(
-          `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
-          node.srcloc
-        );
-      }
-
-      const translatedName = makeSymbol(name);
-      ns.set(name, translatedName);
-    } else if (
-      node.lhv.kind === ASTTypes.VectorPattern ||
-      node.lhv.kind === ASTTypes.RecordPattern
-    ) {
-      const members =
-        node.lhv.kind === ASTTypes.RecordPattern
-          ? node.lhv.properties
-          : node.lhv.members;
-
-      for (let mem of members) {
-        if (ns.has(mem.name)) {
-          throw new ReferenceException(
-            `Name ${mem.name} has already been accessed in the current namespace; cannot access name before its definition`,
-            mem.srcloc
-          );
-        }
-        ns.set(mem.name, makeSymbol(mem.name));
-      }
+    if (ns.has(name)) {
+      throw new ReferenceException(
+        `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
+        node.srcloc
+      );
     }
 
-    return this.emitVariableDeclarationAssignment(
-      node.lhv,
-      node.expression,
-      ns
-    );
-  }
+    ns.set(name, translatedName);
 
-  /**
-   * Generates code for a variable assignment.
-   * @param {import("../parser/ast.js").LHV} lhv
-   * @param {AST} rhv
-   * @param {Namespace} ns
-   * @returns {string}
-   */
-  emitVariableDeclarationAssignment(lhv, rhv, ns) {
-    if (lhv.kind === ASTTypes.Symbol) {
-      return `var ${makeSymbol(lhv.name)} = ${this.emit(rhv, ns)}`;
-    } else if (lhv.kind === ASTTypes.VectorPattern) {
-      return `var ${this.emit(lhv, ns)} = ${this.emit(rhv, ns)}`;
-    } else if (lhv.kind === ASTTypes.RecordPattern) {
-      /* Note that this DOES NOT WORK on rest variables in nested record patterns */
-      // create random variable to hold object being destructured
-      const gensym = makeGenSym();
-      let origObjCode = `var ${gensym} = ${this.emit(rhv, ns)}`;
-      let code = `${origObjCode};\n`;
-
-      code += `var ${this.emit(lhv, ns)} = ${gensym};\n`;
-
-      if (lhv.rest) {
-        /** @type {string[]} */
-        let used = [];
-        let i = 0;
-        for (let prop of lhv.properties) {
-          if (i !== lhv.properties.length - 1) {
-            used.push(prop.name);
-          }
-          i++;
-        }
-
-        /** @type {import("../parser/ast.js").Property[]} */
-        const unusedProps = rhv.type.properties.filter((p) => {
-          return !used.includes(p.name);
-        });
-
-        const restVarName = lhv.properties[lhv.properties.length - 1].name;
-        let restObjCode = "{ ";
-
-        for (let prop of unusedProps) {
-          restObjCode += `"${prop.name}": rt.getField(${gensym}, "${prop.name}"), `;
-        }
-
-        restObjCode += "}";
-
-        code += `var ${makeSymbol(restVarName)} = ${restObjCode}`;
-      }
-
-      return code;
-    }
+    return `var ${makeSymbol(name)} = ${this.emit(node.expression, ns)}`;
   }
 
   /**
