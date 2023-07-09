@@ -74,11 +74,7 @@ class TCOTransformer extends Visitor {
   }
 
   visitCallExpression(node, isTailRec = false) {
-    if (isTailRec) {
-      return { ...node, isTailRec: true };
-    }
-
-    return { ...node, isTailRec: false };
+    return { ...node, isTailRec };
   }
 
   /**
