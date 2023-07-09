@@ -111,6 +111,10 @@ class TCOTransformer extends Visitor {
         const newCall = this.visitCallExpression(lastBodyExpr, true);
         swapLastExpr(lastExpr, newCall);
         return { ...node, isTailRec: true };
+      } else if (lastBodyExpr.kind === ASTTypes.IfExpression) {
+        const newIf = checkIfExpression(lastBodyExpr, name, this);
+        swapLastExpr(lastExpr, newIf);
+        return { ...node, isTailRec: newIf.isTailRec };
       }
 
       lastExpr.isTailRec = false;
