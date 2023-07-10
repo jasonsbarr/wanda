@@ -11,6 +11,8 @@ export const makeGlobal = () => {
     globalNS.set(makeSymbol(k), v);
   }
 
+  globalNS.set("__module__", Core.name);
+
   return globalNS;
 };
 
@@ -21,6 +23,8 @@ export const makeGlobalNameMap = () => {
   for (let [k] of Object.entries(mod)) {
     globalNS.set(k, makeSymbol(k));
   }
+
+  globalNS.set("__module__", makeSymbol("__module__"));
 
   return globalNS;
 };
