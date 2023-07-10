@@ -43,7 +43,7 @@ export const typeToString = (type) => {
     case TypeTypes.Never:
       return "never";
     case TypeTypes.Union:
-      return `(${type.types.map(typeToString).join(" | ")})`;
+      return `(${type.types.map(typeToString).join(" || ")})`;
     case TypeTypes.Unknown:
       return "unknown";
     case TypeTypes.Intersection:
