@@ -113,8 +113,8 @@ export const TATypes = {
 /**
  * @typedef MemberAnn
  * @prop {TATypes.MemberAnnotation} kind
- * @prop {Symbol} module
- * @prop {Symbol} member
+ * @prop {string} module
+ * @prop {string} member
  */
 /**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
