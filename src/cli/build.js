@@ -1,6 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import * as esbuild from "esbuild";
+import v from "voca";
 import { ROOT_PATH } from "../../root.js";
 
 /**
@@ -30,9 +31,9 @@ export const build = (code, outName = "main.js", moduleName = "main") => {
     entryPoints: [outFile],
     outdir: outPath,
     bundle: true,
-    footer: { js: `${moduleName}.result` },
+    footer: { js: `${v.camelCase(moduleName)}.result` },
     format: "iife",
-    banner: { js: `var ${moduleName} = {};\n` },
+    banner: { js: `var ${v.camelCase(moduleName)} = {};\n` },
   });
 
   const builtCode = fs.readFileSync(join(outPath, outName), {
