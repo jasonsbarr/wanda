@@ -50,7 +50,7 @@ export const wandac = () => {
     case "-b": {
       const pathname = join(process.cwd(), process.argv[3]);
       const compiledFile = compileFile(pathname);
-      const globals = emitGlobalEnv();
+      const globals = emitGlobalEnv(true);
       const code = globals + os.EOL + os.EOL + compiledFile;
       const bName = basename(pathname).split(".")[0];
       const outfile = bName + ".build" + ".js";

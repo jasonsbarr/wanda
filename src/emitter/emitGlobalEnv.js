@@ -14,7 +14,7 @@ import { makeRuntime } from "${path.join(
   )}";
 
 const globalEnv = makeGlobal();
-rt = makeRuntime();
+${useVar ? "var " : ""}rt = makeRuntime();
 `;
 
   for (let [k] of globalEnv) {
