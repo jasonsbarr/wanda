@@ -535,6 +535,21 @@ const parseModuleSignifier = (form) => {
 };
 
 /**
+ * Parses a JS import
+ * @param {List} form
+ * @returns {import("./ast.js").ImportJS}
+ */
+const parseImportJS = (form) => {
+  const [_, name, signifier, from] = form;
+  const srcloc = form.srcloc;
+  const parsedName = parseExpr(name);
+  const parsedSignifier = parseExpr(signifier);
+  const parsedFrom = parseExpr(from);
+
+  return AST.ImportJS(parsedName, parsedSignifier, parsedFrom, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -573,6 +588,8 @@ const parseList = (form) => {
       return parseForExpression(form);
     case "module":
       return parseModuleSignifier(form);
+    case "import-js":
+      return parseImportJS(form);
     default:
       return parseCall(form);
   }
