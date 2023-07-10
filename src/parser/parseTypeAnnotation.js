@@ -218,8 +218,8 @@ const parseFunctionAnnotation = (annotation) => {
 const parseMemberAnnotation = (annotation) => {
   return {
     kind: TATypes.MemberAnnotation,
-    module: annotation.object,
-    member: annotation.property,
+    module: annotation.object.value,
+    member: annotation.property.value,
   };
 };
 
