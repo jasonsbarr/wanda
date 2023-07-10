@@ -54,7 +54,11 @@ export const wandac = () => {
       const code = globals + os.EOL + os.EOL + compiledFile;
       const bName = basename(pathname).split(".")[0];
       const outfile = bName + ".build" + ".js";
-      const built = build(code, outfile, bName);
+      const mName = bName
+        .split("-")
+        .map((s) => s[0].toUpperCase() + s.slice(1).toLowerCase())
+        .join("");
+      const built = build(code, outfile, mName);
 
       fs.writeFileSync(outfile, built, { encoding: "utf-8" });
       break;
