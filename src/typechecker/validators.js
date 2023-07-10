@@ -170,3 +170,12 @@ export const isIntersection = (type) => {
 export const isNot = (type) => {
   return type.kind === TypeTypes.Not;
 };
+
+/**
+ * Checks if current type is a module type
+ * @param {import("./types.js").Type} type
+ * @returns {boolean}
+ */
+export const isModule = (type) => {
+  return type.kind === TypeTypes.Module;
+};
