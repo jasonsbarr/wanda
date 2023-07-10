@@ -104,6 +104,7 @@ export class TypeEnvironment extends Namespace {
 
   /**
    * Converts the TypeEnvironment into a pair of module type objects for values and types
+   * @returns {Object}
    */
   toObject() {
     const values = Object.fromEntries(this.vars.entries());
