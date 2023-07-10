@@ -7,6 +7,7 @@ import { makeSymbol, makeGenSym } from "./makeSymbol.js";
 import { makeWandaValue, makeJSValue } from "./conversion.js";
 import { makeNumber } from "./number.js";
 import { trampoline } from "./trampoline.js";
+import { parseTypesObject } from "./parseTypesObject.js";
 
 /**
  * @typedef Runtime
@@ -33,6 +34,7 @@ import { trampoline } from "./trampoline.js";
  * @prop {Function} makeNumber
  * @prop {Function} isNil
  * @prop {Function} trampoline
+ * @prop {Function} parseTypesObject
  */
 /**
  * Creates a Wanda runtime
@@ -51,5 +53,6 @@ export const makeRuntime = () => {
     makeNumber,
     isNil,
     trampoline,
+    parseTypesObject,
   };
 };
