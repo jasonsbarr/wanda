@@ -48,6 +48,8 @@ export const typeToString = (type) => {
       return "unknown";
     case TypeTypes.Intersection:
       return `(${type.types.map(typeToString).join(" && ")})`;
+    case TypeTypes.Module:
+      return "Module";
     default:
       throw new Exception(`String conversion not implemented for ${type.kind}`);
   }
