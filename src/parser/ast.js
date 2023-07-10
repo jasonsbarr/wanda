@@ -36,6 +36,7 @@ export const ASTTypes = {
   LogicalExpression: "LogicalExpression",
   UnaryExpression: "UnaryExpression",
   ForExpression: "ForExpression",
+  Module: "Module",
 };
 
 /**
@@ -142,6 +143,9 @@ export const ASTTypes = {
  */
 /**
  * @typedef {ASTNode & {kind: ASTTypes.ForExpression; op: Symbol; vars: ForVar[]; body: AST[]}} ForExpression
+ */
+/**
+ * @typedef {ASTNode & {kind: ASTTypes.Module; name: Symbol}} Module
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -568,7 +572,7 @@ export const AST = {
     };
   },
   /**
-   *
+   * Constructs a ForExpression AST node
    * @param {Symbol} op
    * @param {ForVar[]} vars
    * @param {AST} body
@@ -580,6 +584,19 @@ export const AST = {
       op,
       vars,
       body,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs a Module signifier AST node
+   * @param {Symbol} name
+   * @param {SrcLoc} srcloc
+   * @returns {Module}
+   */
+  Module(name, srcloc) {
+    return {
+      kind: ASTTypes.Module,
+      name,
       srcloc,
     };
   },
