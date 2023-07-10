@@ -326,6 +326,20 @@ const inferMemberExpression = (node, env, constant) => {
   const prop = node.property;
   let object = infer(node.object, env, constant);
 
+  if (Type.isModule(object)) {
+    const name = prop.name;
+    const type = object[name];
+
+    if (!type) {
+      throw new TypeException(
+        `Type ${name} not found on module ${object.name}`,
+        node.srcloc
+      );
+    }
+
+    return type;
+  }
+
   if (Type.isTypeAlias(object)) {
     object = getAliasBase(object.name, env);
   }
