@@ -19,6 +19,18 @@ export class TypeEnvironment extends Namespace {
   }
 
   /**
+   * Adds many names to the current namespace
+   * @param {Map | Object} types
+   */
+  addManyTypes(types) {
+    for (let [k, v] of types instanceof Map
+      ? types.entries()
+      : Object.entries(types)) {
+      this.setType(k, v);
+    }
+  }
+
+  /**
    * Checks if type name exists anywhere in the environment chain
    * @param {string} name
    * @returns {boolean}
