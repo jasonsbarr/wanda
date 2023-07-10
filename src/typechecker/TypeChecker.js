@@ -1,5 +1,9 @@
 import { AST, ASTTypes } from "../parser/ast.js";
-import { Exception, TypeException } from "../shared/exceptions.js";
+import {
+  Exception,
+  ReferenceException,
+  TypeException,
+} from "../shared/exceptions.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 import { check } from "./check.js";
 import { infer } from "./infer.js";
@@ -459,10 +463,11 @@ export class TypeChecker {
     try {
       let type = infer(node, env);
 
-      if (Type.isUndefined(type)) {
-        // this should never happen on the 2nd pass, but just in case...
-        type = Type.any;
-        env.set(node.name, type);
+      if (isSecondPass && Type.isUndefined(type)) {
+        throw new ReferenceException(
+          `Cannot access variable ${node.name} before its initialization`,
+          node.srcloc
+        );
       }
 
       return { ...node, type };
@@ -522,7 +527,7 @@ export class TypeChecker {
     }
 
     if (node.lhv.kind === ASTTypes.Symbol) {
-      env.set(node.lhv.name, type);
+      env.set(node.lhv.name, isSecondPass ? type : Type.undefinedType);
     } else if (node.lhv.kind === ASTTypes.VectorPattern) {
       if (!Type.isVector(type) && !Type.isList(type) && !Type.isTuple(type)) {
         throw new TypeException(
@@ -534,20 +539,30 @@ export class TypeChecker {
         for (let mem of node.lhv.members) {
           if (Type.isVector(type) || Type.isList(type)) {
             if (node.lhv.rest && i === node.lhv.members.length - 1) {
-              env.set(mem.name, type);
+              env.set(mem.name, isSecondPass ? type : Type.undefinedType);
             } else {
               env.set(
                 mem.name,
-                type.vectorType ? type.vectorType : type.listType
+                isSecondPass
+                  ? type.vectorType
+                    ? type.vectorType
+                    : type.listType
+                  : Type.undefinedType
               );
             }
           } else {
             // is tuple type
             if (node.lhv.rest && i === node.lhv.members.length - 1) {
               // is rest variable
-              env.set(mem.name, type.types.slice(i));
+              env.set(
+                mem.name,
+                isSecondPass ? type.types.slice(i) : Type.undefinedType
+              );
             } else {
-              env.set(mem.name, type.types[i]);
+              env.set(
+                mem.name,
+                isSecondPass ? type.types[i] : Type.undefinedType
+              );
             }
           }
           i++;
@@ -569,7 +584,10 @@ export class TypeChecker {
               (p) => !used.includes(p.name)
             );
 
-            env.set(prop.name, Type.object(unusedProps));
+            env.set(
+              prop.name,
+              isSecondPass ? Type.object(unusedProps) : Type.undefinedType
+            );
           } else {
             const pType = propType(type, prop.name);
 
@@ -582,7 +600,7 @@ export class TypeChecker {
               );
             }
 
-            env.set(prop.name, pType);
+            env.set(prop.name, isSecondPass ? pType : Type.undefinedType);
             used.push(prop.name);
           }
 

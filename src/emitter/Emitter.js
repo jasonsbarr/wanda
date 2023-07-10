@@ -409,7 +409,7 @@ export class Emitter {
 
     if (ns.has(name)) {
       throw new ReferenceException(
-        `Name ${name} has already been accessed in the current namespace; cannot access name before its definition`,
+        `Name ${name} has already been declared in the current namespace`,
         node.srcloc
       );
     }
