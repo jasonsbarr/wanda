@@ -1,3 +1,5 @@
+import { parseTypesObject } from "./parseTypesObject.js";
+
 /**
  * @class Module
  * @desc In-language module
@@ -23,8 +25,8 @@ export class Module {
     this.module = module;
     this.requires = requires;
     this.nativeRequires = nativeRequires;
-    this.values = values;
-    this.types = types;
+    this.values = parseTypesObject(values);
+    this.types = parseTypesObject(types);
   }
 
   toString() {
