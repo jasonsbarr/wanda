@@ -17,7 +17,7 @@ export const makeFunction = (
 
     return val;
   });
-  const hash = objectHash(fn);
+  const hash = objectHash(func);
 
   addMetaField(fn, "wanda", true);
   addMetaField(fn, "arity", func.length);
