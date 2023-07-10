@@ -523,6 +523,18 @@ const parseForExpression = (form) => {
 };
 
 /**
+ * Parses a module signifier
+ * @param {List} form
+ * @returns {import("./ast.js").Module}
+ */
+const parseModuleSignifier = (form) => {
+  const name = form.cdr;
+  const srcloc = form.srcloc;
+
+  return AST.Module(name, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -559,6 +571,8 @@ const parseList = (form) => {
       return parseUnaryExpression(form);
     case "for":
       return parseForExpression(form);
+    case "module":
+      return parseModuleSignifier(form);
     default:
       return parseCall(form);
   }
