@@ -24,6 +24,7 @@ export const TATypes = {
   Union: "Union",
   Never: "Never",
   Unknown: "Unknown",
+  MemberAnnotation: "MemberAnnotation",
 };
 /**
  * @typedef AnyAnnotation
@@ -110,10 +111,16 @@ export const TATypes = {
  * @prop {TATypes.Unknown} kind
  */
 /**
+ * @typedef MemberAnn
+ * @prop {TATypes.MemberAnnotation} kind
+ * @prop {Symbol} module
+ * @prop {Symbol} member
+ */
+/**
  * @typedef {NumberAnnotation|StringAnnotation|BooleanAnnotation|KeywordAnnotation|NilAnnotation} PrimitiveAnn
  */
 /**
- * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn|TupleAnn|SingletonAnn|UnionAnn|IntersectionAnn|NeverAnn} TypeAnnotation
+ * @typedef {AnyAnnotation|PrimitiveAnn|SymbolAnnotation|ListAnn|VectorAnn|ObjectAnn|FunctionAnn|TupleAnn|SingletonAnn|UnionAnn|IntersectionAnn|NeverAnn|MemberAnn} TypeAnnotation
  */
 /**
  * Parse the listType for a list type annotation
@@ -204,6 +211,19 @@ const parseFunctionAnnotation = (annotation) => {
 };
 
 /**
+ * Parses a MemberExpression annotation
+ * @param {import("../reader/read.js").MemberExpression} annotation
+ * @returns {MemberAnn}
+ */
+const parseMemberAnnotation = (annotation) => {
+  return {
+    kind: TATypes.MemberAnnotation,
+    module: annotation.object,
+    member: annotation.property,
+  };
+};
+
+/**
  * Parses type annotation from the token stream
  * @param {Cons|Token} annotation
  * @returns {TypeAnnotation}
@@ -244,6 +264,10 @@ const parseTypePrimitive = (annotation) => {
 
   if (annot.type === "VectorLiteral") {
     return parseTupleAnnotation(annot);
+  }
+
+  if (annot.type === "MemberExpression") {
+    return parseMemberAnnotation(annot);
   }
 
   if (annot.type === TokenTypes.Nil) {
