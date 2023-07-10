@@ -117,6 +117,8 @@ export const fromTypeAnnotation = (
           `Type ${typeAnnotation.member} not found for module ${typeAnnotation.module}`
         );
       }
+
+      return type;
     }
     default:
       throw new Exception(
