@@ -331,6 +331,7 @@ const inferMemberExpression = (node, env, constant) => {
     const type = object[name];
 
     if (!type) {
+      // For a module, the object should always be a Symbol node
       throw new TypeException(
         `Type ${name} not found on module ${object.name}`,
         node.srcloc
