@@ -109,7 +109,7 @@ export const fromTypeAnnotation = (
       );
     }
     case TATypes.MemberAnnotation: {
-      const module = typeEnv.get(typeAnnotation.module);
+      const module = typeEnv.getType(typeAnnotation.module);
       const type = module?.[typeAnnotation.member];
 
       if (!type) {
