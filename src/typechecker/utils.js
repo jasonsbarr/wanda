@@ -15,6 +15,7 @@ export const getAliasBase = (name, env) => {
   let baseType = env.getType(name);
 
   while (Type.isTypeAlias(baseType)) {
+    // if the name is of a type that's in a different module, this will fail
     baseType = env.getType(baseType.name);
   }
 
