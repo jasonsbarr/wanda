@@ -108,13 +108,19 @@ export const fromTypeAnnotation = (
         ...typeAnnotation.types.map((t) => fromTypeAnnotation(t, typeEnv))
       );
     }
+    case TATypes.MemberAnnotation: {
+      const module = typeEnv.get(typeAnnotation.module);
+      const type = module?.[typeAnnotation.member];
+
+      if (!type) {
+        throw new Exception(
+          `Type ${typeAnnotation.member} not found for module ${typeAnnotation.module}`
+        );
+      }
+    }
     default:
       throw new Exception(
-        `Type not found for type annotation ${JSON.parse(
-          typeAnnotation,
-          null,
-          2
-        )}`
+        `Type not found for type annotation ${typeAnnotation.kind}`
       );
   }
 };
