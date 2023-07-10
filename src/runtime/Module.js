@@ -8,7 +8,7 @@
  * @prop {Object} values values provided by a module and their types
  * @prop {Object} types types provided by a module
  */
-class Module {
+export class Module {
   /**
    * Module class constructor
    * @param {string} name
