@@ -111,7 +111,9 @@ export class TypeEnvironment extends Namespace {
     const types = Object.fromEntries(this.types.entries());
 
     values.kind = "Module";
+    values.name = this.name;
     types.kind = "Module";
+    types.name = this.name;
 
     return { values, types };
   }
