@@ -11,7 +11,7 @@ export const makeGlobal = () => {
     globalNS.set(makeSymbol(k), v);
   }
 
-  globalNS.set("__module__", Core.name);
+  globalNS.set(makeSymbol("__module__"), Core.name);
 
   return globalNS;
 };
