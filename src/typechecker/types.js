@@ -22,6 +22,7 @@ export const TypeTypes = {
   Unknown: "Unknown",
   Intersection: "Intersection",
   Not: "Not",
+  Module: "Module",
 };
 /**
  * @typedef Any
@@ -125,8 +126,13 @@ export const TypeTypes = {
  * @prop {Type} base
  */
 /**
+ * Contains any number of name-type pairs as properties
+ * @typedef Module
+ * @prop {TypeTypes.Module} kind
+ */
+/**
  * @typedef {Number|String|Boolean|Keyword|Nil|Undefined} PrimitiveType
  */
 /**
- * @typedef {Any|PrimitiveType|FunctionType|TypeAlias|List|Vector|Object|Tuple|Singleton|Never|Union|Unknown|Intersection|Not} Type
+ * @typedef {Any|PrimitiveType|FunctionType|TypeAlias|List|Vector|Object|Tuple|Singleton|Never|Union|Unknown|Intersection|Not|Module} Type
  */
