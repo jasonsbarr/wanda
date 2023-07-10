@@ -6,7 +6,7 @@
     "wandac": "bin/wandac.js"
   },
   "description": "Programming language for a tutorial series on building a compiler",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "main": "index.js",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
