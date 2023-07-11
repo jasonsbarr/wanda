@@ -550,6 +550,20 @@ const parseImportJS = (form) => {
 };
 
 /**
+ * Parses a Wanda import
+ * @param {List} form
+ * @returns {import("./ast.js").Import}
+ */
+const parseImport = (form) => {
+  const [_, memExpr, _maybeAs, maybeAlias] = form;
+  const srcloc = form.srcloc;
+  const importSignifier = parseExpr(memExpr);
+  const alias = parseExpr(maybeAlias) ?? null;
+
+  return AST.Import(importSignifier, alias, srcloc);
+};
+
+/**
  * Parses a list form into AST
  * @param {List} form
  * @returns {AST}
@@ -590,6 +604,8 @@ const parseList = (form) => {
       return parseModuleSignifier(form);
     case "import-js":
       return parseImportJS(form);
+    case "import":
+      return parseImport(form);
     default:
       return parseCall(form);
   }
