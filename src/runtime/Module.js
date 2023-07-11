@@ -61,4 +61,11 @@ export const makeModule = (
     types = {},
     absPath = "",
   } = {}
-) => new Module(name, module, requires, nativeRequires, values, types, absPath);
+) =>
+  new Module(name, module, {
+    requires,
+    nativeRequires,
+    values,
+    types,
+    absPath,
+  });
