@@ -5,7 +5,7 @@ import * as utils from "./utils.js";
 import * as obj from "./object.js";
 import { makeSymbol, makeGenSym } from "./makeSymbol.js";
 import { makeWandaValue, makeJSValue } from "./conversion.js";
-import { makeNumber } from "./number.js";
+import * as number from "./number.js";
 import { trampoline, recur } from "./trampoline.js";
 import { parseTypesObject } from "./parseTypesObject.js";
 import { resolveModulePath } from "./resolveModulePath.js";
@@ -30,6 +30,8 @@ import { resolveModulePath } from "./resolveModulePath.js";
  * @prop {Function} addMetaField
  * @prop {Function} makeObject
  * @prop {Function} makeNumber
+ * @prop {Function} jsToWandaNumber
+ * @prop {Function} wandaToJsNumber
  * @prop {Function} failRuntime
  * @prop {Function} fail
  * @prop {Function} makeNumber
@@ -53,7 +55,7 @@ export const makeRuntime = () => {
     makeWandaValue,
     makeJSValue,
     fail,
-    makeNumber,
+    ...number,
     isNil,
     trampoline,
     recur,
