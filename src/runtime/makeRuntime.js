@@ -8,6 +8,7 @@ import { makeWandaValue, makeJSValue } from "./conversion.js";
 import { makeNumber } from "./number.js";
 import { trampoline, recur } from "./trampoline.js";
 import { parseTypesObject } from "./parseTypesObject.js";
+import { resolveModulePath } from "./resolveModulePath.js";
 
 /**
  * @typedef Runtime
@@ -36,6 +37,7 @@ import { parseTypesObject } from "./parseTypesObject.js";
  * @prop {Function} trampoline
  * @prop {Function} recur
  * @prop {Function} parseTypesObject
+ * @prop {Function} resolveModulePath
  */
 /**
  * Creates a Wanda runtime
@@ -56,5 +58,6 @@ export const makeRuntime = () => {
     trampoline,
     recur,
     parseTypesObject,
+    resolveModulePath,
   };
 };
