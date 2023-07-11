@@ -60,8 +60,12 @@ export const wandac = (cli = false) => {
         .join("");
       const built = build(code, outfile, mName);
 
-      fs.writeFileSync(outfile, built, { encoding: "utf-8" });
-      break;
+      if (cli) {
+        fs.writeFileSync(outfile, built, { encoding: "utf-8" });
+        break;
+      } else {
+        return built;
+      }
     }
     case "version":
     case "-v":
@@ -83,8 +87,12 @@ export const wandac = (cli = false) => {
       const code = globals + os.EOL + os.EOL + compiledFile;
       const outfile = basename(pathname).split(".")[0] + ".js";
 
-      fs.writeFileSync(outfile, code, { encoding: "utf-8" });
-      break;
+      if (cli) {
+        fs.writeFileSync(outfile, code, { encoding: "utf-8" });
+        break;
+      } else {
+        return code;
+      }
     }
   }
 };
