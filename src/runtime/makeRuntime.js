@@ -6,7 +6,7 @@ import * as obj from "./object.js";
 import { makeSymbol, makeGenSym } from "./makeSymbol.js";
 import { makeWandaValue, makeJSValue } from "./conversion.js";
 import { makeNumber } from "./number.js";
-import { trampoline } from "./trampoline.js";
+import { trampoline, recur } from "./trampoline.js";
 import { parseTypesObject } from "./parseTypesObject.js";
 
 /**
@@ -34,6 +34,7 @@ import { parseTypesObject } from "./parseTypesObject.js";
  * @prop {Function} makeNumber
  * @prop {Function} isNil
  * @prop {Function} trampoline
+ * @prop {Function} recur
  * @prop {Function} parseTypesObject
  */
 /**
@@ -53,6 +54,7 @@ export const makeRuntime = () => {
     makeNumber,
     isNil,
     trampoline,
+    recur,
     parseTypesObject,
   };
 };

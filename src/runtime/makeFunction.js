@@ -9,9 +9,9 @@ export const makeFunction = (
   { contract = "", name = "", tailRec = false } = {}
 ) => {
   let fn = curryN(func.length, (...args) => {
-    const val = makeWandaValue(func(...args));
+    const val = tailRec ? func(...args) : makeWandaValue(func(...args));
 
-    if (typeof val === "function" && !tailRec) {
+    if (typeof val === "function") {
       return makeFunction(val);
     }
 
