@@ -16,6 +16,7 @@ export class Module {
    * Module class constructor
    * @param {string} name
    * @param {Function} module the module constructor
+   * @param {Object} opts
    * @param {string[]} opts.requires in-lang required modules
    * @param {string[]} opts.nativeRequires native JS required modules
    * @param {Object} opts.values
@@ -45,6 +46,7 @@ export class Module {
  * Functional interface for Module constructor
  * @param {string} name
  * @param {Function} module the module constructor
+ * @param {Object} opts
  * @param {string[]} opts.requires in-lang required modules
  * @param {string[]} opts.nativeRequires native JS required modules
  * @param {Object} opts.values
