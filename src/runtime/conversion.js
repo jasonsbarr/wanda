@@ -1,5 +1,6 @@
 import { hasDict, addMetaField, makeObject } from "./object.js";
 import { makeKeyword } from "./utils.js";
+import { jsToWandaNumber, wandaToJsNumber } from "./number.js";
 
 /**
  * Converts a JS value into a Wanda value
@@ -10,6 +11,8 @@ export const makeWandaValue = (val) => {
   switch (typeof val) {
     case "undefined":
       return null;
+    case "number":
+      return jsToWandaNumber(val);
     case "object":
       if (val === null) {
         return null;
@@ -35,6 +38,8 @@ export const makeJSValue = (val) => {
   }
 
   switch (typeof val) {
+    case "number":
+      return wandaToJsNumber(val);
     case "object":
       if (hasDict(val)) {
         return val[makeKeyword("dict")];
