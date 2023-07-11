@@ -555,10 +555,10 @@ const parseImportJS = (form) => {
  * @returns {import("./ast.js").Import}
  */
 const parseImport = (form) => {
-  const [_, memExpr, _maybeAs, maybeAlias] = form;
+  const [_, memExpr, maybeAs, maybeAlias] = form;
   const srcloc = form.srcloc;
   const importSignifier = parseExpr(memExpr);
-  const alias = parseExpr(maybeAlias) ?? null;
+  const alias = maybeAs ? parseExpr(maybeAlias) : null;
 
   return AST.Import(importSignifier, alias, srcloc);
 };
