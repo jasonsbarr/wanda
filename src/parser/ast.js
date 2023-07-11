@@ -38,6 +38,7 @@ export const ASTTypes = {
   ForExpression: "ForExpression",
   Module: "Module",
   ImportJS: "ImportJS",
+  Import: "Import",
 };
 
 /**
@@ -152,13 +153,16 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.ImportJS; import: Symbol|RecordPattern; from: string}} ImportJS
  */
 /**
+ * @typedef {ASTNode & {kind: ASTTypes.Import; import: MemberExpression; alias: null|Symbol}} Import
+ */
+/**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
  */
 /**
  * @typedef {NumberLiteral|StringLiteral|BooleanLiteral|KeywordLiteral|NilLiteral} Primitive
  */
 /**
- * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression|LogicalExpression|UnaryExpression|Module|ImportJS} AST
+ * @typedef {Program|Primitive|Symbol|CallExpression|VariableDeclaration|SetExpression|DoExpression|TypeAlias|RecordLiteral|RecordPattern|VectorLiteral|VectorPattern|MemberExpression|FunctionDeclaration|LambdaExpression|IfExpression|CondExpression|WhenExpression|LogicalExpression|UnaryExpression|Module|ImportJS|Import} AST
  */
 export const AST = {
   /**
@@ -618,6 +622,21 @@ export const AST = {
       name,
       import: importSignifier,
       from,
+      srcloc,
+    };
+  },
+  /**
+   * Constructs an Import AST node
+   * @param {MemberExpression} importSignifier
+   * @param {Symbol} alias
+   * @param {SrcLoc} srcloc
+   * @returns {Import}
+   */
+  Import(importSignifier, alias, srcloc) {
+    return {
+      kind: ASTTypes.Import,
+      import: importSignifier,
+      alias,
       srcloc,
     };
   },
