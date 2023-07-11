@@ -65,7 +65,7 @@ export const wandac = () => {
     }
     case "version":
     case "-v":
-      getVersion();
+      console.log(getVersion());
       break;
     case "help":
     case "-h":
