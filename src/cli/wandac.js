@@ -39,8 +39,8 @@ const compileFile = (path) => {
   return compile(contents, path, makeGlobalNameMap(), makeGlobalTypeEnv());
 };
 
-export const wandac = () => {
-  if (!process.argv[2]) {
+export const wandac = (cli = false) => {
+  if (cli && !process.argv[2]) {
     console.log(`wandac requires either a file path or command argument`);
     process.exit(1);
   }

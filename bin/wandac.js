@@ -1,4 +1,5 @@
 #!/usr/bin/env node
 import { wandac } from "../src/cli/wandac.js";
 
-wandac();
+// run with true so function knows it's being run from the CLI
+wandac(true);
