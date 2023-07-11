@@ -1,4 +1,4 @@
-import { hasDict, addMetaField, makeObject } from "./object.js";
+import { hasDict, makeObject } from "./object.js";
 import { makeKeyword } from "./utils.js";
 import { jsToWandaNumber, wandaToJsNumber } from "./number.js";
 
