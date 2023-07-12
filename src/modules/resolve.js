@@ -2,7 +2,6 @@ import fs from "fs";
 import { join } from "path";
 import v from "voca";
 import { ROOT_PATH } from "../../root.js";
-import { parseModuleImport } from "./parseModuleImport.js";
 import { Exception } from "../shared/exceptions.js";
 
 /**
