@@ -3,7 +3,7 @@ import { resolveOutpathLocal } from "./resolve.js";
 export class ModuleCompilation {
   /**
    * Constructor
-   * @param {string} code
+   * @param {string} code compiled code emitted for the module's contents
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
