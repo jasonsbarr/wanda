@@ -16,7 +16,7 @@ export class ModuleCompilation {
     if (!this.sourcePath.endsWith(".wanda")) {
       this.outPath = this.sourcePath;
     } else if (!outPath) {
-      this.outPath = resolveOutpathLocal(sourcePath);
+      this.outPath = resolveOutpathLocal(sourcePath, global);
     } else {
       this.outPath = outPath;
     }
