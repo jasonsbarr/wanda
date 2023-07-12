@@ -1,3 +1,5 @@
+import { resolveOutpathLocal } from "./resolve.js";
+
 export class ModuleCompilation {
   /**
    * Constructor
@@ -11,6 +13,8 @@ export class ModuleCompilation {
 
     if (!this.sourcePath.endsWith(".wanda")) {
       this.outPath = this.sourcePath;
+    } else if (!outPath) {
+      this.outPath = resolveOutpathLocal(sourcePath);
     } else {
       this.outPath = outPath;
     }
