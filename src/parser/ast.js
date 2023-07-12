@@ -405,6 +405,28 @@ export const AST = {
       object,
       property,
       srcloc,
+
+      toString() {
+        let str = "";
+
+        if (this.object.kind === ASTTypes.MemberExpression) {
+          let memExp = this;
+          let firstName = "";
+
+          while (memExp.object.kind === ASTTypes.MemberExpression) {
+            str = "." + memExp.property.name + str;
+            // undefined until the last case, where it's the Symbol of the first item in the member expression chain
+            firstName = memExp.object.name;
+            memExp = memExp.object;
+          }
+
+          str = firstName + str + "." + this.property.name;
+        } else {
+          str = `${this.object.name}.${this.property.name}`;
+        }
+
+        return str;
+      },
     };
   },
   /**
