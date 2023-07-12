@@ -8,7 +8,7 @@ export class ModuleCompilation {
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
    * @param {boolean} [opts.global=false]
-   * @param {string[]} [dependencies=[]]
+   * @param {{name: string; source: string}[]} [dependencies=[]]
    */
   constructor(
     code,
@@ -35,7 +35,7 @@ export class ModuleCompilation {
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
    * @param {boolean} [opts.global=false]
-   * @param {string[]} [opts.dependencies=[]]
+   * @param {{name: string; source: string}[]} [opts.dependencies=[]]
    * @returns {ModuleCompilation}
    */
   static new(
