@@ -30,6 +30,7 @@ export const resolve = (importSignifier) => {
       .join("/") +
     "/";
 
+  const cwd = process.cwd() + "/";
   if (moduleKind === "Wanda") {
     resolvedPath = ROOT_PATH + "/lib/" + resolvedPath;
 
@@ -55,7 +56,7 @@ export const resolve = (importSignifier) => {
   } else if (moduleKind === "Lib") {
     // assume cwd is the project root, module is in local lib/ directory
     // if it's a JS module it's in lib/js/, else it's in ./build/lib/
-    const cwd = process.cwd() + "/";
+
     if (
       fs.existsSync(join(cwd + "lib/js/" + resolvedPath, `${filenameBase}.js`))
     ) {
@@ -76,7 +77,9 @@ export const resolve = (importSignifier) => {
 
     if (fs.existsSync(join(resolvedPath, `${filenameBase}.wanda`))) {
       // nothing more needs to be done
-    } else if (fs.existsSync(join(resolvedPath, `js/${filenameBase}.js`))) {
+    } else if (
+      fs.existsSync(join(cwd, resolvedPath, `js/${filenameBase}.js`))
+    ) {
       resolvedPath += "js/";
       native = true;
     } else {
