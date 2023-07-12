@@ -85,7 +85,7 @@ export const resolve = (importSignifier) => {
  * @param {string} sourcePath
  * @returns {string}
  */
-export const resolveOutpathLocal = (sourcePath) => {
+export const resolveOutPathLocal = (sourcePath) => {
   if (sourcePath.endsWith(".js")) {
     return sourcePath;
   }
