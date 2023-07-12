@@ -83,9 +83,10 @@ export const resolve = (importSignifier) => {
 /**
  * Resolves the outpath for a local module's already-resolved sourcepath
  * @param {string} sourcePath
+ * @param {boolean} [global=false]
  * @returns {string}
  */
-export const resolveOutPathLocal = (sourcePath) => {
+export const resolveOutPathLocal = (sourcePath, global = false) => {
   if (sourcePath.endsWith(".js")) {
     return sourcePath;
   }
@@ -94,5 +95,9 @@ export const resolveOutPathLocal = (sourcePath) => {
   const filename = parts[parts.length - 1].split(".")[0] + ".js";
   const sliced = sourcePath.slice(0, sourcePath.indexOf("/lib/")) + "/";
 
-  return sliced + "build/lib/" + filename;
+  if (global) {
+    return sliced + "/lib/build/" + filename;
+  }
+
+  return sliced + "/build/lib/" + filename;
 };

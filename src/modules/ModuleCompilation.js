@@ -5,9 +5,11 @@ export class ModuleCompilation {
    * Constructor
    * @param {string} code
    * @param {string} sourcePath
-   * @param {string} outPath
+   * @param {Object} opts
+   * @param {string} [opts.outPath=""]
+   * @param {boolean} [opts.global=false]
    */
-  constructor(code, sourcePath, outPath = "") {
+  constructor(code, sourcePath, { outPath = "", global = false } = {}) {
     this.code = code;
     this.sourcePath = sourcePath;
 
@@ -24,10 +26,12 @@ export class ModuleCompilation {
    * Static constructor
    * @param {string} code
    * @param {string} sourcePath
-   * @param {string} outPath
+   * @param {Object} opts
+   * @param {string} [opts.outPath=""]
+   * @param {boolean} [opts.global=false]
    * @returns {ModuleCompilation}
    */
-  static new(code, sourcePath, outPath = "") {
+  static new(code, sourcePath, { outPath = "", global = false } = {}) {
     return new ModuleCompilation(code, sourcePath, outPath);
   }
 }
