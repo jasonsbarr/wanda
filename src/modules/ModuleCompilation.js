@@ -9,7 +9,7 @@ export class ModuleCompilation {
     this.code = code;
     this.sourcePath = sourcePath;
 
-    if (this.sourcePath.endsWith(".js")) {
+    if (!this.sourcePath.endsWith(".wanda")) {
       this.outPath = this.sourcePath;
     } else {
       this.outPath = outPath;
