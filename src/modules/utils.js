@@ -5,8 +5,7 @@ import { resolve } from "./resolve.js";
  * @param {string[]} requires
  * @returns {string[]}
  */
-export const getModulePaths = (requires) => {
-  return requires.map((req) =>
+export const getModulePaths = (requires) =>
+  requires.map((req) =>
     req.startsWith("//") || /^[a-zA-Z]:\\\\/.test(req) ? req : resolve(req)
   );
-};
