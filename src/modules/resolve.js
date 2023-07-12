@@ -28,6 +28,7 @@ export const resolve = (importSignifier) => {
     while (moduleIdentifier.kind === ASTTypes.MemberExpression) {
       resolvedPath =
         "/" + v.kebabCase(moduleIdentifier.property.name) + resolvedPath;
+      // the Symbol node that terminates this loop will have a name property, undefined until then
       moduleKind = moduleIdentifier.object.name;
       moduleIdentifier = moduleIdentifier.object;
     }
@@ -63,7 +64,7 @@ export const resolve = (importSignifier) => {
     // should have main pointing to built file so we can just import the module
     resolvedPath = "@" + resolvedPath + filenameBase;
   } else if (moduleKind === "Lib") {
-    // assume we're in the project root, module is in local lib/ directory
+    // assume cwd is the project root, module is in local lib/ directory
     // if it's a JS module it's in lib/js/, else it's in ./build/lib/
     const cwd = process.cwd() + "/";
     if (
