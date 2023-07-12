@@ -17,30 +17,18 @@ export const resolve = (importSignifier) => {
     typeof importSignifier === "string"
       ? parseModuleImport(importSignifier)
       : importSignifier;
-  let moduleKind = "";
-  let resolvedPath = "";
-  let filenameBase = "";
   let native = false;
 
-  if (memExp.object.kind === ASTTypes.MemberExpression) {
-    let moduleIdentifier = memExp.object;
-
-    while (moduleIdentifier.kind === ASTTypes.MemberExpression) {
-      resolvedPath =
-        "/" + v.kebabCase(moduleIdentifier.property.name) + resolvedPath;
-      // the Symbol node that terminates this loop will have a name property, undefined until then
-      moduleKind = moduleIdentifier.object.name;
-      moduleIdentifier = moduleIdentifier.object;
-    }
-    resolvedPath += "/";
-
-    // moduleIdentifier is Symbol node
-    filenameBase = v.kebabCase(memExp.property.name);
-  } else {
-    // is a Symbol node, which means it's the file
-    moduleKind = memExp.object.name;
-    filenameBase = v.kebabCase(memExp.property.name);
-  }
+  const parts = memExp.toString().split(".");
+  const moduleKind = parts[0];
+  const filenameBase = v.kebabCase(parts[parts.length - 1]);
+  let resolvedPath =
+    "/" +
+    parts
+      .slice(1, -1)
+      .map((s) => v.kebabCase(s))
+      .join("/") +
+    "/";
 
   if (moduleKind === "Wanda") {
     resolvedPath = ROOT_PATH + "/lib/" + resolvedPath;
@@ -85,6 +73,17 @@ export const resolve = (importSignifier) => {
   } else {
     // moduleKind is at the same level as the main program module
     resolvedPath = "./" + v.kebabCase(moduleKind) + resolvedPath;
+
+    if (fs.existsSync(join(resolvedPath, `${filenameBase}.wanda`))) {
+      // nothing more needs to be done
+    } else if (fs.existsSync(join(resolvedPath, `js/${filenameBase}.js`))) {
+      resolvedPath += "js/";
+      native = true;
+    } else {
+      throw new Exception(
+        `Could not resolve module ${resolvedPath}${filenameBase}`
+      );
+    }
   }
 
   resolvedPath += `${filenameBase}.${native ? "js" : "wanda"}`;
