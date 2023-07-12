@@ -97,18 +97,18 @@ export const resolve = (importSignifier) => {
  * @param {boolean} [global=false]
  * @returns {string}
  */
-export const resolveOutPathLocal = (sourcePath, global = false) => {
+export const resolveOutPath = (sourcePath) => {
   if (sourcePath.endsWith(".js")) {
     return sourcePath;
   }
 
   const parts = sourcePath.split("/");
   const filename = parts[parts.length - 1].split(".")[0] + ".js";
-  const sliced = sourcePath.slice(0, sourcePath.indexOf("/lib/")) + "/";
 
-  if (global) {
-    return sliced + "/lib/build/" + filename;
+  if (sourcePath.indexOf("/lib/") >= 0) {
+    const sliced = sourcePath.slice(0, sourcePath.indexOf("/lib/")) + "/";
+    return sliced + "/build/lib/" + filename;
   }
 
-  return sliced + "/build/lib/" + filename;
+  return parts.slice(0, -1).join("/") + `/${filename}`;
 };

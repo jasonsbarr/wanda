@@ -7,14 +7,13 @@ export class ModuleCompilation {
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
-   * @param {boolean} [opts.global=false]
    * @param {{name: string|import("../parser/ast.js").MemberExpression; source: string}[]} [dependencies=[]]
    * @param {import("../parser/ast.js").Symbol[]} opts.provides
    */
   constructor(
     code,
     sourcePath,
-    { outPath = "", global = false, dependencies = [], provides = [] } = {}
+    { outPath = "", dependencies = [], provides = [] } = {}
   ) {
     this.code = code;
     this.sourcePath = sourcePath;
@@ -36,7 +35,6 @@ export class ModuleCompilation {
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
-   * @param {boolean} [opts.global=false]
    * @param {{name: string|import("../parser/ast.js").MemberExpression; source: string}[]} [opts.dependencies=[]]
    * @param {import("../parser/ast.js").Symbol[]} opts.provides
    * @returns {ModuleCompilation}
@@ -44,7 +42,7 @@ export class ModuleCompilation {
   static new(
     code,
     sourcePath,
-    { outPath = "", global = false, dependencies = [], provides = [] } = {}
+    { outPath = "", dependencies = [], provides = [] } = {}
   ) {
     return new ModuleCompilation(code, sourcePath, {
       outPath,
