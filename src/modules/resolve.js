@@ -41,7 +41,8 @@ export const resolve = (importSignifier) => {
     resolvedPath = ROOT_PATH + "/" + resolvedPath;
 
     if (fs.existsSync(join(resolvedPath + "lib/", `${filenameBase}.wanda`))) {
-      resolvedPath += "lib/";
+      resolvedPath += "lib/build/" + filenameBase + ".js";
+      return resolvedPath;
     } else if (
       fs.existsSync(join(resolvedPath + "lib/js/", `${filenameBase}.js`))
     ) {
