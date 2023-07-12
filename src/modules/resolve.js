@@ -75,7 +75,7 @@ export const resolve = (importSignifier) => {
     // moduleKind is at the same level as the main program module
     resolvedPath = "./" + v.kebabCase(moduleKind) + resolvedPath;
 
-    if (fs.existsSync(join(resolvedPath, `${filenameBase}.wanda`))) {
+    if (fs.existsSync(join(cwd, resolvedPath, `${filenameBase}.wanda`))) {
       // nothing more needs to be done
     } else if (
       fs.existsSync(join(cwd, resolvedPath, `js/${filenameBase}.js`))
@@ -87,6 +87,8 @@ export const resolve = (importSignifier) => {
         `Could not resolve module ${resolvedPath}${filenameBase}`
       );
     }
+
+    resolvedPath = join(cwd, resolvedPath);
   }
 
   resolvedPath += `${filenameBase}.${native ? "js" : "wanda"}`;
@@ -108,9 +110,9 @@ export const resolveOutPath = (sourcePath) => {
   const filename = parts[parts.length - 1].split(".")[0] + ".js";
 
   if (sourcePath.indexOf("/lib/") >= 0) {
-    const sliced = sourcePath.slice(0, sourcePath.indexOf("/lib/")) + "/";
+    const sliced = sourcePath.slice(0, sourcePath.indexOf("/src/lib/")) + "/";
     return sliced + "/build/lib/" + filename;
   }
 
-  return parts.slice(0, -1).join("/") + `/${filename}`;
+  return parts.slice(0, -1).join("/").replace("/src/", "/build/") + filename;
 };
