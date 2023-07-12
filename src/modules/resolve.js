@@ -38,18 +38,18 @@ export const resolve = (importSignifier) => {
   }
 
   if (moduleKind === "Wanda") {
-    resolvedPath = ROOT_PATH + "/" + resolvedPath;
+    resolvedPath = ROOT_PATH + "/lib/" + resolvedPath;
 
-    if (fs.existsSync(join(resolvedPath + "lib/", `${filenameBase}.wanda`))) {
-      resolvedPath += "lib/build/" + filenameBase + ".js";
+    if (fs.existsSync(join(resolvedPath, `${filenameBase}.wanda`))) {
+      resolvedPath += "build/" + filenameBase + ".js";
       return resolvedPath;
     } else if (
-      fs.existsSync(join(resolvedPath + "lib/js/", `${filenameBase}.js`))
+      fs.existsSync(join(resolvedPath + "js/", `${filenameBase}.js`))
     ) {
-      resolvedPath += "lib/js/";
+      resolvedPath += "js/";
       native = true;
     } else {
-      throw new Exception(`Could not resolve module`);
+      throw new Exception(`Could not resolve module ${resolvedPath}`);
     }
   } else if (moduleKind === "Module") {
     // is in node_modules/ and we're enforcing use of scoped modules
@@ -70,7 +70,7 @@ export const resolve = (importSignifier) => {
     ) {
       resolvedPath = cwd + "lib/" + resolvedPath;
     } else {
-      throw new Exception(`Could not resolve module`);
+      throw new Exception(`Could not resolve module ${resolvedPath}`);
     }
   } else {
     throw new Exception(`Unknown module kind ${moduleKind}`);
