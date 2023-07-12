@@ -109,10 +109,5 @@ export const resolveOutPath = (sourcePath) => {
   const parts = sourcePath.split("/");
   const filename = parts[parts.length - 1].split(".")[0] + ".js";
 
-  if (sourcePath.indexOf("/lib/") >= 0) {
-    const sliced = sourcePath.slice(0, sourcePath.indexOf("/src/lib/")) + "/";
-    return sliced + "/build/lib/" + filename;
-  }
-
   return parts.slice(0, -1).join("/").replace("/src/", "/build/") + filename;
 };
