@@ -8,10 +8,16 @@ export class ModuleCompilation {
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
    * @param {boolean} [opts.global=false]
+   * @param {string[]} [dependencies=[]]
    */
-  constructor(code, sourcePath, { outPath = "", global = false } = {}) {
+  constructor(
+    code,
+    sourcePath,
+    { outPath = "", global = false, dependencies = [] } = {}
+  ) {
     this.code = code;
     this.sourcePath = sourcePath;
+    this.dependencies = dependencies;
 
     if (!this.sourcePath.endsWith(".wanda")) {
       this.outPath = this.sourcePath;
@@ -29,9 +35,18 @@ export class ModuleCompilation {
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
    * @param {boolean} [opts.global=false]
+   * @param {string[]} [opts.dependencies=[]]
    * @returns {ModuleCompilation}
    */
-  static new(code, sourcePath, { outPath = "", global = false } = {}) {
-    return new ModuleCompilation(code, sourcePath, { outPath, global });
+  static new(
+    code,
+    sourcePath,
+    { outPath = "", global = false, dependencies = [] } = {}
+  ) {
+    return new ModuleCompilation(code, sourcePath, {
+      outPath,
+      global,
+      dependencies,
+    });
   }
 }
