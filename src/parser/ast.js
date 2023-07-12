@@ -413,14 +413,14 @@ export const AST = {
           let memExp = this;
           let firstName = "";
 
-          while (memExp.object.kind === ASTTypes.MemberExpression) {
+          while (memExp.kind === ASTTypes.MemberExpression) {
             str = "." + memExp.property.name + str;
             // undefined until the last case, where it's the Symbol of the first item in the member expression chain
             firstName = memExp.object.name;
             memExp = memExp.object;
           }
 
-          str = firstName + str + "." + this.property.name;
+          str = firstName + str;
         } else {
           str = `${this.object.name}.${this.property.name}`;
         }
