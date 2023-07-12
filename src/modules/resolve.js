@@ -62,7 +62,8 @@ export const resolve = (importSignifier) => {
     // is in node_modules/ and we're enforcing use of scoped modules
     // if is Wanda module, should be already built and package.json
     // should have main pointing to built file so we can just import the module
-    resolvedPath = "@" + resolvedPath + filenameBase;
+    resolvedPath = "@" + resolvedPath.slice(1) + filenameBase;
+    return resolvedPath;
   } else if (moduleKind === "Lib") {
     // assume cwd is the project root, module is in local lib/ directory
     // if it's a JS module it's in lib/js/, else it's in ./build/lib/
