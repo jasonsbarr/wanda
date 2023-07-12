@@ -7,6 +7,7 @@ import { makeGlobalNameMap } from "../runtime/makeGlobals.js";
 import { makeGlobalTypeEnv } from "../typechecker/makeGlobalTypeEnv.js";
 import { emitGlobalEnv } from "../emitter/emitGlobalEnv.js";
 import { getVersion, printHelp } from "./utils.js";
+import { kebabToPascalCase } from "../shared/utils.js";
 
 const COMMANDS = {
   compile: {
@@ -54,10 +55,7 @@ export const wandac = (cli = false) => {
       const code = globals + os.EOL + os.EOL + compiledFile;
       const bName = basename(pathname).split(".")[0];
       const outfile = bName + ".build" + ".js";
-      const mName = bName
-        .split("-")
-        .map((s) => s[0].toUpperCase() + s.slice(1).toLowerCase())
-        .join("");
+      const mName = kebabToPascalCase(bName);
       const built = build(code, outfile, mName);
 
       if (cli) {

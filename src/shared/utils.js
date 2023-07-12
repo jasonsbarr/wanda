@@ -21,3 +21,14 @@ export const hasProperty = (obj, prop) => !isNullish(obj?.[prop]);
  */
 export const hasMethod = (obj, methodName) =>
   hasProperty(obj, methodName) && typeof obj[methodName] === "function";
+
+/**
+ * Converts a kebab-case string to PascalCase
+ * @param {string} str
+ * @returns {string}
+ */
+export const kebabToPascalCase = (str) =>
+  str
+    .split("-")
+    .map((s) => s[0].toUpperCase() + s.slice(1).toLowerCase())
+    .join("");
