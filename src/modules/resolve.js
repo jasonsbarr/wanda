@@ -78,3 +78,71 @@ export const resolve = (importSignifier) => {
   resolvedPath += `${filenameBase}.${native ? "js" : "wanda"}`;
   return resolvedPath;
 };
+
+/**
+ * Resolves a module's output location as a string
+ * @param {string|import("../parser/ast").MemberExpression} importSignifier
+ * @param {boolean|undefined} native
+ * @returns {string}
+ */
+export const resolveOutpath = (importSignifier) => {
+  const memExp =
+    typeof importSignifier === "string"
+      ? parseModuleImport(importSignifier)
+      : importSignifier;
+  const moduleKind = memExp.object.name;
+  let resolvedPath = "";
+  let filenameBase = "";
+
+  if (memExp.property.kind === ASTTypes.MemberExpression) {
+    let moduleIdentifier = memExp.property;
+
+    while (moduleIdentifier.kind === ASTTypes.MemberExpression) {
+      resolvedPath += v.kebabCase(moduleIdentifier.object.name) + "/";
+      moduleIdentifier = moduleIdentifier.property;
+    }
+
+    // moduleIdentifier is Symbol node
+    filenameBase = v.kebabCase(moduleIdentifier.name);
+  } else {
+    // is a Symbol node, which means it's the file
+    filenameBase = v.kebabCase(memExp.property.name);
+  }
+
+  if (moduleKind === "Wanda") {
+    resolvedPath = ROOT_PATH + "/" + resolvedPath;
+
+    if (fs.existsSync(join(resolvedPath + "lib/", `${filenameBase}.wanda`))) {
+      resolvedPath += "lib/build/";
+    } else if (
+      fs.existsSync(join(resolvedPath + "lib/js/", `${filenameBase}.js`))
+    ) {
+      resolvedPath += "lib/js/";
+    } else {
+      throw new Exception(`Could not resolve module`);
+    }
+  } else if (moduleKind === "Module") {
+    // We shouldn't need an outfile location for this because it should already be built
+    return "Module";
+  } else if (moduleKind === "Lib") {
+    // assume we're in the project root, module is in local lib/ directory
+    // if it's a JS module it's in lib/js/, else it's in ./build/lib/
+    const cwd = process.cwd() + "/";
+    if (
+      fs.existsSync(join(cwd + "lib/js/" + resolvedPath, `${filenameBase}.js`))
+    ) {
+      resolvedPath = cwd + "lib/js/" + resolvedPath;
+    } else if (
+      fs.existsSync(join(cwd + "lib/" + resolvedPath, `${filenameBase}.wanda`))
+    ) {
+      resolvedPath = cwd + "build/lib/" + resolvedPath;
+    } else {
+      throw new Exception(`Could not resolve module`);
+    }
+  } else {
+    throw new Exception(`Unknown module kind ${moduleKind}`);
+  }
+
+  resolvedPath += `${filenameBase}.js`;
+  return resolvedPath;
+};
