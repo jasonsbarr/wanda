@@ -83,6 +83,7 @@ export const resolve = (importSignifier) => {
       );
     }
   } else {
+    // moduleKind is at the same level as the main program module
     resolvedPath = "./" + v.kebabCase(moduleKind) + resolvedPath;
   }
 
