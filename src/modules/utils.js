@@ -2,8 +2,8 @@ import { resolve } from "./resolve.js";
 
 /**
  * Resolves arrays of required module import specifiers/specifier strings to file locations
- * @param {string[]} requires
+ * @param {(string|import("../parser/ast.js").MemberExpression)[]} requires
  * @returns {{name: string|import("../parser/ast.js").MemberExpression; source: string}[]}
  */
 export const getModulePaths = (requires) =>
-  requires.map((req) => ({ name: req, source: resolve(req) }));
+  requires.map((req) => ({ name: req.toString(), source: resolve(req) }));
