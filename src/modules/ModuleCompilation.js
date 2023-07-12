@@ -32,6 +32,6 @@ export class ModuleCompilation {
    * @returns {ModuleCompilation}
    */
   static new(code, sourcePath, { outPath = "", global = false } = {}) {
-    return new ModuleCompilation(code, sourcePath, outPath);
+    return new ModuleCompilation(code, sourcePath, { outPath, global });
   }
 }
