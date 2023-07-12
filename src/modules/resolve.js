@@ -12,13 +12,7 @@ import { Exception } from "../shared/exceptions.js";
  * @returns {string}
  */
 export const resolve = (importSignifier) => {
-  const memExp =
-    typeof importSignifier === "string"
-      ? parseModuleImport(importSignifier)
-      : importSignifier;
-  let native = false;
-
-  const parts = memExp.toString().split(".");
+  const parts = importSignifier.toString().split(".");
   const moduleKind = parts[0];
   const filenameBase = v.kebabCase(parts[parts.length - 1]);
   let resolvedPath =
@@ -28,6 +22,7 @@ export const resolve = (importSignifier) => {
       .map((s) => v.kebabCase(s))
       .join("/") +
     "/";
+  let native = false;
 
   const cwd = process.cwd() + "/";
   if (moduleKind === "Wanda") {
