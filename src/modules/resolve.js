@@ -3,7 +3,7 @@ import { join } from "path";
 import v from "voca";
 import { ROOT_PATH } from "../../root.js";
 import { parseModuleImport } from "./parseModuleImport.js";
-import { ASTTypes } from "../parser/ast";
+import { ASTTypes } from "../parser/ast.js";
 import { Exception } from "../shared/exceptions.js";
 
 /**
@@ -17,23 +17,27 @@ export const resolve = (importSignifier) => {
     typeof importSignifier === "string"
       ? parseModuleImport(importSignifier)
       : importSignifier;
-  const moduleKind = memExp.object.name;
+  let moduleKind = "";
   let resolvedPath = "";
   let filenameBase = "";
   let native = false;
 
-  if (memExp.property.kind === ASTTypes.MemberExpression) {
-    let moduleIdentifier = memExp.property;
+  if (memExp.object.kind === ASTTypes.MemberExpression) {
+    let moduleIdentifier = memExp.object;
 
     while (moduleIdentifier.kind === ASTTypes.MemberExpression) {
-      resolvedPath += v.kebabCase(moduleIdentifier.object.name) + "/";
-      moduleIdentifier = moduleIdentifier.property;
+      resolvedPath =
+        "/" + v.kebabCase(moduleIdentifier.property.name) + resolvedPath;
+      moduleKind = moduleIdentifier.object.name;
+      moduleIdentifier = moduleIdentifier.object;
     }
+    resolvedPath += "/";
 
     // moduleIdentifier is Symbol node
-    filenameBase = v.kebabCase(moduleIdentifier.name);
+    filenameBase = v.kebabCase(memExp.property.name);
   } else {
     // is a Symbol node, which means it's the file
+    moduleKind = memExp.object.name;
     filenameBase = v.kebabCase(memExp.property.name);
   }
 
@@ -49,7 +53,9 @@ export const resolve = (importSignifier) => {
       resolvedPath += "js/";
       native = true;
     } else {
-      throw new Exception(`Could not resolve module ${resolvedPath}`);
+      throw new Exception(
+        `Could not resolve module ${resolvedPath}${filenameBase}.js`
+      );
     }
   } else if (moduleKind === "Module") {
     // is in node_modules/ and we're enforcing use of scoped modules
@@ -70,7 +76,9 @@ export const resolve = (importSignifier) => {
     ) {
       resolvedPath = cwd + "lib/" + resolvedPath;
     } else {
-      throw new Exception(`Could not resolve module ${resolvedPath}`);
+      throw new Exception(
+        `Could not resolve module ${resolvedPath}${filenameBase}`
+      );
     }
   } else {
     throw new Exception(`Unknown module kind ${moduleKind}`);
