@@ -83,7 +83,7 @@ export const resolve = (importSignifier) => {
       );
     }
   } else {
-    throw new Exception(`Unknown module kind ${moduleKind}`);
+    resolvedPath = "./" + v.kebabCase(moduleKind) + resolvedPath;
   }
 
   resolvedPath += `${filenameBase}.${native ? "js" : "wanda"}`;
