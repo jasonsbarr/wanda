@@ -6,7 +6,7 @@ import { Exception } from "../shared/exceptions.js";
 
 /**
  * Resolves a module's file location as a string
- * @param {string|import("../parser/ast").MemberExpression} importSignifier
+ * @param {string|import("../parser/ast").MemberExpression|import("../parser/ast").Symbol} importSignifier
  * @param {boolean|undefined} native
  * @returns {string}
  */
