@@ -65,8 +65,8 @@ export const resolve = (importSignifier) => {
       );
     }
   } else {
-    const moduleName = v.kebabCase(moduleKind);
     // moduleKind is at the same level as the main program module
+    const moduleName = v.kebabCase(moduleKind);
     resolvedPath = "./" + moduleName + resolvedPath;
 
     if (fs.existsSync(join(cwd, resolvedPath, `${filenameBase}.wanda`))) {
