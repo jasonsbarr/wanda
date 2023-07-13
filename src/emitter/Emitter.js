@@ -87,6 +87,10 @@ export class Emitter {
         return this.emitIfExpression(node, ns);
       case ASTTypes.WhenExpression:
         return this.emitWhenExpression(node, ns);
+      case ASTTypes.Import:
+        return this.emitImport(node, ns);
+      case ASTTypes.Module:
+        return this.emitModule(node, ns);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -150,6 +154,28 @@ export class Emitter {
       node.then,
       ns
     )} : ${this.emit(node.else, ns)}`;
+  }
+
+  /**
+   * Adds an import to the namespace and emits an empty string because imports are handled by the CLI
+   * @param {import("../parser/ast.js").Import} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitImport(node, ns) {
+    if (node.alias) {
+      const name = node.alias.name;
+      ns.set(name, makeSymbol(name));
+    } else {
+      // import specifier is either a member expression or symbol
+      const name =
+        node.import.kind === ASTTypes.MemberExpression
+          ? node.import.property.name
+          : node.import.name;
+      ns.set(name, makeSymbol(name));
+    }
+
+    return "";
   }
 
   /**
@@ -261,6 +287,16 @@ export class Emitter {
     return `rt.getField(${this.emit(node.object, ns)}, "${
       node.property.name
     }")`;
+  }
+
+  /**
+   * Emits an empty string because module has no JavaScript analogue
+   * @param {import("../parser/ast.js").Module} node
+   * @param {Namespace} ns
+   * @returns {string}
+   */
+  emitModule(node, ns) {
+    return "";
   }
 
   /**
