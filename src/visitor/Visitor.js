@@ -87,6 +87,10 @@ export class Visitor {
         return this.visitLogicalExpression(node);
       case ASTTypes.ForExpression:
         return this.visitForExpression(node);
+      case ASTTypes.Module:
+        return this.visitModule(node);
+      case ASTTypes.Import:
+        return this.visitImport(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -240,6 +244,15 @@ export class Visitor {
   }
 
   /**
+   * Import node visitor
+   * @param {import("../parser/ast.js").Import} node
+   * @returns {import("../parser/ast.js").Import}
+   */
+  visitImport(node) {
+    return node;
+  }
+
+  /**
    * KeywordLiteral node visitor
    * @param {import("../parser/ast").KeywordLiteral} node
    * @returns {import("../parser/ast").KeywordLiteral}
@@ -286,6 +299,15 @@ export class Visitor {
     const object = this.visit(node.object);
     const property = this.visit(node.property);
     return { ...node, object, property };
+  }
+
+  /**
+   * Module node visitor
+   * @param {import("../parser/ast.js").Module} node
+   * @returns {import("../parser/ast.js").Module}
+   */
+  visitModule(node) {
+    return node;
   }
 
   /**
