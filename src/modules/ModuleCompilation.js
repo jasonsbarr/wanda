@@ -3,6 +3,7 @@ import { resolveOutpathLocal } from "./resolve.js";
 export class ModuleCompilation {
   /**
    * Constructor
+   * @param {string} name
    * @param {string} code compiled code emitted for the module's contents
    * @param {string} sourcePath
    * @param {Object} opts
@@ -11,10 +12,12 @@ export class ModuleCompilation {
    * @param {import("../parser/ast.js").Symbol[]} opts.provides
    */
   constructor(
+    name,
     code,
     sourcePath,
     { outPath = "", dependencies = [], provides = [] } = {}
   ) {
+    this.name = name;
     this.code = code;
     this.sourcePath = sourcePath;
     this.dependencies = dependencies;
@@ -31,6 +34,7 @@ export class ModuleCompilation {
 
   /**
    * Static constructor
+   * @param {string} name
    * @param {string} code
    * @param {string} sourcePath
    * @param {Object} opts
@@ -40,11 +44,12 @@ export class ModuleCompilation {
    * @returns {ModuleCompilation}
    */
   static new(
+    name,
     code,
     sourcePath,
     { outPath = "", dependencies = [], provides = [] } = {}
   ) {
-    return new ModuleCompilation(code, sourcePath, {
+    return new ModuleCompilation(name, code, sourcePath, {
       outPath,
       global,
       dependencies,
