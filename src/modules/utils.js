@@ -5,8 +5,7 @@ import { resolve } from "./resolve.js";
  * @param {(string|import("../parser/ast.js").MemberExpression)[]} requires
  * @returns {{name: string|import("../parser/ast.js").MemberExpression; source: string}[]}
  */
-export const getModulePaths = (requires) =>
-  requires.map((req) => ({ name: req.toString(), source: resolve(req) }));
+export const getModulePaths = (requires) => requires.map((req) => resolve(req));
 
 /**
  * Resolves the outpath for a local module's already-resolved sourcepath
