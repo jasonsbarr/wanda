@@ -12,7 +12,7 @@ import { Exception } from "../shared/exceptions.js";
  */
 export const resolve = (importSignifier) => {
   const parts = importSignifier.toString().split(".");
-  const moduleKind = parts[0];
+  const moduleKind = parts.length > 1 ? parts[0] : "";
   const filenameBase = v.kebabCase(parts[parts.length - 1]);
   let resolvedPath =
     "/" +
@@ -65,8 +65,9 @@ export const resolve = (importSignifier) => {
       );
     }
   } else {
+    const moduleName = v.kebabCase(moduleKind);
     // moduleKind is at the same level as the main program module
-    resolvedPath = "./" + v.kebabCase(moduleKind) + resolvedPath;
+    resolvedPath = "./" + moduleName + resolvedPath;
 
     if (fs.existsSync(join(cwd, resolvedPath, `${filenameBase}.wanda`))) {
       // nothing more needs to be done
