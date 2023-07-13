@@ -87,20 +87,3 @@ export const resolve = (importSignifier) => {
   resolvedPath += `${filenameBase}.${native ? "js" : "wanda"}`;
   return resolvedPath;
 };
-
-/**
- * Resolves the outpath for a local module's already-resolved sourcepath
- * @param {string} sourcePath
- * @param {boolean} [global=false]
- * @returns {string}
- */
-export const resolveOutPath = (sourcePath) => {
-  if (sourcePath.endsWith(".js")) {
-    return sourcePath;
-  }
-
-  const parts = sourcePath.split("/");
-  const filename = parts[parts.length - 1].split(".")[0] + ".js";
-
-  return parts.slice(0, -1).join("/").replace("/src/", "/build/") + filename;
-};
