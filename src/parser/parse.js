@@ -528,7 +528,8 @@ const parseForExpression = (form) => {
  * @returns {import("./ast.js").Module}
  */
 const parseModuleSignifier = (form) => {
-  const name = form.cdr;
+  // need the head of the tail of the form
+  const name = form.cdr.car;
   const srcloc = form.srcloc;
 
   return AST.Module(name, srcloc);
