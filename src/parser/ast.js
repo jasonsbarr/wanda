@@ -244,6 +244,10 @@ export const AST = {
       kind: ASTTypes.Symbol,
       name: token.value,
       srcloc: token.srcloc,
+
+      toString() {
+        return this.name;
+      },
     };
   },
   /**
