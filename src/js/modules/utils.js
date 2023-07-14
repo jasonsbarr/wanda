@@ -1,11 +1,19 @@
 import { resolve } from "./resolve.js";
 
 /**
- * Resolves arrays of required module import specifiers/specifier strings to file locations
- * @param {(string|import("../parser/ast.js").MemberExpression)[]} requires
- * @returns {{name: string|import("../parser/ast.js").MemberExpression; source: string}[]}
+ * @typedef {import("./visitModule.js").ImportSpecifier & {sourcePath: string}} ImportWithSource
  */
-export const getModulePaths = (requires) => requires.map((req) => resolve(req));
+
+/**
+ * Resolves arrays of required module import specifiers/specifier strings to file locations
+ * @param {import("./visitModule.js").ImportSpecifier[]} requires
+ * @returns {ImportWithSource[]}[]}
+ */
+export const getModulePaths = (requires) =>
+  requires.map((req) => ({
+    ...req,
+    sourcePath: resolve(req),
+  }));
 
 /**
  * Resolves the outpath for a local module's already-resolved sourcepath
