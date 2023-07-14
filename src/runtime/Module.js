@@ -35,7 +35,7 @@ export class Module {
     this.values = parseTypesObject(values);
     this.types = parseTypesObject(types);
     // hacky version of fileURLToPath since ESBuild errors if we try to import the function from Node's url module
-    this.absPath = fileURL.split("file://")[1];
+    this.absPath = fileURL.split("file://")[1] ?? "";
   }
 
   toString() {
