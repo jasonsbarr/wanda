@@ -20,6 +20,7 @@ class ModuleVisitor extends Visitor {
     this.dependencies = [];
     /** @type {null|string} */
     this.module = null;
+    this.sourcePath = program.srcloc.file;
   }
 
   /**
@@ -43,7 +44,7 @@ class ModuleVisitor extends Visitor {
   /**
    * Adds the relevant properties from this visitor class to the Program node
    * @param {import("../parser/ast.js").Program} node
-   * @returns {import("../parser/ast.js").Program & {provides: string[]; dependencies: ImportSpecifier[]; module: string|null}}
+   * @returns {import("../parser/ast.js").Program & {provides: string[]; dependencies: ImportSpecifier[]; module: string|null; sourcePath: string}}
    */
   visitProgram(node) {
     for (let expr of node.body) {
@@ -72,6 +73,6 @@ class ModuleVisitor extends Visitor {
 /**
  * Executes the ModuleVisitor on a module's Program node
  * @param {import("../parser/ast.js").Program} program
- * @returns {import("../parser/ast.js").Program & {provides: string[]; dependencies: ImportSpecifier[]; module: string|null}}
+ * @returns {import("../parser/ast.js").Program & {provides: string[]; dependencies: ImportSpecifier[]; module: string|null sourcePath: string}}
  */
 export const visitModule = (program) => new ModuleVisitor(program).visit();
