@@ -51,6 +51,15 @@ class ModuleVisitor extends Visitor {
       this.visit(expr);
     }
 
+    if (!this.module) {
+      const parts = this.sourcePath.split("/");
+      const fileName = parts[parts.length - 1];
+      let module = fileName.split(".")[0];
+      module = module[0].toUpperCase() + module.slice(1);
+
+      this.module = module;
+    }
+
     return {
       ...node,
       provides: this.provides,
