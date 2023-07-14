@@ -1,4 +1,4 @@
-import { resolveOutpathLocal } from "./resolve.js";
+import { resolveOutPath } from "./utils.js";
 
 export class ModuleCompilation {
   /**
@@ -24,7 +24,7 @@ export class ModuleCompilation {
     this.provides = provides;
 
     if (!outPath) {
-      this.outPath = resolveOutpathLocal(sourcePath, global);
+      this.outPath = resolveOutPath(sourcePath, global);
     } else {
       this.outPath = outPath;
     }
