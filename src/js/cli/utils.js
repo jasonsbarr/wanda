@@ -1,6 +1,6 @@
 import fs from "fs";
 import { join } from "path";
-import { ROOT_PATH } from "../../root.js";
+import { ROOT_PATH } from "../../../root.js";
 /**
  * Returns the number of spaces to indent based on open parens/braces/brackets
  * @param {string} str source code input

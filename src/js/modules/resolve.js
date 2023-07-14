@@ -25,15 +25,22 @@ export const resolve = (importSignifier) => {
 
   const cwd = process.cwd() + "/";
   if (moduleKind === "Wanda") {
-    resolvedPath = ROOT_PATH + "/lib/" + resolvedPath;
-
-    if (fs.existsSync(join(resolvedPath, `${filenameBase}.wanda`))) {
-      resolvedPath += "build/" + filenameBase + ".js";
+    if (
+      fs.existsSync(
+        join(
+          ROOT_PATH + "/src/wanda/lib/" + resolvedPath,
+          `${filenameBase}.wanda`
+        )
+      )
+    ) {
+      resolvedPath = ROOT_PATH + "/build/lib/" + filenameBase + ".js";
       return resolvedPath;
     } else if (
-      fs.existsSync(join(resolvedPath + "js/", `${filenameBase}.js`))
+      fs.existsSync(
+        join(ROOT_PATH + "/src/js/lib/" + resolvedPath, `${filenameBase}.js`)
+      )
     ) {
-      resolvedPath += "js/";
+      resolvedPath = ROOT_PATH + "/src/js/lib/" + resolvedPath;
       native = true;
     } else {
       throw new Exception(
