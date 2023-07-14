@@ -8,7 +8,7 @@ export class ModuleCompilation {
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
-   * @param {string[]} [opts.dependencies=[]]
+   * @param {import("./visitModule.js").ImportSpecifier[]} [opts.dependencies=[]]
    * @param {import("../parser/ast.js").Symbol[]} opts.provides
    */
   constructor(
@@ -39,7 +39,7 @@ export class ModuleCompilation {
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
-   * @param {{name: string|import("../parser/ast.js").MemberExpression; source: string}[]} [opts.dependencies=[]]
+   * @param {import("./visitModule.js").ImportSpecifier[]} [opts.dependencies=[]]
    * @param {import("../parser/ast.js").Symbol[]} opts.provides
    * @returns {ModuleCompilation}
    */
