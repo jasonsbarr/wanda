@@ -8,7 +8,7 @@ export class ModuleCompilation {
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
-   * @param {string[]} [dependencies=[]]
+   * @param {string[]} [opts.dependencies=[]]
    * @param {import("../parser/ast.js").Symbol[]} opts.provides
    */
   constructor(
