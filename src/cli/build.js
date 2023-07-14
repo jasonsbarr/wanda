@@ -33,7 +33,7 @@ export const build = (code, outName = "main.js", moduleName = "main") => {
     footer: { js: `${moduleName}.result` },
     format: "iife",
     banner: { js: `var ${moduleName} = {};\n` },
-    // platform: "node",
+    logLevel: "silent",
   });
 
   const builtCode = fs.readFileSync(join(outPath, outName), {
