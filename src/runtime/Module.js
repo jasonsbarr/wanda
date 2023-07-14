@@ -26,7 +26,7 @@ export class Module {
   constructor(
     name,
     module,
-    { requires, nativeRequires, values, types, absPath }
+    { requires, nativeRequires, values, types, fileURL }
   ) {
     this.name = name;
     this.module = module;
@@ -34,7 +34,7 @@ export class Module {
     this.nativeRequires = nativeRequires;
     this.values = parseTypesObject(values);
     this.types = parseTypesObject(types);
-    this.absPath = absPath;
+    this.fileURL = fileURL;
   }
 
   toString() {
@@ -61,7 +61,7 @@ export const makeModule = (
     nativeRequires = [],
     values = {},
     types = {},
-    absPath = "",
+    fileURL = "",
   } = {}
 ) =>
   new Module(name, module, {
@@ -69,5 +69,5 @@ export const makeModule = (
     nativeRequires,
     values,
     types,
-    absPath,
+    fileURL,
   });
