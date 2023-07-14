@@ -23,8 +23,8 @@ export class ModuleCompilation {
     this.dependencies = dependencies;
     this.provides = provides;
 
-    if (!this.sourcePath.endsWith(".wanda")) {
-      this.outPath = this.sourcePath;
+    if (sourcePath.endsWith(".js")) {
+      this.outPath = sourcePath;
     } else if (!outPath) {
       this.outPath = resolveOutpathLocal(sourcePath, global);
     } else {
