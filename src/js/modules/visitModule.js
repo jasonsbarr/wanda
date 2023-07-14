@@ -3,7 +3,7 @@ import { Visitor } from "../visitor/Visitor.js";
 /**
  * @typedef ImportSpecifier
  * @prop {import("../parser/ast.js").Symbol|import("../parser/ast.js").MemberExpression} import
- * @prop {null|import("../parser/ast.js").Symbol} alias
+ * @prop {null|string} alias
  */
 
 class ModuleVisitor extends Visitor {
