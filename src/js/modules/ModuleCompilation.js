@@ -23,9 +23,7 @@ export class ModuleCompilation {
     this.dependencies = dependencies;
     this.provides = provides;
 
-    if (sourcePath.endsWith(".js")) {
-      this.outPath = sourcePath;
-    } else if (!outPath) {
+    if (!outPath) {
       this.outPath = resolveOutpathLocal(sourcePath, global);
     } else {
       this.outPath = outPath;
