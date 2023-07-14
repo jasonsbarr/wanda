@@ -27,13 +27,10 @@ export const resolve = (importSignifier) => {
   if (moduleKind === "Wanda") {
     if (
       fs.existsSync(
-        join(
-          ROOT_PATH + "/src/wanda/lib/" + resolvedPath,
-          `${filenameBase}.wanda`
-        )
+        join(ROOT_PATH + "/src/lib/" + resolvedPath, `${filenameBase}.wanda`)
       )
     ) {
-      resolvedPath = ROOT_PATH + "/build/lib/" + filenameBase + ".js";
+      resolvedPath = ROOT_PATH + "/src/lib/" + filenameBase + ".wanda";
       return resolvedPath;
     } else if (
       fs.existsSync(
