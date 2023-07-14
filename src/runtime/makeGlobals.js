@@ -1,4 +1,4 @@
-import { theModule as Core } from "../../lib/js/core.js";
+import { theModule as Core } from "../lib/js/core.js";
 import { Namespace } from "../shared/Namespace.js";
 import { makeSymbol } from "./makeSymbol.js";
 import { makeRuntime } from "./makeRuntime.js";

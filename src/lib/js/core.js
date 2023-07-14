@@ -1,12 +1,12 @@
 import equal from "fast-deep-equal/es6/index.js";
-import { Module, makeModule } from "../../src/runtime/Module.js";
-import { Cons, cons } from "../../src/shared/cons.js";
-import { print } from "../../src/printer/print.js";
-import { println } from "../../src/printer/println.js";
-import { printString } from "../../src/printer/printString.js";
-import { isTruthy, makeKeyword } from "../../src/runtime/utils.js";
-import { Exception } from "../../src/shared/exceptions.js";
-import { hasMetaField } from "../../src/runtime/object.js";
+import { Module, makeModule } from "../../runtime/Module.js";
+import { Cons, cons } from "../../shared/cons.js";
+import { print } from "../../printer/print.js";
+import { println } from "../../printer/println.js";
+import { printString } from "../../printer/printString.js";
+import { isTruthy, makeKeyword } from "../../runtime/utils.js";
+import { Exception } from "../../shared/exceptions.js";
+import { hasMetaField } from "../../runtime/object.js";
 
 // Module name
 const name = "Core";
