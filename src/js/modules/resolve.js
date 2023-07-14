@@ -15,12 +15,10 @@ export const resolve = (importSignifier) => {
   const moduleKind = parts.length > 1 ? parts[0] : "";
   const filenameBase = v.kebabCase(parts[parts.length - 1]);
   let resolvedPath =
-    "/" +
     parts
       .slice(1, -1)
       .map((s) => v.kebabCase(s))
-      .join("/") +
-    "/";
+      .join("/") + "/";
   let native = false;
 
   const cwd = process.cwd() + "/";
