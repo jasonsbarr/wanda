@@ -95,6 +95,10 @@ class ASTPrinter {
         return this.printUnaryExpression(node, indent);
       case ASTTypes.ForExpression:
         return this.printForExpression(node, indent);
+      case ASTTypes.Module:
+        return this.printModule(node, indent);
+      case ASTTypes.Import:
+        return this.printImport(node, indent);
       default:
         throw new Exception(`Unknown AST type ${node.kind} to print`);
     }
@@ -278,6 +282,18 @@ class ASTPrinter {
   }
 
   /**
+   * Prints an Import node
+   * @param {import("../parser/ast.js").Import} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printImport(node, indent) {
+    return `${prIndent(indent)}Import: ${
+      node.import.toString() + node.alias ? " as " + node.alias.toString() : ""
+    }`;
+  }
+
+  /**
    * Prints a LambdaExpression node
    * @param {import("../parser/ast.js").LambdaExpression} node
    * @param {number} indent
@@ -332,6 +348,16 @@ class ASTPrinter {
     prStr += `${this.print(node.property, indent + 4)}`;
 
     return prStr;
+  }
+
+  /**
+   * Prints a Module node
+   * @param {import("../parser/ast.js").Module} node
+   * @param {number} indent
+   * @returns {string}
+   */
+  printModule(node, indent) {
+    return `${prIndent(indent)}Module: ${node.name.name}\n`;
   }
 
   /**
