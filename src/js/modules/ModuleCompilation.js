@@ -31,7 +31,7 @@ export class ModuleCompilation {
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {import("./visitModule.js").ImportSpecifier[]} [opts.dependencies=[]]
-   * @param {import("../parser/ast.js").Symbol[]} opts.provides
+   * @param {string[]} opts.provides
    * @returns {ModuleCompilation}
    */
   static new(
