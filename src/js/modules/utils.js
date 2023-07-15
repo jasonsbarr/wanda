@@ -31,3 +31,20 @@ export const resolveOutPath = (sourcePath) => {
 
   return parts.slice(0, -1).join("/").replace("/src/", "/build/") + filename;
 };
+
+/**
+ * Filters out duplicate modules
+ * @param {ImportWithSource[]} modules
+ * @returns {ImportWithSource[]}
+ */
+export const getUniqueModules = (modules) => {
+  let filtered = [];
+
+  for (let mod of modules) {
+    if (!filtered.find((m) => mod.sourcePath === m.sourcePath)) {
+      filtered.push(mod);
+    }
+  }
+
+  return filtered;
+};
