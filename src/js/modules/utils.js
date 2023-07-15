@@ -7,7 +7,7 @@ import { resolve } from "./resolve.js";
 /**
  * Resolves arrays of required module import specifiers/specifier strings to file locations
  * @param {import("./visitModule.js").ImportSpecifier[]} requires
- * @returns {ImportWithSource[]}[]}
+ * @returns {ImportWithSource[]}
  */
 export const getImportsWithSource = (requires) =>
   requires.map((req) => ({
