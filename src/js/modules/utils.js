@@ -12,7 +12,7 @@ import { resolve } from "./resolve.js";
 export const getModulePaths = (requires) =>
   requires.map((req) => ({
     ...req,
-    sourcePath: resolve(req),
+    sourcePath: resolve(req.import),
   }));
 
 /**
