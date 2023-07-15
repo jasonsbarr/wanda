@@ -356,7 +356,7 @@ export class TypeChecker {
    * Type checks a Program node
    * @param {import("../parser/ast.js").Program} node
    * @param {TypeEnvironment} env
-   * @returns {TypedAST}
+   * @returns {TypedAST & {env: TypeEnvironment}}
    */
   checkProgram(node, env) {
     /** @type {TypedAST[]} */
@@ -374,7 +374,7 @@ export class TypeChecker {
       }
     }
 
-    return { kind: node.kind, body, srcloc: node.srcloc, type };
+    return { kind: node.kind, body, srcloc: node.srcloc, type, env };
   }
 
   checkRecordLiteral(node, env) {
