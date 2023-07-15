@@ -1,4 +1,5 @@
 import { Visitor } from "../visitor/Visitor.js";
+import { ModuleCompilation } from "./ModuleCompilation.js";
 
 /**
  * @typedef ImportSpecifier
@@ -44,7 +45,7 @@ class ModuleVisitor extends Visitor {
   /**
    * Adds the relevant properties from this visitor class to the Program node
    * @param {import("../parser/ast.js").Program} node
-   * @returns {import("../parser/ast.js").Program & {provides: string[]; dependencies: ImportSpecifier[]; module: string|null; sourcePath: string}}
+   * @returns {ModuleCompilation}
    */
   visitProgram(node) {
     for (let expr of node.body) {
@@ -60,12 +61,10 @@ class ModuleVisitor extends Visitor {
       this.module = module;
     }
 
-    return {
-      ...node,
-      provides: this.provides,
+    return ModuleCompilation.new(this.module, this.program, this.sourcePath, {
       dependencies: this.dependencies,
-      module: this.module,
-    };
+      provides: this.provides,
+    });
   }
 
   /**
