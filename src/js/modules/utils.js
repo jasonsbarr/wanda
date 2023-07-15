@@ -1,7 +1,7 @@
 import { resolve } from "./resolve.js";
 
 /**
- * @typedef {import("./visitModule.js").ImportSpecifier & {sourcePath: string}} ImportWithSource
+ * @typedef {import("./visitModule.js").ImportSpecifier & {import: string; sourcePath: string}} ImportWithSource
  */
 
 /**
@@ -12,6 +12,7 @@ import { resolve } from "./resolve.js";
 export const getImportsWithSource = (requires) =>
   requires.map((req) => ({
     ...req,
+    import: req.import.toString(),
     sourcePath: resolve(req.import),
   }));
 
