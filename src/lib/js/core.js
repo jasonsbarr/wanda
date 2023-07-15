@@ -7,6 +7,7 @@ import { printString } from "../../js/printer/printString.js";
 import { isTruthy, makeKeyword } from "../../js/runtime/utils.js";
 import { Exception } from "../../js/shared/exceptions.js";
 import { hasMetaField } from "../../js/runtime/object.js";
+import { fileURLToPath } from "../../js/shared/utils.js";
 
 // Module name
 const name = "Core";
@@ -68,7 +69,7 @@ const values = {
 // Types provided by the module
 const types = {};
 // Absolute path to the module file
-const fileURL = import.meta.url;
+const absPath = fileURLToPath(import.meta.url);
 
 /** @type {Module} */
 export const theModule = makeModule(
@@ -409,5 +410,5 @@ export const theModule = makeModule(
       ),
     };
   },
-  { requires, nativeRequires, values, types, fileURL }
+  { requires, nativeRequires, values, types, absPath }
 );

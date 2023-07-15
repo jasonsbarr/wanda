@@ -32,3 +32,10 @@ export const kebabToPascalCase = (str) =>
     .split("-")
     .map((s) => s[0].toUpperCase() + s.slice(1).toLowerCase())
     .join("");
+
+/**
+ * Hacky version of converting a file URL to a path since ESBuild doesn't like using the one from Node.js
+ * @param {string} fileURL
+ * @returns {string}
+ */
+export const fileURLToPath = (fileURL) => fileURL.split("file://")[1] ?? "";

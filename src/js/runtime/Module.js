@@ -21,12 +21,12 @@ export class Module {
    * @param {string[]} opts.nativeRequires native JS required modules
    * @param {Object} opts.values
    * @param {Object} opts.types
-   * @param {string} opts.fileURL
+   * @param {string} opts.absPath
    */
   constructor(
     name,
     module,
-    { requires, nativeRequires, values, types, fileURL }
+    { requires, nativeRequires, values, types, absPath }
   ) {
     this.name = name;
     this.module = module;
@@ -34,8 +34,7 @@ export class Module {
     this.nativeRequires = nativeRequires;
     this.values = parseTypesObject(values);
     this.types = parseTypesObject(types);
-    // hacky version of fileURLToPath since ESBuild errors if we try to import the function from Node's url module
-    this.absPath = fileURL.split("file://")[1] ?? "";
+    this.absPath = absPath;
   }
 
   toString() {
@@ -52,7 +51,7 @@ export class Module {
  * @param {string[]} opts.nativeRequires native JS required modules
  * @param {Object} opts.values
  * @param {Object} opts.types
- * @param {string} opts.fileURL
+ * @param {string} opts.absPath
  * @returns {Module}
  */
 export const makeModule = (
@@ -63,7 +62,7 @@ export const makeModule = (
     nativeRequires = [],
     values = {},
     types = {},
-    fileURL = "",
+    absPath = "",
   } = {}
 ) =>
   new Module(name, module, {
@@ -71,5 +70,5 @@ export const makeModule = (
     nativeRequires,
     values,
     types,
-    fileURL,
+    absPath,
   });
