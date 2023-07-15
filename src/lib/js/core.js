@@ -17,7 +17,6 @@ const requires = [];
 const nativeRequires = [];
 // Values provided by the module with their types
 const values = {
-  __rt__: "any",
   print: "(any -> nil)",
   println: "(any -> nil)",
   cons: "(any, any -> (list any))",
@@ -87,7 +86,6 @@ export const theModule = makeModule(
     };
 
     return {
-      __rt__: rt,
       print: rt.makeFunction(print, {
         name: "print",
       }),
