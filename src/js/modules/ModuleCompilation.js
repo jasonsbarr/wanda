@@ -9,7 +9,7 @@ export class ModuleCompilation {
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
    * @param {import("./visitModule.js").ImportSpecifier[]} [opts.dependencies=[]]
-   * @param {import("../parser/ast.js").Symbol[]} opts.provides
+   * @param {string[]} opts.provides
    */
   constructor(
     name,
