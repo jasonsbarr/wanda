@@ -4,7 +4,7 @@ export class ModuleCompilation {
   /**
    * Constructor
    * @param {string} name
-   * @param {import("../parser/ast.js").Program} code compiled code emitted for the module's contents
+   * @param {import("../parser/ast.js").Program} ast AST for the module's contents
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {import("./visitModule.js").ImportSpecifier[]} [opts.dependencies=[]]
@@ -12,12 +12,12 @@ export class ModuleCompilation {
    */
   constructor(
     name,
-    code,
+    ast,
     sourcePath,
     { dependencies = [], provides = [] } = {}
   ) {
     this.name = name;
-    this.code = code;
+    this.ast = ast;
     this.sourcePath = sourcePath;
     this.dependencies = getImportsWithSource(dependencies);
     this.provides = provides;
@@ -27,7 +27,7 @@ export class ModuleCompilation {
   /**
    * Static constructor
    * @param {string} name
-   * @param {import("../parser/ast.js").Program} code
+   * @param {import("../parser/ast.js").Program} ast
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {import("./visitModule.js").ImportSpecifier[]} [opts.dependencies=[]]
@@ -36,11 +36,11 @@ export class ModuleCompilation {
    */
   static new(
     name,
-    code,
+    ast,
     sourcePath,
     { outPath = "", dependencies = [], provides = [] } = {}
   ) {
-    return new ModuleCompilation(name, code, sourcePath, {
+    return new ModuleCompilation(name, ast, sourcePath, {
       outPath,
       global,
       dependencies,
