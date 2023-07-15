@@ -4,7 +4,7 @@ export class ModuleCompilation {
   /**
    * Constructor
    * @param {string} name
-   * @param {string} code compiled code emitted for the module's contents
+   * @param {import("../parser/ast.js").Program} code compiled code emitted for the module's contents
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
@@ -33,7 +33,7 @@ export class ModuleCompilation {
   /**
    * Static constructor
    * @param {string} name
-   * @param {string} code
+   * @param {import("../parser/ast.js").Program} code
    * @param {string} sourcePath
    * @param {Object} opts
    * @param {string} [opts.outPath=""]
