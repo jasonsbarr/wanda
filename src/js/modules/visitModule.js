@@ -10,7 +10,7 @@ import { ModuleCompilation } from "./ModuleCompilation.js";
 class ModuleVisitor extends Visitor {
   /**
    * Constructor
-   * @param {import("../parser/ast.js").Program} program
+   * @param {import("../typechecker/TypeChecker.js").TypedProgram} program
    */
   constructor(program) {
     super(program);
@@ -22,6 +22,7 @@ class ModuleVisitor extends Visitor {
     /** @type {null|string} */
     this.module = null;
     this.sourcePath = program.srcloc.file;
+    this.env = this.program.env;
   }
 
   /**
@@ -64,6 +65,7 @@ class ModuleVisitor extends Visitor {
     return ModuleCompilation.new(this.module, this.program, this.sourcePath, {
       dependencies: this.dependencies,
       provides: this.provides,
+      env: this.env,
     });
   }
 

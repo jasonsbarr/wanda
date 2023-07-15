@@ -15,6 +15,9 @@ import { isPrimitive } from "../parser/utils.js";
 /**
  * @typedef {AST & {type: import("./types").Type}} TypedAST
  */
+/**
+ * @typedef {import("../parser/ast.js").Program & {env: TypeEnvironment}} TypedProgram
+ */
 
 let isSecondPass = false;
 
