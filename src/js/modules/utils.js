@@ -9,7 +9,7 @@ import { resolve } from "./resolve.js";
  * @param {import("./visitModule.js").ImportSpecifier[]} requires
  * @returns {ImportWithSource[]}[]}
  */
-export const getModulePaths = (requires) =>
+export const getImportsWithSource = (requires) =>
   requires.map((req) => ({
     ...req,
     sourcePath: resolve(req.import),

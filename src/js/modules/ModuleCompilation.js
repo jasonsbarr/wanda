@@ -1,4 +1,4 @@
-import { resolveOutPath, getModulePaths } from "./utils.js";
+import { resolveOutPath, getImportsWithSource } from "./utils.js";
 
 export class ModuleCompilation {
   /**
@@ -20,7 +20,7 @@ export class ModuleCompilation {
     this.name = name;
     this.code = code;
     this.sourcePath = sourcePath;
-    this.dependencies = getModulePaths(dependencies);
+    this.dependencies = getImportsWithSource(dependencies);
     this.provides = provides;
 
     if (!outPath) {
