@@ -83,6 +83,6 @@ class ModuleVisitor extends Visitor {
 /**
  * Executes the ModuleVisitor on a module's Program node
  * @param {import("../parser/ast.js").Program} program
- * @returns {import("../parser/ast.js").Program & {provides: string[]; dependencies: ImportSpecifier[]; module: string|null sourcePath: string}}
+ * @returns {ModuleCompilation}
  */
 export const visitModule = (program) => new ModuleVisitor(program).visit();
