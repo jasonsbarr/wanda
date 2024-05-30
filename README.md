@@ -46,6 +46,13 @@ nil
 {name: "Jason", age: 43}
 ```
 
+Create lists with either the `cons` or `list` function
+
+```clojure
+(cons 1 (cons 2) (cons 3 nil))
+(list 1 2 3)
+```
+
 ### Member expressions
 
 You can access object and module members using dot syntax. An object can be any expression, but a property must be a valid symbol. Access properties that don't have valid symbol names using the `prop` function
