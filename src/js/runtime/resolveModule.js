@@ -1,7 +1,9 @@
 import path from "path";
+import fs from "fs";
 import v from "voca";
 import { ASTTypes } from "../parser/ast.js";
 import { ROOT_PATH } from "../../../root.js";
+import { ReferenceException } from "../shared/exceptions.js";
 
 /**
  * Resolves a module import declaration to a file location
@@ -17,20 +19,36 @@ export const resolveModuleImport = (moduleImport) => {
   // determine base location based on first member
   // Wanda - Global lib directory
   // Other - Local directory and/or file
-  const baseName = names.shift();
+  const baseName = names.length > 1 ? names.shift() : "";
+
   const basePath =
     baseName.toLowerCase() === "wanda"
       ? path.join(ROOT_PATH, "src", "lib")
-      : path.join(process.cwd(), v.kebabCase(baseName), "src");
+      : path.join(process.cwd(), "src", v.kebabCase(baseName));
 
   // convert location array to path string
   let restPath = "";
 
   for (let name of names) {
-    restPath = path.join(fullPath, v.kebabCase(name));
+    restPath = path.join(restPath, v.kebabCase(name));
   }
 
   // check if file exists in either js (JS file) or root directory (Wanda file)
+  let fullPath = "";
+  const jsPath = path.join(basePath, "js", restPath) + ".js";
+  const wandaPath = path.join(basePath, restPath) + ".wanda";
+
+  // check for JS
+  if (fs.existsSync(jsPath)) {
+    fullPath = jsPath;
+  } else if (fs.existsSync(wandaPath)) {
+    fullPath = wandaPath;
+  } else {
+    throw new ReferenceException(
+      `No module ${baseName !== "" ? names[names.length - 1] : names[0]}`,
+      moduleImport.srcloc
+    );
+  }
 
   // add appropriate file extension and return
 };
