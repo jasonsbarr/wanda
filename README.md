@@ -54,6 +54,15 @@ You can access object and module members using dot syntax
 Object.member
 ```
 
+### Destructuring
+
+You can destructure lists and objects in variable assignment. You can only destructure "one level deep," which means no nested destructuring (this is due to limitations in the optimization pass of the compiler and will hopefully be fixed in the future). You can initialize a rest variable using the `&` symbol
+
+```clojure
+(def [a &b] [1 2 3]) ; a is 1, b is [2 3]
+(def {name age} {name: "Jason" age 43})
+```
+
 ### Call expressions
 
 A call expression is a simple list where the first item is the function and the rest of the items are its arguments
@@ -86,7 +95,7 @@ Declare functions with the `def` keyword
     (+ a b))
 ```
 
-Declare a variadic function (variable number of parameters) by prepending `&` to the rest argument
+Declare a variadic function (variable number of parameters) by prepending `&` to the rest argument. The rest variable will be collected into the function body as a list
 
 ```clojure
 (def sum (&nums)
