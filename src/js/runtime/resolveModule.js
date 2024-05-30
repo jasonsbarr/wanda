@@ -50,7 +50,7 @@ export const resolveModuleImport = (moduleImport) => {
     );
   }
 
-  // add appropriate file extension and return
+  return fullPath;
 };
 
 export const resolveModuleOutput = () => {};
@@ -61,8 +61,8 @@ const convertMemberExpressionToNamesArray = (memExp) => {
   /** @type {string[]} */
   let names = [];
 
+  let obj = memExp.object;
   if (memExp.object.kind === ASTTypes.MemberExpression) {
-    let obj = memExp.object;
     while (obj.kind === ASTTypes.MemberExpression) {
       /** @type {import("../parser/ast").Symbol} */
       const property = obj.property;
