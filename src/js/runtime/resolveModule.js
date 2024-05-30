@@ -20,7 +20,7 @@ export const resolveModuleImport = (moduleImport) => {
   const baseName = names.shift();
   const basePath =
     baseName.toLowerCase() === "wanda"
-      ? path.join(ROOT_PATH, "src")
+      ? path.join(ROOT_PATH, "src", "lib")
       : path.join(process.cwd(), v.kebabCase(baseName), "src");
 
   // convert location array to path string
