@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import * as esbuild from "esbuild";
-import { ROOT_PATH } from "../../root.js";
+import { ROOT_PATH } from "../../../root.js";
 
 /**
  * Builds and bundles a compiled code module with any imports
