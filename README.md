@@ -53,7 +53,7 @@ You can access object and module members using dot syntax. An object can be any 
 ```clojure
 Object.member
 
-(prop "some%property%name" {"some%property%name "some value"})
+(prop "some%property%name" {"some%property%name" "some value"})
 ```
 
 ### Destructuring
