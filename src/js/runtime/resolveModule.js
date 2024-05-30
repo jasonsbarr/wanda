@@ -62,7 +62,7 @@ const convertMemberExpressionToNamesArray = (memExp) => {
   let names = [];
 
   let obj = memExp.object;
-  if (memExp.object.kind === ASTTypes.MemberExpression) {
+  if (obj.kind === ASTTypes.MemberExpression) {
     while (obj.kind === ASTTypes.MemberExpression) {
       /** @type {import("../parser/ast").Symbol} */
       const property = obj.property;
