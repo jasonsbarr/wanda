@@ -370,7 +370,7 @@ class ASTPrinter {
    * @returns {string}
    */
   printRecordLiteral(node, indent) {
-    const prStr = `${prIndent(indent)}RecordLiteral:`;
+    let prStr = `${prIndent(indent)}RecordLiteral:`;
     prStr += `${prIndent(indent + 2)}Properties:`;
 
     for (let prop of node.properties) {
