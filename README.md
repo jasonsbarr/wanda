@@ -53,7 +53,7 @@ You can access object and module members using dot syntax. An object can be any 
 ```clojure
 Object.member
 
-(prop "some%property%name" {"some%property%name" "some value"})
+(prop "some%property%name" {"some%property%name": "some value"})
 ```
 
 ### Destructuring
@@ -62,7 +62,7 @@ You can destructure lists and objects in variable assignment. You can only destr
 
 ```clojure
 (def [a &b] [1 2 3]) ; a is 1, b is [2 3]
-(def {name age} {name: "Jason" age 43})
+(def {name age} {name: "Jason" age: 43})
 ```
 
 ### Call expressions
