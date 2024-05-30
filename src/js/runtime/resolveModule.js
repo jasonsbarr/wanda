@@ -8,6 +8,7 @@ import { ROOT_PATH } from "../../../root.js";
  */
 export const resolveModuleImport = (moduleMemberExp) => {
   const names = convertMemberExpressionToNamesArray(moduleMemberExp);
+  console.log(names);
 
   // determine base location based on first member
   // Wanda - Global lib directory
@@ -25,18 +26,19 @@ export const resolveModuleOutput = () => {};
 
 const convertMemberExpressionToNamesArray = (memExp) => {
   // convert Member Expression to array of names
-  const end = moduleMemberExp.property.name;
+  const end = memExp.property.name;
   /** @type {string[]} */
   let names = [];
 
-  if (moduleMemberExp.object.kind === ASTTypes.MemberExpression) {
-    let obj = moduleMemberExp.object;
+  if (memExp.object.kind === ASTTypes.MemberExpression) {
+    let obj = memExp.object;
     while (obj.kind === ASTTypes.MemberExpression) {
       /** @type {import("../parser/ast").Symbol} */
       const property = obj.property;
       const name = property.name;
 
       names.unshift(name);
+      obj = obj.object;
     }
 
     // now obj must be Symbol
