@@ -7,7 +7,6 @@ import { printString } from "../../js/printer/printString.js";
 import { isTruthy, makeKeyword } from "../../js/runtime/utils.js";
 import { Exception } from "../../js/shared/exceptions.js";
 import { hasMetaField } from "../../js/runtime/object.js";
-import { parseTypesObject } from "../../js/runtime/parseTypesObject.js";
 
 // Module name
 const name = "Core";
