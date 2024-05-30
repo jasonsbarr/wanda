@@ -45,7 +45,7 @@ export const resolveModuleImport = (moduleImport) => {
     fullPath = wandaPath;
   } else {
     throw new ReferenceException(
-      `No module ${baseName !== "" ? names[names.length - 1] : names[0]}`,
+      `No module ${names[names.length - 1]}`,
       moduleImport.srcloc
     );
   }
