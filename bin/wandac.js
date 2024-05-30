@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-import { wandac } from "../src/cli/wandac.js";
+import { wandac } from "../src/js/cli/wandac.js";
 
 wandac();
