@@ -1,5 +1,4 @@
 import path from "path";
-import { snakeCase } from "@chopinlang/string-utils";
 import v from "voca";
 import { ASTTypes } from "../parser/ast.js";
 import { ROOT_PATH } from "../../../root.js";
@@ -23,7 +22,13 @@ export const resolveModuleImport = (moduleImport) => {
     baseName.toLowerCase() === "wanda"
       ? path.join(ROOT_PATH, "src", "js", "lib")
       : path.join(process.cwd(), v.kebabCase(baseName));
+
   // convert location array to path string
+  let fullPath = basePath;
+
+  for (let name of names) {
+    fullPath = path.join(fullPath, v.kebabCase(name));
+  }
 
   // check if file exists in either js (JS file) or root directory (Wanda file)
 
