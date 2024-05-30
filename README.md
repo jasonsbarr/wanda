@@ -55,12 +55,10 @@ Create lists with either the `cons` or `list` function
 
 ### Member expressions
 
-You can access record and module members using dot syntax. An record can be any expression, but a property must be a valid symbol. Access properties that don't have valid symbol names using the `prop` function
+You can access record and module members using dot syntax. An record can be any expression, but a property must be a valid symbol
 
 ```clojure
 Record.member
-
-(prop "some%property%name" {"some%property%name": "some value"})
 ```
 
 ### Destructuring
