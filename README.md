@@ -50,7 +50,7 @@ nil
 
 You can access object and module members using dot syntax. An object can be any expression, but a property must be a valid symbol. Access properties that don't have valid symbol names using the `prop` function
 
-```javascript
+```clojure
 Object.member
 
 (prop "some%property%name" {"some%property%name "some value"})
