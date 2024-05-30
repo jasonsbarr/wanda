@@ -20,14 +20,14 @@ export const resolveModuleImport = (moduleImport) => {
   const baseName = names.shift();
   const basePath =
     baseName.toLowerCase() === "wanda"
-      ? path.join(ROOT_PATH, "src", "js", "lib")
-      : path.join(process.cwd(), v.kebabCase(baseName));
+      ? path.join(ROOT_PATH, "src")
+      : path.join(process.cwd(), v.kebabCase(baseName), "src");
 
   // convert location array to path string
-  let fullPath = basePath;
+  let restPath = "";
 
   for (let name of names) {
-    fullPath = path.join(fullPath, v.kebabCase(name));
+    restPath = path.join(fullPath, v.kebabCase(name));
   }
 
   // check if file exists in either js (JS file) or root directory (Wanda file)

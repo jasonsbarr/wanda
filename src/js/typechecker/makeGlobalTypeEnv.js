@@ -1,4 +1,4 @@
-import { theModule as Core } from "../../lib/js/core.js";
+import { theModule as Core } from "../../lib/core.js";
 import { TypeEnvironment } from "./TypeEnvironment.js";
 
 export const makeGlobalTypeEnv = () => {
