@@ -18,12 +18,15 @@ export const resolveModuleImport = (moduleImport) => {
 
   // determine base location based on first member
   // Wanda - Global lib directory
+  // Modules - Project-local node_modules
   // Other - Local directory and/or file
   const baseName = names.length > 1 ? names.shift() : "";
 
   const basePath =
     baseName.toLowerCase() === "wanda"
       ? path.join(ROOT_PATH, "src", "lib")
+      : baseName.toLowerCase() === "modules"
+      ? ""
       : path.join(process.cwd(), "src", v.kebabCase(baseName));
 
   // convert location array to path string
