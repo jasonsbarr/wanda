@@ -1,18 +1,28 @@
+import path from "path";
+import { snakeCase } from "@chopinlang/string-utils";
+import v from "voca";
 import { ASTTypes } from "../parser/ast.js";
 import { ROOT_PATH } from "../../../root.js";
 
 /**
  * Resolves a module import declaration to a file location
- * @param {import("../parser/ast").MemberExpression} moduleMemberExp
+ * @param {import("../parser/ast").MemberExpression || import("../parser/ast").Symbol} moduleImport
  * @returns {string}
  */
-export const resolveModuleImport = (moduleMemberExp) => {
-  const names = convertMemberExpressionToNamesArray(moduleMemberExp);
+export const resolveModuleImport = (moduleImport) => {
+  const names =
+    moduleImport.kind === ASTTypes.Symbol
+      ? [moduleImport.name]
+      : convertMemberExpressionToNamesArray(moduleImport);
 
   // determine base location based on first member
   // Wanda - Global lib directory
   // Other - Local directory and/or file
-
+  const baseName = names.shift();
+  const basePath =
+    baseName.toLowerCase() === "wanda"
+      ? path.join(ROOT_PATH, "src", "js", "lib")
+      : path.join(process.cwd(), v.kebabCase(baseName));
   // convert location array to path string
 
   // check if file exists in either js (JS file) or root directory (Wanda file)
