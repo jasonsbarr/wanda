@@ -26,7 +26,12 @@ export const resolveModuleImport = (moduleImport) => {
     baseName.toLowerCase() === "wanda"
       ? path.join(ROOT_PATH, "src", "lib")
       : baseName.toLowerCase() === "modules"
-      ? ""
+      ? path.join(
+          process.cwd(),
+          "node_modules",
+          v.kebabCase(names.shift()),
+          "src"
+        )
       : path.join(process.cwd(), "src", v.kebabCase(baseName));
 
   // convert location array to path string
@@ -56,7 +61,20 @@ export const resolveModuleImport = (moduleImport) => {
   return fullPath;
 };
 
-export const resolveModuleOutput = () => {};
+/**
+ * Converts a module's path to its compiled output path
+ * @param {string} modulePath
+ * @returns {string}
+ */
+export const resolveModuleOutput = (modulePath) => {
+  if (modulePath.endsWith(".js")) {
+    return modulePath;
+  }
+
+  return modulePath
+    .replace("src", path.join("build", "js"))
+    .replace(".wanda", ".js");
+};
 
 const convertMemberExpressionToNamesArray = (memExp) => {
   // convert Member Expression to array of names
