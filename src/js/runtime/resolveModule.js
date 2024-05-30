@@ -8,11 +8,9 @@ import { ROOT_PATH } from "../../../root.js";
  */
 export const resolveModuleImport = (moduleMemberExp) => {
   const names = convertMemberExpressionToNamesArray(moduleMemberExp);
-  console.log(names);
 
   // determine base location based on first member
   // Wanda - Global lib directory
-  // Lib - Local lib directory
   // Other - Local directory and/or file
 
   // convert location array to path string

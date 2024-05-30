@@ -31,7 +31,7 @@ Expressions and special forms
 
 ### Literals
 
-Literals include numbers, strings, booleans, nil, keywords, vector literals, and object literals:
+Literals include numbers, strings, booleans, nil, keywords, vector literals, and record literals:
 
 ```clojure
 17
@@ -55,17 +55,17 @@ Create lists with either the `cons` or `list` function
 
 ### Member expressions
 
-You can access object and module members using dot syntax. An object can be any expression, but a property must be a valid symbol. Access properties that don't have valid symbol names using the `prop` function
+You can access record and module members using dot syntax. An record can be any expression, but a property must be a valid symbol. Access properties that don't have valid symbol names using the `prop` function
 
 ```clojure
-Object.member
+Record.member
 
 (prop "some%property%name" {"some%property%name": "some value"})
 ```
 
 ### Destructuring
 
-You can destructure lists and objects in variable assignment. You can only destructure "one level deep," which means no nested destructuring (this is due to limitations in the optimization pass of the compiler and will hopefully be fixed in the future). You can initialize a rest variable using the `&` symbol
+You can destructure lists and records in variable assignment. You can only destructure "one level deep," which means no nested destructuring (this is due to limitations in the optimization pass of the compiler and will hopefully be fixed in the future). You can initialize a rest variable using the `&` symbol
 
 ```clojure
 (def [a &b] [1 2 3]) ; a is 1, b is [2 3]
