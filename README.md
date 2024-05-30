@@ -46,6 +46,14 @@ nil
 {name: "Jason", age: 43}
 ```
 
+### Member expressions
+
+You can access object and module members using dot syntax
+
+```javascript
+Object.member
+```
+
 ### Call expressions
 
 A call expression is a simple list where the first item is the function and the rest of the items are its arguments
