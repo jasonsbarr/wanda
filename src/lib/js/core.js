@@ -2,7 +2,7 @@ import equal from "fast-deep-equal/es6/index.js";
 import {
   NativeModule,
   makeNativeModule,
-} from "../../js/runtime/NativeModule.js";
+} from "../../js/module/NativeModule.js";
 import { Cons, cons } from "../../js/shared/cons.js";
 import { print } from "../../js/printer/print.js";
 import { println } from "../../js/printer/println.js";
