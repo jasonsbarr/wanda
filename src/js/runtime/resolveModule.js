@@ -41,6 +41,8 @@ export const resolveModuleImport = (moduleImport) => {
   let restPath =
     baseName.toLowerCase() !== "wanda" && baseName.toLowerCase() !== "modules"
       ? baseName
+      : baseName.toLowerCase() === "modules" && names.length === 1 // module folder name was only name after Modules signifier
+      ? names.shift() // filename will be same as module name
       : "";
 
   for (let name of names) {
