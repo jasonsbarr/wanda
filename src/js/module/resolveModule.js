@@ -93,6 +93,16 @@ export const convertNativeRequireToNode = (require) => {
   return parse(read(tokenize(require, "Import"))).body[0];
 };
 
+/**
+ * Gets the module name from an import declaration
+ * @param {import("../parser/ast.js").MemberExpression || import("../parser/ast").Symbol} moduleImport
+ * @returns {string}
+ */
+export const getModuleName = (moduleImport) => {
+  const names = convertMemberExpressionToNamesArray(moduleImport);
+  return names[names.length - 1];
+};
+
 const convertMemberExpressionToNamesArray = (memExp) => {
   // convert Member Expression to array of names
   const end = memExp.property.name;
