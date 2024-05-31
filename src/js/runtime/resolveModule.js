@@ -35,7 +35,7 @@ export const resolveModuleImport = (moduleImport) => {
           v.kebabCase(names.shift()),
           "src"
         )
-      : path.join(process.cwd(), "src");
+      : path.join(process.cwd(), "src", v.kebabCase(baseName));
 
   // convert location array to path string
   let restPath = "";
@@ -46,10 +46,8 @@ export const resolveModuleImport = (moduleImport) => {
 
   // check if file exists in either js (JS file) or root directory (Wanda file)
   let fullPath = "";
-  const jsPath =
-    path.join(basePath, "js", v.kebabCase(baseName), restPath) + ".js";
-  const wandaPath =
-    path.join(basePath, v.kebabCase(baseName), restPath) + ".wanda";
+  const jsPath = path.join(basePath, "js", restPath) + ".js";
+  const wandaPath = path.join(basePath, restPath) + ".wanda";
 
   // check for JS
   if (fs.existsSync(jsPath)) {
