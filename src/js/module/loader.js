@@ -1,7 +1,8 @@
+let moduleTable = {};
+let nameMap = {};
+let modules = {};
+
 const getLoadOrder = (deps) => {
-  let moduleTable = {};
-  let nameMap = {};
-  let modules = {};
   let sorted = [];
   let toVisit = {};
   let currentlyVisited = {};
