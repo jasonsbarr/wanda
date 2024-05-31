@@ -16,8 +16,6 @@ import { parseTypesObject } from "../../js/runtime/parseTypesObject.js";
 const name = "Core";
 // Wanda modules required by the current module
 const requires = [];
-// JavaScript modules required by the current module
-const nativeRequires = [];
 // Values provided by the module with their types
 const values = parseTypesObject({
   __rt__: "any",
@@ -412,7 +410,6 @@ export const theModule = makeNativeModule(
     };
   },
   requires,
-  nativeRequires,
   values,
   types
 );
