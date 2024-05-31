@@ -4,11 +4,13 @@ export class ModuleCompilation {
    * @param {string} name
    * @param {string} location
    * @param {import("../parser/ast").Program} ast
+   * @param {string[]} requires
    */
-  constructor(name, location, ast) {
+  constructor(name, location, ast, requires) {
     this.name = name;
     this.location = location;
     this.ast = ast;
+    this.requires = requires;
   }
 
   /**
@@ -16,9 +18,10 @@ export class ModuleCompilation {
    * @param {string} name
    * @param {string} location
    * @param {import("../parser/ast").Program} ast
+   * @param {string[]} requires
    * @returns {ModuleCompilation}
    */
-  static new(name, location, ast) {
-    return new ModuleCompilation(name, location, ast);
+  static new(name, location, ast, requires) {
+    return new ModuleCompilation(name, location, ast, requires);
   }
 }
