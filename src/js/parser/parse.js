@@ -528,9 +528,19 @@ const parseForExpression = (form) => {
  * @returns {import("./ast.js").Import}
  */
 const parseImport = (form) => {
-  const [_, module, aliasForm] = form;
-  const alias = aliasForm !== undefined ? aliasForm.name : null;
+  const [_, expr] = form;
   const srcloc = form.srcloc;
+  let module, alias;
+
+  if (expr.type === "AsExpression") {
+    // expr.expression will be Symbol or MemberExpression
+    module = expr.expression;
+    // expr.typeAnnotation will be Symbol
+    alias = expr.typeAnnotation.name;
+  } else {
+    module = expr;
+    alias = null;
+  }
 
   return AST.Import(module, alias, srcloc);
 };
