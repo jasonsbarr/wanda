@@ -20,7 +20,7 @@ export class ModuleCompilation {
    * @param {string} name
    * @param {string} location
    * @param {import("../parser/ast.js").Program} ast
-   * @param {import("./Requires.js").Requires} requires
+   * @param {import("./Require.js").Require[]} requires
    * @param {string} outputLocation
    * @returns {ModuleCompilation}
    */
