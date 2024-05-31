@@ -1,3 +1,5 @@
+import { parseTypesObject } from "../runtime/parseTypesObject";
+
 /**
  * @class Module
  * @desc In-language module
@@ -20,8 +22,8 @@ export class NativeModule {
     this.name = name;
     this.module = module;
     this.requires = requires;
-    this.values = values;
-    this.types = types;
+    this.values = parseTypesObject(values);
+    this.types = parseTypesObject(types);
   }
 
   toString() {

@@ -2,7 +2,7 @@ import equal from "fast-deep-equal/es6/index.js";
 import {
   NativeModule,
   makeNativeModule,
-} from "../../js/module/NativeModule.js";
+} from "../../js/runtime/NativeModule.js";
 import { Cons, cons } from "../../js/shared/cons.js";
 import { print } from "../../js/printer/print.js";
 import { println } from "../../js/printer/println.js";
@@ -10,14 +10,13 @@ import { printString } from "../../js/printer/printString.js";
 import { isTruthy, makeKeyword } from "../../js/runtime/utils.js";
 import { Exception } from "../../js/shared/exceptions.js";
 import { hasMetaField } from "../../js/runtime/object.js";
-import { parseTypesObject } from "../../js/runtime/parseTypesObject.js";
 
 // Module name
 const name = "Core";
 // Wanda modules required by the current module
 const requires = [];
 // Values provided by the module with their types
-const values = parseTypesObject({
+const values = {
   __rt__: "any",
   print: "(any -> nil)",
   println: "(any -> nil)",
@@ -66,7 +65,7 @@ const values = parseTypesObject({
   range: "(&(vector number) -> (list number))",
   // same as for range - this can take either 2 or 3 args
   slice: "(number, &(vector any) -> ((vector any) || (list any)))",
-});
+};
 // Types provided by the module
 const types = {};
 
