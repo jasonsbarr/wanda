@@ -1,6 +1,6 @@
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { resolveModuleImport } from "../runtime/resolveModule.js";
+import { resolveModuleImport } from "./resolveModule.js";
 
 let moduleTable = {};
 let nameMap = {};

@@ -10,7 +10,7 @@ import { tokenize } from "../lexer/tokenize.js";
 
 /**
  * Resolves a module import declaration to a file location
- * @param {import("../parser/ast").MemberExpression || import("../parser/ast").Symbol} moduleImport
+ * @param {import("../parser/ast.js").MemberExpression || import("../parser/ast").Symbol} moduleImport
  * @returns {string}
  */
 export const resolveModuleImport = (moduleImport) => {
@@ -87,7 +87,7 @@ export const resolveModuleOutput = (modulePath) => {
 /**
  * Converts the string of a require in a native module to an AST node for the require
  * @param {string} require
- * @returns {import("../parser/ast").MemberExpression || import("../parser/ast").Symbol}
+ * @returns {import("../parser/ast.js").MemberExpression || import("../parser/ast").Symbol}
  */
 export const convertNativeRequireToNode = (require) => {
   return parse(read(tokenize(require, "Import"))).body[0];
@@ -102,7 +102,7 @@ const convertMemberExpressionToNamesArray = (memExp) => {
   let obj = memExp.object;
   if (obj.kind === ASTTypes.MemberExpression) {
     while (obj.kind === ASTTypes.MemberExpression) {
-      /** @type {import("../parser/ast").Symbol} */
+      /** @type {import("../parser/ast.js").Symbol} */
       const property = obj.property;
       const name = property.name;
 

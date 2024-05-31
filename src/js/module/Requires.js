@@ -1,4 +1,4 @@
-import { resolveModuleImport } from "../runtime/resolveModule.js";
+import { resolveModuleImport } from "./resolveModule.js";
 import { Visitor } from "../visitor/Visitor.js";
 
 /**
