@@ -3,8 +3,8 @@ export class ModuleCompilation {
    * Constructs a module compilation object
    * @param {string} name
    * @param {string} location
-   * @param {import("../parser/ast").Program} ast
-   * @param {import("../module/Requires.js").Requires} requires
+   * @param {import("../parser/ast.js").Program} ast
+   * @param {import("./Requires.js").Requires} requires
    */
   constructor(name, location, ast, requires) {
     this.name = name;
@@ -17,8 +17,8 @@ export class ModuleCompilation {
    * Static constructor
    * @param {string} name
    * @param {string} location
-   * @param {import("../parser/ast").Program} ast
-   * @param {import("../module/Requires.js").Requires} requires
+   * @param {import("../parser/ast.js").Program} ast
+   * @param {import("./Requires.js").Requires} requires
    * @returns {ModuleCompilation}
    */
   static new(name, location, ast, requires) {
