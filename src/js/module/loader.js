@@ -38,6 +38,7 @@ const fetchModuleDependencies = (module) => {
     throw new Exception(`Unknown module ${module}`);
   }
 
+  moduleTable[module.name] = module;
   return requires;
 };
 
