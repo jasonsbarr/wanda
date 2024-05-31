@@ -16,15 +16,13 @@ export class Module {
    * @param {string} name
    * @param {Function} module the module constructor
    * @param {string[]} requires in-lang required modules
-   * @param {string[]} nativeRequires native JS required modules
    * @param {Object} values
    * @param {Object} types
    */
-  constructor(name, module, requires, nativeRequires, values, types) {
+  constructor(name, module, requires, values, types) {
     this.name = name;
     this.module = module;
     this.requires = requires;
-    this.nativeRequires = nativeRequires;
     this.values = parseTypesObject(values);
     this.types = parseTypesObject(types);
   }
@@ -39,7 +37,6 @@ export class Module {
  * @param {string} name
  * @param {Function} module the module constructor
  * @param {string[]} requires in-lang required modules
- * @param {string[]} nativeRequires native JS required modules
  * @param {Object} values
  * @param {Object} types
  * @returns {Module}
@@ -48,7 +45,6 @@ export const makeModule = (
   name,
   module,
   requires = [],
-  nativeRequires = [],
   values = {},
   types = {}
-) => new Module(name, module, requires, nativeRequires, values, types);
+) => new Module(name, module, requires, values, types);
