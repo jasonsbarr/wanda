@@ -35,10 +35,13 @@ export const resolveModuleImport = (moduleImport) => {
           v.kebabCase(names.shift()),
           "src"
         )
-      : path.join(process.cwd(), "src", v.kebabCase(baseName));
+      : path.join(process.cwd(), "src");
 
   // convert location array to path string
-  let restPath = "";
+  let restPath =
+    baseName.toLowerCase() !== "wanda" && baseName.toLowerCase() !== "modules"
+      ? baseName
+      : "";
 
   for (let name of names) {
     restPath = path.join(restPath, v.kebabCase(name));
