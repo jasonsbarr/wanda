@@ -1,5 +1,8 @@
 import equal from "fast-deep-equal/es6/index.js";
-import { Module, makeModule } from "../../js/runtime/Module.js";
+import {
+  NativeModule,
+  makeNativeModule,
+} from "../../js/runtime/NativeModule.js";
 import { Cons, cons } from "../../js/shared/cons.js";
 import { print } from "../../js/printer/print.js";
 import { println } from "../../js/printer/println.js";
@@ -69,8 +72,8 @@ const values = parseTypesObject({
 // Types provided by the module
 const types = {};
 
-/** @type {Module} */
-export const theModule = makeModule(
+/** @type {NativeModule} */
+export const theModule = makeNativeModule(
   name,
   (rt) => {
     const isList = (obj) => {

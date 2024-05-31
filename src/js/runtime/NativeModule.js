@@ -7,7 +7,7 @@
  * @prop {Object} values values provided by a module and their types
  * @prop {Object} types types provided by a module
  */
-export class Module {
+export class NativeModule {
   /**
    * Module class constructor
    * @param {string} name
@@ -36,12 +36,12 @@ export class Module {
  * @param {string[]} requires in-lang required modules
  * @param {Object} values
  * @param {Object} types
- * @returns {Module}
+ * @returns {NativeModule}
  */
-export const makeModule = (
+export const makeNativeModule = (
   name,
   module,
   requires = [],
   values = {},
   types = {}
-) => new Module(name, module, requires, values, types);
+) => new NativeModule(name, module, requires, values, types);
