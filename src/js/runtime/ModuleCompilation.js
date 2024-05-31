@@ -4,7 +4,7 @@ export class ModuleCompilation {
    * @param {string} name
    * @param {string} location
    * @param {import("../parser/ast").Program} ast
-   * @param {string[]} requires
+   * @param {import("../shared/Requires.js").Requires} requires
    */
   constructor(name, location, ast, requires) {
     this.name = name;
@@ -18,7 +18,7 @@ export class ModuleCompilation {
    * @param {string} name
    * @param {string} location
    * @param {import("../parser/ast").Program} ast
-   * @param {string[]} requires
+   * @param {import("../shared/Requires.js").Requires} requires
    * @returns {ModuleCompilation}
    */
   static new(name, location, ast, requires) {
