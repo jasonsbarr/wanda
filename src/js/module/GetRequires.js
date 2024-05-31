@@ -14,7 +14,7 @@ export class GetRequires extends Visitor {
   }
 
   /**
-   *
+   * Extract Require from Import node
    * @param {import("../parser/ast.js").Import} node
    * @returns {import("../parser/ast.js").Import}
    */
