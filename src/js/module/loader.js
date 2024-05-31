@@ -32,6 +32,8 @@ const fetchModuleDependencies = (module) => {
     }
 
     requires = module.requires;
+
+    // this should never happen
   } else {
     throw new Exception(`Unknown module ${module}`);
   }
