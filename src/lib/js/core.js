@@ -71,7 +71,7 @@ const types = {};
 /** @type {Module} */
 export const theModule = makeModule(
   name,
-  (rt, ns) => {
+  (rt) => {
     const isList = (obj) => {
       if (!rt.isNil(obj) && !(obj instanceof Cons)) {
         return false;
