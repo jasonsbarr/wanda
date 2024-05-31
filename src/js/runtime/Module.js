@@ -4,7 +4,6 @@
  * @prop {string} name
  * @prop {Function} module the module constructor
  * @prop {string[]} requires in-lang required modules
- * @prop {string[]} nativeRequires native JS required modules
  * @prop {Object} values values provided by a module and their types
  * @prop {Object} types types provided by a module
  */
