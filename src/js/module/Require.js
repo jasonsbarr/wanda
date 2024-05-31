@@ -6,7 +6,7 @@
  */
 /**
  * @class
- * @prop {MemberExpression|Symbol} ModuleCompilation
+ * @prop {MemberExpression|Symbol} module
  * @prop {string} alias
  * @prop {string} location
  * @prop {string} name

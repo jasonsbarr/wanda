@@ -4,7 +4,7 @@ export class ModuleCompilation {
    * @param {string} name
    * @param {string} location
    * @param {import("../parser/ast.js").Program} ast
-   * @param {import("./Requires.js").Requires} requires
+   * @param {import("./Require.js").Require[]} requires
    */
   constructor(name, location, ast, requires) {
     this.name = name;
