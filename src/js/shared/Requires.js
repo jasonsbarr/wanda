@@ -1,3 +1,4 @@
+import { resolveModuleImport } from "../runtime/resolveModule.js";
 import { Visitor } from "../visitor/Visitor.js";
 
 /**
@@ -27,7 +28,11 @@ export class Requires extends Visitor {
    * @returns {import("../parser/ast.js").Import}
    */
   visitImport(node) {
-    const require = { module: node.module, alias: node.alias, location: "" };
+    const require = {
+      module: node.module,
+      alias: node.alias,
+      location: resolveModuleImport(node.module),
+    };
     this.requires.push(require);
     return node;
   }
