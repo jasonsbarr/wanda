@@ -4,6 +4,9 @@ import v from "voca";
 import { ASTTypes } from "../parser/ast.js";
 import { ROOT_PATH } from "../../../root.js";
 import { ReferenceException } from "../shared/exceptions.js";
+import { parse } from "../parser/parse.js";
+import { read } from "../reader/read.js";
+import { tokenize } from "../lexer/tokenize.js";
 
 /**
  * Resolves a module import declaration to a file location
@@ -74,6 +77,15 @@ export const resolveModuleOutput = (modulePath) => {
   return modulePath
     .replace("src", path.join("build", "js"))
     .replace(".wanda", ".js");
+};
+
+/**
+ * Converts the string of a require in a native module to an AST node for the require
+ * @param {string} require
+ * @returns {import("../parser/ast").MemberExpression || import("../parser/ast").Symbol}
+ */
+export const convertNativeRequireToNode = (require) => {
+  return parse(read(tokenize(require, "Import"))).body[0];
 };
 
 const convertMemberExpressionToNamesArray = (memExp) => {
