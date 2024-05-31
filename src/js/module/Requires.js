@@ -28,11 +28,12 @@ export class Requires extends Visitor {
    * @returns {import("../parser/ast.js").Import}
    */
   visitImport(node) {
+    const name = getModuleName(node.module);
     const require = {
       module: node.module,
-      alias: node.alias,
+      alias: node.alias ? node.alias : name,
       location: resolveModuleImport(node.module),
-      name: getModuleName(node.module),
+      name,
     };
     this.requires.push(require);
     return node;
