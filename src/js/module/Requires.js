@@ -1,4 +1,4 @@
-import { resolveModuleImport } from "./resolveModule.js";
+import { getModuleName, resolveModuleImport } from "./resolveModule.js";
 import { Visitor } from "../visitor/Visitor.js";
 
 /**
@@ -8,7 +8,7 @@ import { Visitor } from "../visitor/Visitor.js";
  * @typedef {import("../parser/ast.js").Symbol} Symbol
  */
 /**
- * @typedef {{module: MemberExpression|Symbol; alias: string; location: string}} Require
+ * @typedef {{module: MemberExpression|Symbol; alias: string; location: string; name: string}} Require
  */
 
 export class Requires extends Visitor {
@@ -32,6 +32,7 @@ export class Requires extends Visitor {
       module: node.module,
       alias: node.alias,
       location: resolveModuleImport(node.module),
+      name: getModuleName(node.module),
     };
     this.requires.push(require);
     return node;
