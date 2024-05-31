@@ -1,5 +1,3 @@
-import { parseTypesObject } from "./parseTypesObject.js";
-
 /**
  * @class Module
  * @desc In-language module
@@ -23,8 +21,8 @@ export class Module {
     this.name = name;
     this.module = module;
     this.requires = requires;
-    this.values = parseTypesObject(values);
-    this.types = parseTypesObject(types);
+    this.values = values;
+    this.types = types;
   }
 
   toString() {

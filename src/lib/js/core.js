@@ -7,6 +7,7 @@ import { printString } from "../../js/printer/printString.js";
 import { isTruthy, makeKeyword } from "../../js/runtime/utils.js";
 import { Exception } from "../../js/shared/exceptions.js";
 import { hasMetaField } from "../../js/runtime/object.js";
+import { parseTypesObject } from "../../js/runtime/parseTypesObject.js";
 
 // Module name
 const name = "Core";
@@ -15,7 +16,7 @@ const requires = [];
 // JavaScript modules required by the current module
 const nativeRequires = [];
 // Values provided by the module with their types
-const values = {
+const values = parseTypesObject({
   __rt__: "any",
   print: "(any -> nil)",
   println: "(any -> nil)",
@@ -64,7 +65,7 @@ const values = {
   range: "(&(vector number) -> (list number))",
   // same as for range - this can take either 2 or 3 args
   slice: "(number, &(vector any) -> ((vector any) || (list any)))",
-};
+});
 // Types provided by the module
 const types = {};
 
