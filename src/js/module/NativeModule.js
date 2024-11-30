@@ -1,4 +1,4 @@
-import { parseTypesObject } from "./parseTypesObject.js";
+import { parseTypesObject } from "../runtime/parseTypesObject";
 
 /**
  * @class Module
@@ -6,25 +6,22 @@ import { parseTypesObject } from "./parseTypesObject.js";
  * @prop {string} name
  * @prop {Function} module the module constructor
  * @prop {string[]} requires in-lang required modules
- * @prop {string[]} nativeRequires native JS required modules
  * @prop {Object} values values provided by a module and their types
  * @prop {Object} types types provided by a module
  */
-export class Module {
+export class NativeModule {
   /**
    * Module class constructor
    * @param {string} name
    * @param {Function} module the module constructor
    * @param {string[]} requires in-lang required modules
-   * @param {string[]} nativeRequires native JS required modules
    * @param {Object} values
    * @param {Object} types
    */
-  constructor(name, module, requires, nativeRequires, values, types) {
+  constructor(name, module, requires, values, types) {
     this.name = name;
     this.module = module;
     this.requires = requires;
-    this.nativeRequires = nativeRequires;
     this.values = parseTypesObject(values);
     this.types = parseTypesObject(types);
   }
@@ -39,16 +36,14 @@ export class Module {
  * @param {string} name
  * @param {Function} module the module constructor
  * @param {string[]} requires in-lang required modules
- * @param {string[]} nativeRequires native JS required modules
  * @param {Object} values
  * @param {Object} types
- * @returns {Module}
+ * @returns {NativeModule}
  */
-export const makeModule = (
+export const makeNativeModule = (
   name,
   module,
   requires = [],
-  nativeRequires = [],
   values = {},
   types = {}
-) => new Module(name, module, requires, nativeRequires, values, types);
+) => new NativeModule(name, module, requires, values, types);

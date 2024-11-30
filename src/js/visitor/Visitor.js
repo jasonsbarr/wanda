@@ -87,6 +87,8 @@ export class Visitor {
         return this.visitLogicalExpression(node);
       case ASTTypes.ForExpression:
         return this.visitForExpression(node);
+      case ASTTypes.Import:
+        return this.visitImport(node);
       default:
         throw new SyntaxException(node.kind, node.srcloc);
     }
@@ -237,6 +239,16 @@ export class Visitor {
     const elseBranch = this.visit(node.else);
 
     return { ...node, test, then, else: elseBranch };
+  }
+
+  /**
+   * Import node visitor
+   * @param {import("../parser/ast.js").Import} node
+   * @returns {import("../parser/ast.js").Import}
+   */
+  visitImport(node) {
+    const module = this.visit(node.module);
+    return { ...node, module };
   }
 
   /**

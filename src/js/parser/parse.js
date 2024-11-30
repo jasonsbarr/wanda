@@ -523,30 +523,26 @@ const parseForExpression = (form) => {
 };
 
 /**
- * Parses a module signifier
+ * Parses an import declaration
  * @param {List} form
- * @returns {import("./ast.js").Module}
+ * @returns {import("./ast.js").Import}
  */
-const parseModuleSignifier = (form) => {
-  const name = form.cdr;
+const parseImport = (form) => {
+  const [_, expr] = form;
   const srcloc = form.srcloc;
+  let module, alias;
 
-  return AST.Module(name, srcloc);
-};
+  if (expr.type === "AsExpression") {
+    // expr.expression will be Symbol or MemberExpression
+    module = expr.expression;
+    // expr.typeAnnotation will be Symbol
+    alias = expr.typeAnnotation.name;
+  } else {
+    module = expr;
+    alias = null;
+  }
 
-/**
- * Parses a JS import
- * @param {List} form
- * @returns {import("./ast.js").ImportJS}
- */
-const parseImportJS = (form) => {
-  const [_, name, signifier, from] = form;
-  const srcloc = form.srcloc;
-  const parsedName = parseExpr(name);
-  const parsedSignifier = parseExpr(signifier);
-  const parsedFrom = parseExpr(from);
-
-  return AST.ImportJS(parsedName, parsedSignifier, parsedFrom, srcloc);
+  return AST.Import(module, alias, srcloc);
 };
 
 /**
@@ -586,10 +582,8 @@ const parseList = (form) => {
       return parseUnaryExpression(form);
     case "for":
       return parseForExpression(form);
-    case "module":
-      return parseModuleSignifier(form);
-    case "import-js":
-      return parseImportJS(form);
+    case "import":
+      return parseImport(form);
     default:
       return parseCall(form);
   }

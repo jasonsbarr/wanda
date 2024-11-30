@@ -36,8 +36,7 @@ export const ASTTypes = {
   LogicalExpression: "LogicalExpression",
   UnaryExpression: "UnaryExpression",
   ForExpression: "ForExpression",
-  Module: "Module",
-  ImportJS: "ImportJS",
+  Import: "Import",
 };
 
 /**
@@ -146,10 +145,7 @@ export const ASTTypes = {
  * @typedef {ASTNode & {kind: ASTTypes.ForExpression; op: Symbol; vars: ForVar[]; body: AST[]}} ForExpression
  */
 /**
- * @typedef {ASTNode & {kind: ASTTypes.Module; name: Symbol}} Module
- */
-/**
- * @typedef {ASTNode & {kind: ASTTypes.ImportJS; import: Symbol|RecordPattern; from: string}} ImportJS
+ * @typedef {ASTNode & {kind: ASTTypes.Import; module: MemberExpression|Symbol; alias: string|null}} Import
  */
 /**
  * @typedef {Symbol|VectorPattern|RecordPattern} LHV
@@ -592,32 +588,16 @@ export const AST = {
     };
   },
   /**
-   * Constructs a Module signifier AST node
-   * @param {Symbol} name
+   * Constructs an Import AST node
+   * @param {MemberExpression|Symbol} module
+   * @param {string} alias
    * @param {SrcLoc} srcloc
-   * @returns {Module}
    */
-  Module(name, srcloc) {
+  Import(module, alias, srcloc) {
     return {
-      kind: ASTTypes.Module,
-      name,
-      srcloc,
-    };
-  },
-  /**
-   * Constructs an ImportJS AST node
-   * @param {Symbol} name
-   * @param {Symbol|RecordPattern} importSignifier
-   * @param {StringLiteral} from
-   * @param {SrcLoc} srcloc
-   * @returns {ImportJS}
-   */
-  ImportJS(name, importSignifier, from, srcloc) {
-    return {
-      kind: ASTTypes.ImportJS,
-      name,
-      import: importSignifier,
-      from,
+      kind: ASTTypes.Import,
+      module,
+      alias,
       srcloc,
     };
   },

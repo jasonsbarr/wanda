@@ -1,5 +1,8 @@
 import equal from "fast-deep-equal/es6/index.js";
-import { Module, makeModule } from "../../js/runtime/Module.js";
+import {
+  NativeModule,
+  makeNativeModule,
+} from "../../js/runtime/NativeModule.js";
 import { Cons, cons } from "../../js/shared/cons.js";
 import { print } from "../../js/printer/print.js";
 import { println } from "../../js/printer/println.js";
@@ -12,8 +15,6 @@ import { hasMetaField } from "../../js/runtime/object.js";
 const name = "Core";
 // Wanda modules required by the current module
 const requires = [];
-// JavaScript modules required by the current module
-const nativeRequires = [];
 // Values provided by the module with their types
 const values = {
   __rt__: "any",
@@ -68,10 +69,10 @@ const values = {
 // Types provided by the module
 const types = {};
 
-/** @type {Module} */
-export const theModule = makeModule(
+/** @type {NativeModule} */
+export const theModule = makeNativeModule(
   name,
-  (rt, ns) => {
+  (rt) => {
     const isList = (obj) => {
       if (!rt.isNil(obj) && !(obj instanceof Cons)) {
         return false;
@@ -408,7 +409,6 @@ export const theModule = makeModule(
     };
   },
   requires,
-  nativeRequires,
   values,
   types
 );
